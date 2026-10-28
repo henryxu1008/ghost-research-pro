@@ -7,6 +7,7 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
     const bundle = path.join(path.dirname(require.resolve('@tryghost/portal/package.json')), 'umd/portal.min.js');
     const ctx = await browser.newContext({viewport: {width: 360, height: 1000}});
     const forbidden = [];
+    const layouts = [];
     let bundleLoads = 0;
     await ctx.route('**/*', async route => {
         const url = new URL(route.request().url());
@@ -32,13 +33,26 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
                 .filter(animation => animation.effect?.getTiming().iterations !== Infinity)
                 .map(animation => animation.finished.catch(() => {})));
         });
-        const state = await panel.evaluate(el => ({
-            opacity: getComputedStyle(el).opacity,
-            overflow: el.ownerDocument.documentElement.scrollWidth > el.ownerDocument.defaultView.innerWidth + 1,
-        }));
-        assert.equal(state.opacity, '1', 'Portal screenshot captured before the panel was opaque');
-        assert(!state.overflow, `Portal horizontal overflow: ${name}`);
+        const state = await panel.evaluate(el => {
+            const width = el.ownerDocument.defaultView.innerWidth;
+            const bounds = element => {
+                const rect = element.getBoundingClientRect();
+                return {left: rect.left, right: rect.right};
+            };
+            const outside = rect => rect.left < -1 || rect.right > width + 1;
+            // Portal intentionally extends its scrollbar-hiding wrapper by 30px. Check
+            // visible content bounds, rather than that wrapper's document scrollWidth.
+            const clippedControls = [...el.querySelectorAll('input, button, a')]
+                .filter(control => control.getClientRects().length && getComputedStyle(control).visibility !== 'hidden')
+                .map(control => ({tag: control.tagName, ...bounds(control)}))
+                .filter(outside);
+            return {viewport: width, opacity: getComputedStyle(el).opacity, panel: bounds(el), clippedControls};
+        });
+        layouts.push({name, ...state});
         await page.screenshot({path: path.join(out, name), fullPage: true, animations: 'disabled'});
+        assert.equal(state.opacity, '1', 'Portal screenshot captured before the panel was opaque');
+        assert(state.panel.left >= -1 && state.panel.right <= state.viewport + 1, `Portal panel exceeds viewport: ${name}`);
+        assert.deepEqual(state.clippedControls, [], `Portal controls exceed viewport: ${name}`);
     };
     const hasBody = async (slug, marker, expected) => {
         const response = await ctx.request.get(`${base}/${slug}/`);
@@ -117,6 +131,7 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
         assert.deepEqual(forbidden, [], 'Portal attempted a payment endpoint');
         record('Portal free flows request no checkout or billing endpoints');
     } finally {
+        fs.writeFileSync(path.join(out, 'portal-layout.json'), JSON.stringify(layouts, null, 2));
         await ctx.close();
     }
 };
