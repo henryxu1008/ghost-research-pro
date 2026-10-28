@@ -69,7 +69,7 @@ async function signIn(email) {
     const mail = emails.findLast(m => m.recipient.includes(email));
     assert(mail, 'Local SMTP sink did not receive sign-in email');
     const decoded = mail.message.replace(/=\r\n/g, '').replace(/=([0-9A-F]{2})/gi, (_, h) => String.fromCharCode(parseInt(h, 16))).replace(/&amp;/g, '&');
-    const link = decoded.match(/http:\/\/127\.0\.0\.1:2368\/\?token=[^\s<>"']+/)?.[0];
+    const link = decoded.match(/http:\/\/127\.0\.0\.1:2368\/(?:members\/)?\?token=[^\s<>"']+/)?.[0];
     assert(link, 'No local magic link found');
     await ctx.get(link);
     const home = await (await ctx.get('/')).text();
