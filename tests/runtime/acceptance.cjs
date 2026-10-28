@@ -57,7 +57,8 @@ async function context() {
 async function api(ctx, method, route, data, options = {}) {
     const response = await ctx[method](`/ghost/api/admin/${route}`, {...options, ...(data ? {data} : {})});
     assert(response.ok(), `${method} ${route}: ${response.status()} ${(await response.text()).slice(0, 1200)}`);
-    return response.status() === 204 ? {} : response.json();
+    if (response.status() === 204) return {};
+    return response.headers()['content-type']?.includes('application/json') ? response.json() : {};
 }
 async function signIn(email) {
     const ctx = await context();
