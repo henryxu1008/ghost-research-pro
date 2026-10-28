@@ -9,6 +9,12 @@ async function probe(record, name, action) {
 
 async function audit(document, {out, label, record}) {
     await probe(record, `Axe WCAG A/AA: ${label}`, async () => {
+        await document.evaluate(async () => {
+            await window.document.fonts.ready;
+            await Promise.all(window.document.getAnimations()
+                .filter(animation => animation.effect?.getTiming().iterations !== Infinity)
+                .map(animation => animation.finished.catch(() => {})));
+        });
         await document.addScriptTag({path: require.resolve('axe-core/axe.min.js')});
         const result = await document.evaluate(async () => {
             const report = await axe.run(window.document, {

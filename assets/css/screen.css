@@ -11,3 +11,9 @@ h1,h2,h3,.hero h1,.archive-header h1,.report h1,.card h3,.membership-plan h2{fon
 .gh-content iframe{max-width:100%}
 .gh-content figure img{display:block;margin-inline:auto}
 .gh-content figcaption{font-size:.85rem;color:var(--muted);text-align:center}
+
+/* Keep native Ghost cards and locked-post actions within this theme's palette. */
+.kg-btn,.gh-post-upgrade-cta .gh-btn{background:var(--accent)!important;color:#fff!important}
+.kg-file-card-filesize{color:var(--muted)!important;opacity:1!important}
+.gh-post-upgrade-cta small,.gh-post-upgrade-cta a[data-portal="signin"]{color:var(--ink)!important;opacity:1!important}
+button:focus-visible,[data-theme-scroll]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
