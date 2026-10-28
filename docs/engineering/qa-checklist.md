@@ -31,6 +31,8 @@ Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary di
 
 The expanded matrix checks actual Lexical editor cards, protected-card HTML, selected axe-core WCAG A/AA rules, skip-link focus, Portal focus return/containment and interrupted forms. Use the latest matrix artifacts to establish success; an older passing 43-check run does not validate these additions. Account coverage opens the panel only; profile/preference saving remains untested.
 
+The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296bbc6886`, [workflow 40732686825](https://github.com/qq550723504/ghost-research-pro/actions/runs/40732686825): 77 checks per Ghost profile, plus the dependency audit gate and its 10 fixed-fixture tests. Later refinements to embed/table checks require their own passing run.
+
 ## Remaining release gates
 - [ ] Manually exercise Ghost Admin UI theme installation; automated installation currently uses the same backend API.
 - [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.

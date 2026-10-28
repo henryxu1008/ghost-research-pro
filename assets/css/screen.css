@@ -18,4 +18,5 @@ h1,h2,h3,.hero h1,.archive-header h1,.report h1,.card h3,.membership-plan h2{fon
 .gh-post-upgrade-cta small,.gh-post-upgrade-cta a[data-portal="signin"]{color:var(--ink)!important;opacity:1!important}
 .gh-post-upgrade-cta-content{background:var(--panel)!important;color:var(--ink)!important;border:1px solid var(--border)}
 .gh-post-upgrade-cta h2{color:var(--ink)!important}
+.gh-content th,.gh-content td{min-width:9rem;overflow-wrap:normal}
 button:focus-visible,[data-theme-scroll]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}

@@ -8,8 +8,9 @@ async function seedEditorCards({runtime, base, api, admin}) {
     fs.mkdirSync(path.join(runtime, 'content/files'), {recursive: true});
     fs.writeFileSync(path.join(runtime, 'content/images/qa-landscape.svg'), '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600"><rect width="1200" height="600" fill="#dce8f4"/><path d="M0 500L300 200L650 420L1000 120L1200 300V600H0Z" fill="#174e8b"/></svg>');
     fs.writeFileSync(path.join(runtime, 'content/files/qa-notes.txt'), 'Local editorial QA fixture.');
-    fs.writeFileSync(path.join(runtime, 'content/files/qa-chart.html'), '<!doctype html><html lang="en"><title>Local QA chart</title><body><h1>Local chart</h1><p>Sample value: 42</p></body></html>');
     const image = `${base}/content/images/qa-landscape.svg`;
+    const chart = '<!doctype html><html lang="en"><title>Local QA chart</title><body><h1>Local QA chart</h1><p>Sample value: 42</p></body></html>';
+    const chartAttribute = chart.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     for (const [slug, marker, visibility] of [
         ['editor-cards', 'CARD_PUBLIC_48c', 'public'],
         ['editor-cards-locked', 'CARD_SECRET_93d', 'paid'],
@@ -28,7 +29,7 @@ async function seedEditorCards({runtime, base, api, admin}) {
             node('toggle', {heading: `${marker} Additional detail`, content: '<p>Supporting methodology.</p>'}),
             node('file', {src: `${base}/content/files/qa-notes.txt`, fileName: 'research-notes.txt', fileSize: 26,
                 fileTitle: `${marker} Research notes`, fileCaption: 'Local text download'}),
-            node('embed', {url: `${base}/content/files/qa-chart.html`, html: `<iframe src="${base}/content/files/qa-chart.html" title="${marker} Embedded research chart" width="1200" height="240"></iframe>`, caption: 'Local embed'}),
+            node('embed', {url: `${base}/public-report/`, html: `<iframe srcdoc="${chartAttribute}" sandbox="" title="${marker} Embedded research chart" width="1200" height="240"></iframe>`, caption: 'Local embed'}),
             node('codeblock', {code: `${marker}\n${'long_research_identifier_'.repeat(50)}`, language: 'text'}),
         ];
         const lexical = JSON.stringify({root: {type: 'root', version: 1, children, direction: null, format: '', indent: 0}});
@@ -59,6 +60,7 @@ async function checkEditorCards({browser, base, out, record}) {
                 assert(await page.locator(`.gh-content ${selector}`).count(), `Missing rendered ${selector}`);
             }
             assert(await page.locator('.gh-content img').evaluateAll(images => images.every(image => image.naturalWidth > 0)), 'An editorial image did not load');
+            assert.equal(await page.frameLocator('.kg-embed-card iframe').locator('h1').textContent(), 'Local QA chart', 'Embed did not render its actual document');
             assert(!await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), 'Horizontal page overflow');
             for (const cardWidth of ['wide', 'full']) {
                 const bounds = await page.locator(`.kg-image-card.kg-width-${cardWidth}`).evaluate(el => {
@@ -67,7 +69,7 @@ async function checkEditorCards({browser, base, out, record}) {
                 assert(bounds.left >= -1 && bounds.right <= bounds.width + 1, `${cardWidth} image exceeds the viewport`);
             }
         });
-        await probe(record, `Editor toggle and download keyboard access at ${width}px`, async () => {
+        await probe(record, `Editor toggle keyboard and local file delivery at ${width}px`, async () => {
             const toggle = page.locator('.kg-toggle-card button');
             await toggle.focus();
             await page.keyboard.press('Enter');
@@ -77,6 +79,16 @@ async function checkEditorCards({browser, base, out, record}) {
             const file = page.locator('.kg-file-card a');
             assert.equal((await page.request.get(new URL(await file.getAttribute('href'), base).href)).status(), 200);
             assert(await file.getAttribute('href'), 'File card lacks a download target');
+        });
+        await probe(record, `Long table and code scroll with the keyboard at ${width}px`, async () => {
+            for (const selector of ['.gh-content table', '.gh-content pre']) {
+                const region = page.locator(selector);
+                await region.focus();
+                assert.equal(await region.getAttribute('tabindex'), '0', `${selector} is not keyboard focusable`);
+                await page.keyboard.press('ArrowRight');
+                await page.waitForFunction(selector => document.querySelector(selector).scrollLeft > 0, selector, {timeout: 3000});
+                await region.evaluate(el => { el.scrollLeft = 0; });
+            }
         });
         if (width !== 768) await audit(page, {out, label: `editor-cards-${width}`, record});
         await page.screenshot({path: path.join(out, `editor-cards-${width}.png`), fullPage: true});
