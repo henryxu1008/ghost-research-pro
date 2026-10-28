@@ -26,15 +26,17 @@ Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary di
 - [x] Verify unauthorized HTML contains no protected marker, including wrong-tier and anonymous-after-authorized requests.
 - [x] Revoke member sessions via Admin API and verify access is removed.
 - [x] Verify 360px, 768px and 1440px layouts have no horizontal page overflow; test keyboard skip link.
-- [x] Scan source and ZIP against Ghost 5/6 specifications; actual runtime tested: Ghost 6.73.0, Node 24.22.1.
+- [x] Scan source and ZIP against Ghost 5/6 specifications. Pinned CI runtime profiles: Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.11.
 - [x] Verify pinned Portal free signup/account/signout/signin: [workflow 40725520848](https://github.com/qq550723504/ghost-research-pro/actions/runs/40725520848), commit `324d69aaeba5d3db98b4d96e0bd2ff642d65c0cf`, **43 runtime checks passed**. Current visual evidence must come from the latest head; screenshot captures wait for Portal animations to finish.
+
+The expanded matrix checks actual Lexical editor cards, protected-card HTML, selected axe-core WCAG A/AA rules, skip-link focus, Portal focus return/containment and interrupted forms. Use the latest matrix artifacts to establish success; an older passing 43-check run does not validate these additions. Account coverage opens the panel only; profile/preference saving remains untested.
 
 ## Remaining release gates
 - [ ] Manually exercise Ghost Admin UI theme installation; automated installation currently uses the same backend API.
 - [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.
 - [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
-- [ ] Full accessibility audit, screen reader testing and broader editorial-card/image/embed/long-article coverage.
-- [ ] Test other advertised runtime versions, especially Ghost 5; static GScan compatibility is not runtime proof.
+- [ ] Full accessibility audit, screen readers, profile/preference persistence, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
+- [ ] Test runtime versions and browsers beyond the two exact pinned CI profiles; a broad engine range and static GScan result do not prove every minor version.
 - [ ] Resolve project licensing and complete design/commercial review.
 
 ## Release gate

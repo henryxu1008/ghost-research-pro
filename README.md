@@ -2,7 +2,7 @@
 
 Open-source Ghost theme project for research publishers, B2B intelligence and professional newsletters.
 
-> Status: theme scaffold in development. Source/ZIP validation and isolated Ghost 6 runtime/member-access acceptance are automated; broader release gates remain. No production-ready theme has been released.
+> Status: theme scaffold in development. Source/ZIP validation and isolated Ghost 5/6 runtime/member-access checks are automated; broader release gates remain. No production-ready theme has been released.
 
 ## Roadmap
 
@@ -40,6 +40,8 @@ GScan's Handlebars compiler is overridden to the security fix 4.7.10. The audit 
 
 ## Runtime acceptance
 
-Theme CI also boots an unmodified Ghost 6.73.0 instance on loopback, uploads/activates the ZIP, and checks page rendering, member permissions and three Chromium viewport sizes. It uses disposable complimentary membership fixtures and an in-memory local SMTP sink. Free signup, account management, signout and signin run through the official Portal 2.72.11 browser bundle, served locally by the test harness; all external browser requests are blocked. No Stripe account or real email delivery is involved. Results and screenshots are uploaded as `ghost-runtime-acceptance` (14-day retention).
+Theme CI exercises stock Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.11 on separate loopback-only runners. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. Both environments use disposable complimentary membership fixtures and an in-memory local SMTP sink. Free signup, account panel opening, signout and signin use the matching official Portal bundle served locally; profile/preference saving is not tested. All external browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost5` and `ghost-runtime-ghost6` (14-day retention).
 
-See [runtime acceptance and host-error diagnosis](docs/engineering/runtime-acceptance.md). To run the suite outside CI, prepare a fresh unpacked Ghost 6.73.0 installation with its dependencies, install Chromium with `npx playwright install chromium`, build the ZIP, and set `GHOST_RUNTIME_DIR` to that installation's absolute path before `npm run test:runtime`. It deliberately refuses an existing database. Never point it at a live site.
+See [runtime acceptance and host-error diagnosis](docs/engineering/runtime-acceptance.md). To run outside CI, prepare a fresh unpacked installation of one pinned version with its supported Node version and dependencies, install Chromium with `npx playwright install chromium`, build the ZIP, and set `GHOST_RUNTIME_DIR` plus `GHOST_RUNTIME_VERSION` before `npm run test:runtime`. The default version is 6.73.0; the runner verifies the package's Node engines and refuses an existing database. Never point it at a live site.
+
+The theme includes a small accessibility adapter for the native Portal iframe: it restores keyboard focus, contains Tab navigation, enables the legacy close control, and supplies document language/title and zoom-friendly viewport metadata. Portal actions still use Ghost's handlers. Native card/Portal actions follow the theme's accent color; custom palette changes need contrast verification. Automated checks do not replace screen-reader or full accessibility review.
