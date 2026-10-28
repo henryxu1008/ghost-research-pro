@@ -1,0 +1,27 @@
+{
+  "name": "ghost-research-pro",
+  "description": "Research publishing theme for Ghost",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "engines": {
+    "ghost": ">=5.0.0"
+  },
+  "scripts": {
+    "test": "gscan .",
+    "test:ci": "gscan --fatal .",
+    "zip": "mkdir -p dist && zip -r dist/ghost-research-pro.zip *.hbs package.json assets -x '*.map' "
+  },
+  "devDependencies": {
+    "gscan": "^6.6.1"
+  },
+  "config": {
+    "posts_per_page": 12
+  },
+  "gpm": {
+    "type": "theme",
+    "categories": [
+      "Magazine"
+    ]
+  }
+}
