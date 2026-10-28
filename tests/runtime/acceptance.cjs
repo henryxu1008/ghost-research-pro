@@ -12,6 +12,7 @@ const {checkPortal} = require('./portal.cjs');
 const {seedEditorCards, checkEditorAccess, checkEditorCards} = require('./editor-cards.cjs');
 const {audit, checkCoreKeyboard} = require('./accessibility.cjs');
 const {checkAdapterBoundaries} = require('./adapter-boundary.cjs');
+const {checkDelayedPortalOpen} = require('./portal-interruption.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -228,6 +229,7 @@ async function main() {
 
     browser = await chromium.launch({headless: true});
     await checkAdapterBoundaries({browser, out, record});
+    await checkDelayedPortalOpen({browser, out, record});
     await checkEditorCards({browser, base, out, record});
     // Explicit free-only publication settings in the disposable instance for Portal checks.
     await api(admin, 'put', 'settings/', {settings: [

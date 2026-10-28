@@ -1,18 +1,34 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const {probe} = require('./accessibility.cjs');
+
+async function closeRepeatedDialog({popup, frameElement, step}) {
+    // Portal opens asynchronously after the trigger's click handler returns.
+    // A zero from count() here is not evidence that the repeated flow is closed.
+    await step('wait-repeated-open', () => popup().getByLabel('Email', {exact: true}).waitFor({state: 'visible'}));
+    assert.equal(await frameElement().count(), 1, 'Repeated trigger must open exactly one dialog');
+    await step('close-repeated', () => popup().getByRole('button', {name: 'Close popup', exact: true}).click());
+    await step('wait-repeated-detached', () => frameElement().waitFor({state: 'detached'}));
+}
 
 // Read-only observations. No form values, URLs, member data or response bodies.
 async function observe(page) {
     await page.evaluate(() => {
         const ids = new WeakMap(), seen = new WeakSet(), events = [];
         let sequence = 0;
+        let live = new Set();
         const id = frame => {
             if (!ids.has(frame)) ids.set(frame, ++sequence);
             return ids.get(frame);
         };
         const track = () => {
-            for (const frame of document.querySelectorAll('iframe[title="portal-popup"]')) {
+            const current = new Set(document.querySelectorAll('iframe[title="portal-popup"]'));
+            for (const frame of live) {
+                if (!current.has(frame) && events.length < 100) events.push({frame: id(frame), type: 'removed'});
+            }
+            for (const frame of current) {
+                if (!live.has(frame) && events.length < 100) events.push({frame: id(frame), type: 'added'});
                 id(frame);
                 const doc = frame.contentDocument;
                 if (!doc || seen.has(doc)) continue;
@@ -24,6 +40,7 @@ async function observe(page) {
                 }, capture);
                 frame.addEventListener('load', track);
             }
+            live = current;
         };
         new MutationObserver(track).observe(document.body, {childList: true, subtree: true});
         track();
@@ -60,8 +77,10 @@ async function checkInterruption({page, popup, trigger, frameElement, open, out,
             let stage = 'open';
             const step = async (name, action) => {
                 stage = name;
+                const state = {stage: name, completed: false};
+                entry.stages.push(state);
                 await action();
-                entry.stages.push(await snapshot(page, name));
+                state.completed = true;
             };
             try {
                 const before = mailCount();
@@ -78,10 +97,10 @@ async function checkInterruption({page, popup, trigger, frameElement, open, out,
                 await step('wait-switched-detached', () => frameElement().waitFor({state: 'detached'}));
                 await step('repeat-trigger', () => trigger().dblclick());
                 assert(await frameElement().count() <= 1, 'Repeated trigger opened duplicate dialogs');
-                if (await frameElement().count()) {
-                    await step('close-repeated', () => popup().getByRole('button', {name: 'Close popup', exact: true}).click());
-                }
-                await step('wait-repeated-detached', () => frameElement().waitFor({state: 'detached'}));
+                await closeRepeatedDialog({popup, frameElement, step});
+                // Read evidence only after the close assertions finish; avoid adding
+                // browser round trips/delays between the interactions under test.
+                entry.closed = await snapshot(page, 'closed');
                 await step('reopen', open);
                 stage = 'verify-reopen';
                 assert.equal(await frameElement().count(), 1);
@@ -101,4 +120,38 @@ async function checkInterruption({page, popup, trigger, frameElement, open, out,
     }
 }
 
-module.exports = {checkInterruption};
+async function checkDelayedPortalOpen({browser, out, record}) {
+    const page = await browser.newPage();
+    await page.route('**/*', route => route.abort());
+    try {
+        await probe(record, 'Portal repeated-trigger wait handles a delayed iframe', async () => {
+            await page.setContent('<!doctype html><html><body><a id="trigger" href="#/portal/signin">Sign in</a></body></html>');
+            await page.evaluate(() => {
+                window.closeClicks = 0;
+                document.querySelector('#trigger').addEventListener('click', event => {
+                    event.preventDefault();
+                    // Hold creation until the initial zero-frame state was checked.
+                    window.releasePortal = () => {
+                        const frame = document.createElement('iframe');
+                        frame.title = 'portal-popup';
+                        frame.srcdoc = '<!doctype html><html><body><label>Email<input type="email"></label><button aria-label="Close popup" onclick="parent.closeClicks++;frameElement.remove()">Close</button></body></html>';
+                        document.body.append(frame);
+                    };
+                });
+            });
+            const frameElement = () => page.locator('iframe[title="portal-popup"]');
+            const popup = () => page.frameLocator('iframe[title="portal-popup"]');
+            await page.locator('#trigger').dblclick();
+            assert.equal(await frameElement().count(), 0, 'Fixture must start before asynchronous creation');
+            await Promise.all([
+                closeRepeatedDialog({popup, frameElement, step: async (name, action) => action()}),
+                page.evaluate(() => window.releasePortal()),
+            ]);
+            assert.equal(await frameElement().count(), 0);
+            assert.equal(await page.evaluate(() => window.closeClicks), 1, 'Late dialog never received its close click');
+            fs.writeFileSync(path.join(out, 'portal-delayed-open.json'), JSON.stringify({initialFrames: 0, closeClicks: 1, finalFrames: 0}));
+        });
+    } finally { await page.close(); }
+}
+
+module.exports = {checkInterruption, checkDelayedPortalOpen};
