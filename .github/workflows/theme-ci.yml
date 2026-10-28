@@ -27,3 +27,35 @@ jobs:
           name: ghost-research-pro-theme
           path: dist/ghost-research-pro.zip
           if-no-files-found: error
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+      - run: npm ci --ignore-scripts
+      - run: npm run zip
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Install isolated Ghost 6.73.0
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/ghost-runtime"
+          npm pack ghost@6.73.0 --pack-destination "$RUNNER_TEMP/ghost-runtime" --silent
+          tar --no-same-owner -xzf "$RUNNER_TEMP/ghost-runtime/ghost-6.73.0.tgz" -C "$RUNNER_TEMP/ghost-runtime"
+          cd "$RUNNER_TEMP/ghost-runtime/package"
+          npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
+      - name: Activate theme and verify pages and member permissions
+        env:
+          GHOST_RUNTIME_DIR: ${{ runner.temp }}/ghost-runtime/package
+        run: npm run test:runtime
+      - name: Upload sanitized acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ghost-runtime-acceptance
+          path: artifacts/runtime/
+          if-no-files-found: warn
+          retention-days: 14

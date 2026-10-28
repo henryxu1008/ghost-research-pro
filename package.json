@@ -11,10 +11,12 @@
     "test": "node scripts/validate.cjs .",
     "test:ci": "npm test",
     "zip": "node scripts/package.cjs",
-    "test:zip": "node scripts/validate.cjs dist/ghost-research-pro.zip"
+    "test:zip": "node scripts/validate.cjs dist/ghost-research-pro.zip",
+    "test:runtime": "node tests/runtime/acceptance.cjs"
   },
   "devDependencies": {
-    "gscan": "6.6.1"
+    "gscan": "6.6.1",
+    "playwright": "1.64.1"
   },
   "config": {
     "posts_per_page": 12,
