@@ -1,7 +1,8 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const {classifyAudit} = require('../../scripts/audit.cjs');
+const {classifyAudit: classify, readAuditReport} = require('../../scripts/audit.cjs');
 const fixture = name => structuredClone(require(`./fixtures/${name}.json`));
+const classifyAudit = (report, lock = fixture('lock')) => classify(report, lock);
 
 test('known ZIP findings stay visible without failing the reviewed baseline', () => {
     const result = classifyAudit(fixture('known'));
@@ -66,4 +67,36 @@ test('invalid schema and inconsistent totals fail closed', () => {
     report.metadata.vulnerabilities.high = 0;
     assert.throws(() => classifyAudit(report), /inconsistent/);
     assert.throws(() => classifyAudit({auditReportVersion: 1}), /unsupported/);
+});
+test('each reviewed package version is exact, not just a path/advisory match', () => {
+    for (const node of ['node_modules/gscan', 'node_modules/@tryghost/zip', 'node_modules/extract-zip']) {
+        const lock = fixture('lock');
+        lock.packages[node].version = '99.0.0';
+        const result = classifyAudit(fixture('known'), lock);
+        assert.equal(result.status, 'failed');
+        assert.equal(result.newHigh.length, 2);
+    }
+});
+test('missing installed version fails closed', () => {
+    const lock = fixture('lock');
+    delete lock.packages['node_modules/extract-zip'];
+    assert.throws(() => classifyAudit(fixture('known'), lock), /version is missing/);
+});
+test('replacing a high advisory blocks even when node counts are unchanged', () => {
+    const report = fixture('known');
+    report.vulnerabilities['extract-zip'].via[0].url = 'https://example.test/advisories/replacement';
+    const result = classifyAudit(report);
+    assert.equal(result.counts.high, 3);
+    assert.equal(result.status, 'failed');
+    assert.equal(result.newHigh.length, 3);
+    assert.equal(result.removedKnownHigh.length, 3);
+});
+test('command failure is rejected even if stdout resembles a valid audit', () => {
+    const stdout = JSON.stringify(fixture('known'));
+    assert.throws(() => readAuditReport({status: 2, stdout}), /could not complete/);
+    assert.throws(() => readAuditReport({status: null, stdout, error: new Error('spawn failed')}), /could not complete/);
+    assert.deepEqual(readAuditReport({status: 1, stdout}), fixture('known'));
+});
+test('malformed command output is rejected', () => {
+    assert.throws(() => readAuditReport({status: 0, stdout: '{broken'}), /valid JSON/);
 });

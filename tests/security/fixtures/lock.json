@@ -1,0 +1,10 @@
+{
+  "lockfileVersion":3,
+  "packages":{
+    "node_modules/gscan":{"version":"6.6.1"},
+    "node_modules/@tryghost/zip":{"version":"3.5.18"},
+    "node_modules/extract-zip":{"version":"2.0.1"},
+    "node_modules/new-parent/node_modules/extract-zip":{"version":"2.0.1"},
+    "node_modules/new-tool":{"version":"1.0.0"}
+  }
+}

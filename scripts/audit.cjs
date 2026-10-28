@@ -9,14 +9,14 @@ const knownUrls = [
 ];
 // Reviewed development-only ZIP chain. No severity-wide suppression.
 const knownPaths = {
-    gscan: ['node_modules/gscan'],
-    '@tryghost/zip': ['node_modules/@tryghost/zip'],
-    'extract-zip': ['node_modules/extract-zip'],
+    gscan: {version: '6.6.1', nodes: ['node_modules/gscan']},
+    '@tryghost/zip': {version: '3.5.18', nodes: ['node_modules/@tryghost/zip']},
+    'extract-zip': {version: '2.0.1', nodes: ['node_modules/extract-zip']},
 };
-const key = (name, node, url) => `${name} | ${node} | ${url}`;
-const baseline = new Set(Object.entries(knownPaths).flatMap(([name, nodes]) => nodes.flatMap(node => knownUrls.map(url => key(name, node, url)))));
+const key = (name, version, node, url) => `${name}@${version} | ${node} | ${url}`;
+const baseline = new Set(Object.entries(knownPaths).flatMap(([name, {version, nodes}]) => nodes.flatMap(node => knownUrls.map(url => key(name, version, node, url)))));
 
-function classifyAudit(report) {
+function classifyAudit(report, lockfile) {
     if (report?.error || report?.auditReportVersion !== 2 || !report.vulnerabilities || Array.isArray(report.vulnerabilities)) {
         throw new Error('Audit failed or returned an unsupported report');
     }
@@ -45,7 +45,11 @@ function classifyAudit(report) {
         if (vuln.severity === 'high') {
             const highSources = advisories.filter(advisory => advisory.severity === 'high' || advisory.severity === 'critical');
             if (!highSources.length) throw new Error('Audit high-severity chain has no advisory');
-            for (const node of vuln.nodes) for (const advisory of highSources) high.add(key(name, node, advisory.url));
+            for (const node of vuln.nodes) {
+                const version = lockfile?.packages?.[node]?.version;
+                if (typeof version !== 'string' || !version) throw new Error('Installed package version is missing from the lockfile');
+                for (const advisory of highSources) high.add(key(name, version, node, advisory.url));
+            }
         }
     }
     for (const level of levels) {
@@ -59,16 +63,20 @@ function classifyAudit(report) {
         critical: [...critical].sort(), knownHigh, newHigh, removedKnownHigh};
 }
 
+function readAuditReport(audit) {
+    if (audit.error || ![0, 1].includes(audit.status)) throw new Error('npm audit could not complete; security gate fails closed');
+    try { return JSON.parse(audit.stdout); } catch { throw new Error('npm audit did not return valid JSON'); }
+}
+
 function main() {
     const root = path.resolve(__dirname, '..');
     const command = process.env.npm_execpath ? process.execPath : (process.platform === 'win32' ? 'cmd.exe' : 'npm');
     const args = process.env.npm_execpath ? [process.env.npm_execpath, 'audit', '--json']
         : (process.platform === 'win32' ? ['/d', '/s', '/c', 'npm audit --json'] : ['audit', '--json']);
     const audit = spawnSync(command, args, {cwd: root, encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024, windowsHide: true});
-    if (audit.error || ![0, 1].includes(audit.status)) throw new Error('npm audit could not complete; security gate fails closed');
-    let report;
-    try { report = JSON.parse(audit.stdout); } catch { throw new Error('npm audit did not return valid JSON'); }
-    const result = classifyAudit(report);
+    const report = readAuditReport(audit);
+    const lockfile = JSON.parse(fs.readFileSync(path.join(root, 'package-lock.json'), 'utf8'));
+    const result = classifyAudit(report, lockfile);
     fs.mkdirSync(path.join(root, 'artifacts'), {recursive: true});
     fs.writeFileSync(path.join(root, 'artifacts/dependency-audit.json'), JSON.stringify({result, report}, null, 2));
     console.log(`Audit nodes: ${result.counts.critical} critical, ${result.counts.high} high, ${result.counts.moderate} moderate`);
@@ -83,4 +91,4 @@ function main() {
 if (require.main === module) {
     try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = {classifyAudit};
+module.exports = {classifyAudit, readAuditReport};
