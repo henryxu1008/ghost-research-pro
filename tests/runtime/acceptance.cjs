@@ -8,6 +8,7 @@ const {randomBytes} = require('node:crypto');
 const {createRequire} = require('node:module');
 const {request, chromium} = require('playwright');
 const {simpleParser} = require('mailparser');
+const {checkPortal} = require('./portal.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -16,7 +17,7 @@ assert(!runtime.startsWith(root), 'Ghost test data must live outside the theme r
 const base = 'http://127.0.0.1:2368';
 const out = path.join(root, 'artifacts/runtime');
 fs.mkdirSync(out, {recursive: true});
-const results = {ghost: '6.73.0', node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. No real email or checkout.'};
+const results = {ghost: '6.73.0', portal: '2.72.11', node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. No real email or checkout.'};
 const record = name => { results.checks.push({name, status: 'passed'}); console.log(`PASS ${name}`); };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 let ghost;
@@ -61,18 +62,23 @@ async function api(ctx, method, route, data, options = {}) {
     if (response.status() === 204) return {};
     return response.headers()['content-type']?.includes('application/json') ? response.json() : {};
 }
-async function signIn(email) {
-    const ctx = await context();
-    const integrity = await (await ctx.get('/members/api/integrity-token/')).text();
-    const response = await ctx.post('/members/api/send-magic-link/', {data: {email, emailType: 'signin', integrityToken: integrity}});
-    assert.equal(response.status(), 201, 'Member magic-link request failed');
-    for (let i = 0; i < 30 && !emails.some(m => m.recipient.includes(email)); i++) await delay(100);
-    const mail = emails.findLast(m => m.recipient.includes(email));
+async function memberLink(email, since = 0) {
+    for (let i = 0; i < 50 && !emails.slice(since).some(m => m.recipient.includes(email)); i++) await delay(100);
+    const mail = emails.slice(since).findLast(m => m.recipient.includes(email));
     assert(mail, 'Local SMTP sink did not receive sign-in email');
     const parsed = await simpleParser(mail.message);
     const decoded = `${parsed.text || ''}\n${parsed.html || ''}`.replace(/&amp;/g, '&');
     const link = decoded.match(/http:\/\/127\.0\.0\.1:2368\/(?:members\/)?\?token=[^\s<>"']+/)?.[0];
     assert(link, 'No local magic link found');
+    return link;
+}
+async function signIn(email) {
+    const ctx = await context();
+    const since = emails.length;
+    const integrity = await (await ctx.get('/members/api/integrity-token/')).text();
+    const response = await ctx.post('/members/api/send-magic-link/', {data: {email, emailType: 'signin', integrityToken: integrity}});
+    assert.equal(response.status(), 201, 'Member magic-link request failed');
+    const link = await memberLink(email, since);
     await ctx.get(link);
     const home = await (await ctx.get('/')).text();
     assert(home.includes('#/portal/account'), 'Signed-in member did not get Account navigation');
@@ -90,6 +96,7 @@ async function main() {
         mail: {transport: 'SMTP', from: 'qa@example.test', options: {host: '127.0.0.1', port: 2525, secure: false, ignoreTLS: true, auth: null}},
         security: {staffDeviceVerification: false}, logging: {transports: ['stdout']},
         privacy: {useUpdateCheck: false, useGravatar: false},
+        portal: {url: `${base}/__qa__/portal.min.js`, version: results.portal},
     }, null, 2));
     // Runtime logs can contain authentication URLs; keep them temporary, outside uploaded artifacts.
     const logPath = path.join(runtime, 'runtime.log');
@@ -202,6 +209,13 @@ async function main() {
     record('Admin session revocation removes access');
 
     browser = await chromium.launch({headless: true});
+    // Explicit free-only publication settings in the disposable instance for Portal checks.
+    await api(admin, 'put', 'settings/', {settings: [
+        {key: 'paid_members_enabled', value: false},
+        {key: 'members_signup_access', value: 'all'},
+        {key: 'portal_name', value: true},
+    ]});
+    await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length});
     for (const width of [360, 768, 1440]) {
         const page = await browser.newPage({viewport: {width, height: 1000}});
         // Visual checks are self-contained; no analytics, payment provider or external embeds.

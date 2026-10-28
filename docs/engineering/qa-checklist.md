@@ -27,11 +27,12 @@ Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary di
 - [x] Revoke member sessions via Admin API and verify access is removed.
 - [x] Verify 360px, 768px and 1440px layouts have no horizontal page overflow; test keyboard skip link.
 - [x] Scan source and ZIP against Ghost 5/6 specifications; actual runtime tested: Ghost 6.73.0, Node 24.22.1.
+- [ ] Verify new pinned Portal free signup/account/signout/signin assertions on the latest CI head; see [runtime acceptance](runtime-acceptance.md).
 
 ## Remaining release gates
 - [ ] Manually exercise Ghost Admin UI theme installation; automated installation currently uses the same backend API.
-- [ ] Verify third-party Portal UI signup/account flows and the paid-plan card with Stripe in **test mode**. No live Stripe connection or charge was used.
-- [ ] Test payment subscription lifecycle/webhooks in test mode; complimentary entitlements do not prove billing works.
+- [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.
+- [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
 - [ ] Full accessibility audit, screen reader testing and broader editorial-card/image/embed/long-article coverage.
 - [ ] Test other advertised runtime versions, especially Ghost 5; static GScan compatibility is not runtime proof.
 - [ ] Resolve project licensing and complete design/commercial review.

@@ -38,6 +38,6 @@ GScan's Handlebars compiler is overridden to the security fix 4.7.10. The audit 
 
 ## Runtime acceptance
 
-Theme CI also boots an unmodified Ghost 6.73.0 instance on loopback, uploads/activates the ZIP, and checks page rendering, member permissions and three Chromium viewport sizes. It uses disposable complimentary membership fixtures and an in-memory local SMTP sink; no Stripe account or real email delivery is involved. Results and screenshots are uploaded as `ghost-runtime-acceptance` (14-day retention).
+Theme CI also boots an unmodified Ghost 6.73.0 instance on loopback, uploads/activates the ZIP, and checks page rendering, member permissions and three Chromium viewport sizes. It uses disposable complimentary membership fixtures and an in-memory local SMTP sink. Free signup, account management, signout and signin run through the official Portal 2.72.11 browser bundle, served locally by the test harness; all external browser requests are blocked. No Stripe account or real email delivery is involved. Results and screenshots are uploaded as `ghost-runtime-acceptance` (14-day retention).
 
 See [runtime acceptance and host-error diagnosis](docs/engineering/runtime-acceptance.md). To run the suite outside CI, prepare a fresh unpacked Ghost 6.73.0 installation with its dependencies, install Chromium with `npx playwright install chromium`, build the ZIP, and set `GHOST_RUNTIME_DIR` to that installation's absolute path before `npm run test:runtime`. It deliberately refuses an existing database. Never point it at a live site.

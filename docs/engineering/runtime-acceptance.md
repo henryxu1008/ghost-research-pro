@@ -28,12 +28,17 @@ The test runner:
 6. Requests real member sign-in links, captures them in a loopback-only SMTP sink and redeems them through Ghost to obtain real session cookies.
 7. Checks response HTML for authorized content and absence of secret markers for unauthorized visitors, including anonymous requests after a privileged session, wrong-tier access and revoked sessions.
 8. Runs Chromium layout and keyboard checks at 360, 768 and 1440 px, producing screenshots.
+9. Exercises the membership page and header links with the official Portal 2.72.11 bundle: invalid email, free signup/confirmation, account UI, signout and desktop signin. Free members get members-only content but no paid/tier body markers. Signed-in readers see account management instead of another signup card.
 
-There is no Stripe connection, checkout or real charge. All emails use `example.test` addresses and are held in memory by a local SMTP sink; none are delivered externally. Complimentary entitlement fixtures test Ghost's real access-control middleware, **not payment subscription creation, renewal, cancellation or webhooks**. Browser screenshot requests to external origins are blocked, so third-party Portal rendering and external embeds are outside that visual check.
+There is no Stripe connection, checkout or real charge. All emails use `example.test` addresses and are held in memory by a local SMTP sink; none are delivered externally. Complimentary entitlement fixtures test Ghost's real access-control middleware, **not payment subscription creation, renewal, cancellation or webhooks**.
+
+Portal is pinned as a development fixture and excluded from the theme ZIP. The disposable Ghost config points its normal Portal URL at a loopback test URL; Playwright serves the unmodified official bundle at that URL. Portal calls the actual Ghost APIs. All other external browser requests, including Stripe SDKs, fonts and telemetry, are blocked. This verifies pinned Portal integration and free flows, not CDN availability, paid checkout or external embeds. Portal screenshots are captured before authentication URLs are opened or after those URLs have been cleared.
 
 ## Evidence and limits
 
 `ghost-runtime-acceptance` workflow artifacts contain `results.json` and screenshots. Raw server logs, passwords, member tokens, cookies and databases are not uploaded. The app process is stopped in `finally`, and the CI runner is discarded afterward.
+
+The theme ZIP source/packaging path is unchanged by serving the test Portal bundle. The general layout smoke pass still blocks external scripts and does not load the test bundle; the separate Portal pass captures signup/account at 360px and signin at 1440px. It does not constitute a full Portal accessibility audit.
 
 A passing runtime job validates the pinned Ghost 6.73.0 environment only. GScan's Ghost 5 compatibility result remains a static check; no Ghost 5 runtime claim is made. PR #10 remains Draft. Production deployment, merge and real payments are outside this acceptance run.
 

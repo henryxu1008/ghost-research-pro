@@ -6,8 +6,12 @@
 <div class="gh-content">{{content}}</div>
 {{/post}}
 <section class="membership-grid" aria-label="Membership options">
+  {{#if @member}}
+  <article class="membership-plan"><h2>Your membership</h2><p>Manage your account and email preferences.</p><a class="button" href="#/portal/account">Manage membership</a></article>
+  {{else}}
   <article class="membership-plan"><h2>Free updates</h2><p>Receive publicly available research and announcements.</p><a class="button" href="#/portal/signup">Join for free</a></article>
   {{#if @site.paid_members_enabled}}
   <article class="membership-plan"><h2>Premium research</h2><p>Access paid reports and subscriber-only research, subject to the publication's subscription settings.</p><a class="button" href="#/portal/signup">View plans</a></article>
+  {{/if}}
   {{/if}}
 </section>
