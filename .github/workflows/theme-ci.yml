@@ -75,6 +75,7 @@ jobs:
         env:
           GHOST_RUNTIME_DIR: ${{ runner.temp }}/ghost-runtime/package
           GHOST_RUNTIME_VERSION: ${{ matrix.ghost }}
+          PORTAL_INTERRUPTION_REPEATS: ${{ matrix.label == 'ghost6' && '20' || '1' }}
         run: npm run test:runtime
       - name: Upload sanitized acceptance evidence
         if: always()

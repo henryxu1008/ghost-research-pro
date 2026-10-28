@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const {probe, audit} = require('./accessibility.cjs');
+const {checkInterruption} = require('./portal-interruption.cjs');
 
 module.exports.checkPortalKeyboard = async function checkPortalKeyboard({page, ctx, base, out, record, mailCount}) {
     await ctx.request.delete(`${base}/members/api/session/`);
@@ -41,22 +42,8 @@ module.exports.checkPortalKeyboard = async function checkPortalKeyboard({page, c
             }
         });
         await probe(record, `Portal form switching and reopening preserve a single usable dialog at ${width}px`, async () => {
-            const before = mailCount();
-            await open();
-            await popup().getByRole('button', {name: 'Sign up', exact: true}).click();
-            await popup().getByLabel('Email', {exact: true}).fill('unsent-draft@example.test');
-            await popup().getByRole('button', {name: 'Sign in', exact: true}).click();
-            await popup().getByRole('button', {name: 'Continue', exact: true}).waitFor({state: 'visible'});
-            await popup().getByRole('button', {name: 'Close popup', exact: true}).click();
-            await frameElement().waitFor({state: 'detached'});
-            await trigger().dblclick();
-            assert(await frameElement().count() <= 1, 'Repeated trigger opened duplicate dialogs');
-            if (await frameElement().count()) await popup().getByRole('button', {name: 'Close popup', exact: true}).click();
-            await frameElement().waitFor({state: 'detached'});
-            await open();
-            assert.equal(await frameElement().count(), 1);
-            assert.equal(await popup().getByLabel('Email', {exact: true}).inputValue(), '');
-            assert.equal(mailCount(), before, 'Interrupted form flow sent an email');
+            const repeats = width === 1440 ? Number(process.env.PORTAL_INTERRUPTION_REPEATS || 1) : 1;
+            await checkInterruption({page, popup, trigger, frameElement, open, out, width, repeats, mailCount});
         });
     }
 };
