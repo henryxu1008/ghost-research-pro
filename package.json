@@ -12,7 +12,9 @@
     "test:ci": "npm test",
     "zip": "node scripts/package.cjs",
     "test:zip": "node scripts/validate.cjs dist/ghost-research-pro.zip",
-    "test:runtime": "node tests/runtime/acceptance.cjs"
+    "test:runtime": "node tests/runtime/acceptance.cjs",
+    "test:security": "node --test tests/security/audit.test.cjs",
+    "audit:ci": "node scripts/audit.cjs"
   },
   "devDependencies": {
     "@tryghost/portal": "2.72.11",

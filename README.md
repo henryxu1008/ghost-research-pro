@@ -25,6 +25,8 @@ Use Node.js 22.17+ (22.x) or 24.x, npm, and the `zip` command (Linux/macOS or WS
 
 ```sh
 npm ci --ignore-scripts
+npm run test:security
+npm run audit:ci
 npm run test:ci
 npm run zip
 npm run test:zip

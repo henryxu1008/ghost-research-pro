@@ -1,0 +1,5 @@
+{
+  "auditReportVersion":2,
+  "vulnerabilities":{"compiler":{"severity":"critical","nodes":["node_modules/compiler"],"via":[{"severity":"critical","url":"https://example.test/advisories/critical-fixture"}]}},
+  "metadata":{"vulnerabilities":{"info":0,"low":0,"moderate":0,"high":0,"critical":1,"total":1}}
+}

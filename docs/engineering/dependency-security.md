@@ -15,3 +15,11 @@ Do not use `npm audit fix --force`: the suggested GScan downgrade would abandon 
 All npm dependencies are development dependencies and `node_modules` is excluded from the installable theme ZIP. This fixes the project's validation compiler; it does not patch Ghost's independently installed dependencies.
 
 GScan's locked `@tryghost/zip` wrapper rejects symlink entries before calling extract-zip's write path, but extract-zip remains vulnerable and audit does not become clean. Validate archives built from this repository in disposable CI runners. Do not treat this toolchain as a safe service for arbitrary uploaded archives or run it with production credentials. Reassess the override and ZIP dependency when upstream fixes become available. The Draft PR and other release gates remain in place.
+
+## Continuing CI gate
+
+`npm run audit:ci` runs a full `npm audit --json`, including development dependencies. It blocks any critical finding, any high advisory/dependency path outside the six reviewed combinations (three dependency nodes times two ZIP advisories), and unavailable, malformed or inconsistent audit reports. It does not use `--omit=dev` or suppress a severity level.
+
+The gate prints and saves `knownHigh`, `newHigh`, `critical` and `removedKnownHigh` classifications with the complete npm report in `artifacts/dependency-audit.json`. Removed means a previously known path is no longer reported as high; it does not by itself prove an upstream advisory was patched. Review the report before changing the explicit baseline in `scripts/audit.cjs`.
+
+`npm run test:security` uses fixed audit fixtures to check the known chain, critical regression, new high, partial/full removal, new paths for an existing advisory, severity escalation, unavailable audit, invalid schema and unresolved dependency chains. CI runs those tests before the live audit gate and uploads the audit evidence separately. The current baseline remains 0 critical and 3 high dependency nodes, not a clean audit.

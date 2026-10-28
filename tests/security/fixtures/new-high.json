@@ -1,0 +1,5 @@
+{
+  "auditReportVersion":2,
+  "vulnerabilities":{"new-tool":{"severity":"high","nodes":["node_modules/new-tool"],"via":[{"severity":"high","url":"https://example.test/advisories/new-high-fixture"}]}},
+  "metadata":{"vulnerabilities":{"info":0,"low":0,"moderate":0,"high":1,"critical":0,"total":1}}
+}

@@ -16,6 +16,10 @@ jobs:
           node-version: '22'
       - name: Install locked dependencies
         run: npm ci --ignore-scripts
+      - name: Test security gate fixtures
+        run: npm run test:security
+      - name: Audit all locked dependencies
+        run: npm run audit:ci
       - name: Validate Ghost theme
         run: npm run test:ci
       - name: Package theme
@@ -27,6 +31,14 @@ jobs:
           name: ghost-research-pro-theme
           path: dist/ghost-research-pro.zip
           if-no-files-found: error
+      - name: Upload dependency audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit
+          path: artifacts/dependency-audit.json
+          if-no-files-found: warn
+          retention-days: 14
   runtime:
     runs-on: ubuntu-latest
     timeout-minutes: 15
