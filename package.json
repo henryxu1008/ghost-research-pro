@@ -16,9 +16,11 @@
   },
   "devDependencies": {
     "@tryghost/portal": "2.72.11",
+    "axe-core": "4.14.0",
     "gscan": "6.6.1",
     "mailparser": "3.12.4",
-    "playwright": "1.64.1"
+    "playwright": "1.64.1",
+    "portal-ghost5": "npm:@tryghost/portal@2.51.5"
   },
   "overrides": {
     "gscan": {

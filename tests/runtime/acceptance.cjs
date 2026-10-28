@@ -12,12 +12,19 @@ const {checkPortal} = require('./portal.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
+const expectedVersion = process.env.GHOST_RUNTIME_VERSION || '6.73.0';
+const profiles = {
+    '5.130.6': {database: 'sqlite3', portal: '2.51.5', portalPackage: 'portal-ghost5'},
+    '6.73.0': {database: 'better-sqlite3', portal: '2.72.11', portalPackage: '@tryghost/portal'},
+};
+const profile = profiles[expectedVersion];
+assert(profile, 'Unsupported disposable Ghost version');
 assert(runtime && path.isAbsolute(runtime), 'Set GHOST_RUNTIME_DIR to the disposable unpacked Ghost directory');
 assert(!runtime.startsWith(root), 'Ghost test data must live outside the theme repository');
 const base = 'http://127.0.0.1:2368';
 const out = path.join(root, 'artifacts/runtime');
 fs.mkdirSync(out, {recursive: true});
-const results = {ghost: '6.73.0', portal: '2.72.11', node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. No real email or checkout.'};
+const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account checks open the panel; profile/preference saving is not tested. No real email or checkout.'};
 const record = name => { results.checks.push({name, status: 'passed'}); console.log(`PASS ${name}`); };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 let ghost;
@@ -87,11 +94,14 @@ async function signIn(email) {
 
 async function main() {
     assert.equal(require(path.join(runtime, 'package.json')).version, results.ghost);
+    const runtimeRequire = createRequire(path.join(runtime, 'package.json'));
+    const engines = require(path.join(runtime, 'package.json')).engines.node;
+    assert(runtimeRequire('semver').satisfies(process.version, engines), `Node ${process.version} must satisfy Ghost's official engines ${engines}`);
     assert(!fs.existsSync(path.join(runtime, 'content/data/ghost-dev.db')), 'Refuse to reuse a database');
     await new Promise(resolve => smtp.listen(2525, '127.0.0.1', resolve));
     fs.writeFileSync(path.join(runtime, 'config.development.json'), JSON.stringify({
         url: base, server: {host: '127.0.0.1', port: 2368},
-        database: {client: 'better-sqlite3', connection: {filename: path.join(runtime, 'content/data/ghost-dev.db')}},
+        database: {client: profile.database, connection: {filename: path.join(runtime, 'content/data/ghost-dev.db')}},
         paths: {contentPath: path.join(runtime, 'content')},
         mail: {transport: 'SMTP', from: 'qa@example.test', options: {host: '127.0.0.1', port: 2525, secure: false, ignoreTLS: true, auth: null}},
         security: {staffDeviceVerification: false}, logging: {transports: ['stdout']},
@@ -168,16 +178,16 @@ async function main() {
     }
     // Test fixture only: complimentary entitlements need no Stripe connection. Ghost still
     // creates/verifies real login cookies and enforces access via its normal middleware.
-    const runtimeRequire = createRequire(path.join(runtime, 'package.json'));
-    const DB = runtimeRequire('better-sqlite3');
-    const db = new DB(path.join(runtime, 'content/data/ghost-dev.db'));
-    db.transaction(() => {
+    const db = runtimeRequire('knex')({client: profile.database,
+        connection: {filename: path.join(runtime, 'content/data/ghost-dev.db')}, useNullAsDefault: true});
+    await db.transaction(async trx => {
         for (let i = 1; i <= 2; i++) {
-            db.prepare("UPDATE members SET status = 'comped' WHERE id = ?").run(memberData[i].id);
-            db.prepare('INSERT INTO members_products (id, member_id, product_id, sort_order, expiry_at) VALUES (?, ?, ?, 0, NULL)').run(randomBytes(12).toString('hex'), memberData[i].id, tiers[i - 1].id);
+            await trx('members').where({id: memberData[i].id}).update({status: 'comped'});
+            await trx('members_products').insert({id: randomBytes(12).toString('hex'), member_id: memberData[i].id,
+                product_id: tiers[i - 1].id, sort_order: 0, expiry_at: null});
         }
-    })();
-    db.close();
+    });
+    await db.destroy();
     const free = await signIn(memberData[0].email);
     const tierA = await signIn(memberData[1].email);
     const tierB = await signIn(memberData[2].email);
@@ -215,7 +225,7 @@ async function main() {
         {key: 'members_signup_access', value: 'all'},
         {key: 'portal_name', value: true},
     ]});
-    await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length});
+    await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length, portalPackage: profile.portalPackage});
     for (const width of [360, 768, 1440]) {
         const page = await browser.newPage({viewport: {width, height: 1000}});
         // Visual checks are self-contained; no analytics, payment provider or external embeds.

@@ -3,8 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-module.exports.checkPortal = async function checkPortal({browser, base, out, record, memberLink, mailCount}) {
-    const bundle = path.join(path.dirname(require.resolve('@tryghost/portal/package.json')), 'umd/portal.min.js');
+module.exports.checkPortal = async function checkPortal({browser, base, out, record, memberLink, mailCount, portalPackage}) {
+    const bundle = path.join(path.dirname(require.resolve(`${portalPackage}/package.json`)), 'umd/portal.min.js');
     const ctx = await browser.newContext({viewport: {width: 360, height: 1000}});
     const forbidden = [];
     const layouts = [];
