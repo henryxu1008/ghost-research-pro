@@ -10,7 +10,7 @@ node -e 'require("node:os").networkInterfaces()'
 
 Node 24.22.1 reports `ERR_SYSTEM_ERROR`, syscall `uv_interface_addresses`, errno 1. The Ghost 6.73.0 stack is:
 
-`2-create-fixtures.js` �� user model �� `@tryghost/request` �� `new CacheableLookup()` �� `getIfaceInfo()` �� `os.networkInterfaces()`.
+`2-create-fixtures.js` → user model → `@tryghost/request` → `new CacheableLookup()` → `getIfaceInfo()` → `os.networkInterfaces()`.
 
 This locates the failure in host network-interface enumeration reached during module initialization, not a theme SQL migration. The exact rejected kernel call cannot be established here: `strace` itself is unavailable because `ptrace` is denied. No platform permission changes or monkey patches to Node/Ghost/DNS were made.
 

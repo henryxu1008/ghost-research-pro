@@ -68,7 +68,7 @@
             if (!doc?.head || !doc.body || active?.frame !== frame) return;
             setBackgroundInert();
             if (!doc.documentElement.lang) doc.documentElement.lang = document.documentElement.lang || 'en';
-            if (!doc.title) doc.title = `${document.title} �� Membership`;
+            if (!doc.title) doc.title = `${document.title} — Membership`;
             // Portal 2.51 renders a clickable SVG inside a div. Preserve its native
             // click handler while making the same close action keyboard accessible.
             const close = doc.querySelector('[data-test-button="close-popup"]');
