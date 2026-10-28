@@ -8,20 +8,31 @@
     "ghost": ">=5.0.0"
   },
   "scripts": {
-    "test": "gscan .",
-    "test:ci": "gscan --fatal .",
-    "zip": "mkdir -p dist && zip -r dist/ghost-research-pro.zip *.hbs package.json assets -x '*.map' "
+    "test": "node scripts/validate.cjs .",
+    "test:ci": "npm test",
+    "zip": "node scripts/package.cjs",
+    "test:zip": "node scripts/validate.cjs dist/ghost-research-pro.zip"
   },
   "devDependencies": {
-    "gscan": "^6.6.1"
+    "gscan": "6.6.1"
   },
   "config": {
-    "posts_per_page": 12
+    "posts_per_page": 12,
+    "card_assets": true
   },
   "gpm": {
     "type": "theme",
     "categories": [
       "Magazine"
     ]
-  }
+  },
+  "author": {
+    "name": "qq550723504",
+    "email": "6007227+qq550723504@users.noreply.github.com"
+  },
+  "keywords": [
+    "ghost-theme",
+    "research",
+    "publication"
+  ]
 }
