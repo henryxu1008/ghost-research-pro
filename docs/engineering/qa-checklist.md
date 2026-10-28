@@ -39,7 +39,7 @@ The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296b
 - [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
 - [ ] Full accessibility audit, screen readers, profile/preference persistence, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
 - [ ] Test runtime versions and browsers beyond the two exact pinned CI profiles; a broad engine range and static GScan result do not prove every minor version.
-- [ ] Resolve project licensing and complete design/commercial review.
+- [ ] Resolve project licensing using the [release inventory](release-licensing-inventory.md), including the existing MIT metadata / missing LICENSE mismatch, and complete design/commercial review.
 
 ## Release gate
 PR #10 stays Draft. A passing disposable-instance acceptance run does not authorize merging, deploying or real payments, and is not a claim of production readiness.
