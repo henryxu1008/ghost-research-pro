@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const {probe, audit} = require('./accessibility.cjs');
+const {waitForScrollIdle, reviewContrast} = require('./contrast.cjs');
 
 async function seedEditorCards({runtime, base, api, admin}) {
     fs.mkdirSync(path.join(runtime, 'content/images'), {recursive: true});
@@ -87,10 +88,14 @@ async function checkEditorCards({browser, base, out, record}) {
                 assert.equal(await region.getAttribute('tabindex'), '0', `${selector} is not keyboard focusable`);
                 await page.keyboard.press('ArrowRight');
                 await page.waitForFunction(selector => document.querySelector(selector).scrollLeft > 0, selector, {timeout: 3000});
+                await waitForScrollIdle(region);
                 await region.evaluate(el => { el.scrollLeft = 0; });
             }
         });
-        if (width !== 768) await audit(page, {out, label: `editor-cards-${width}`, record});
+        if (width !== 768) {
+            await reviewContrast(page, {width, out, record});
+            await audit(page, {out, label: `editor-cards-${width}`, record});
+        }
         await page.screenshot({path: path.join(out, `editor-cards-${width}.png`), fullPage: true});
         await page.close();
     }

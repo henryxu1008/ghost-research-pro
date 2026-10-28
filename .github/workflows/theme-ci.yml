@@ -18,6 +18,8 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Test security gate fixtures
         run: npm run test:security
+      - name: Verify WCAG contrast calculation references
+        run: npm run test:contrast
       - name: Audit all locked dependencies
         run: npm run audit:ci
       - name: Validate Ghost theme
