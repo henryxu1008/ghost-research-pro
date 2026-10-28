@@ -23,7 +23,23 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
     page.setDefaultTimeout(15000);
     const popup = () => page.frameLocator('iframe[title="portal-popup"]');
     const email = 'portal-free@example.test';
-    const screenshot = name => page.screenshot({path: path.join(out, name), fullPage: true});
+    const screenshot = async name => {
+        const panel = popup().locator('.gh-portal-popup-container');
+        await panel.evaluate(async el => {
+            await el.ownerDocument.fonts.ready;
+            // Visibility alone allows a capture during Portal's opacity/slide animations.
+            await Promise.all(el.ownerDocument.getAnimations()
+                .filter(animation => animation.effect?.getTiming().iterations !== Infinity)
+                .map(animation => animation.finished.catch(() => {})));
+        });
+        const state = await panel.evaluate(el => ({
+            opacity: getComputedStyle(el).opacity,
+            overflow: el.ownerDocument.documentElement.scrollWidth > el.ownerDocument.defaultView.innerWidth + 1,
+        }));
+        assert.equal(state.opacity, '1', 'Portal screenshot captured before the panel was opaque');
+        assert(!state.overflow, `Portal horizontal overflow: ${name}`);
+        await page.screenshot({path: path.join(out, name), fullPage: true, animations: 'disabled'});
+    };
     const hasBody = async (slug, marker, expected) => {
         const response = await ctx.request.get(`${base}/${slug}/`);
         assert.equal(response.status(), 200);

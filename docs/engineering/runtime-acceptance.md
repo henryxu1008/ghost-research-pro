@@ -40,6 +40,8 @@ Portal is pinned as a development fixture and excluded from the theme ZIP. The d
 
 The theme ZIP source/packaging path is unchanged by serving the test Portal bundle. The general layout smoke pass still blocks external scripts and does not load the test bundle; the separate Portal pass captures signup/account at 360px and signin at 1440px. It does not constitute a full Portal accessibility audit.
 
+Portal captures wait for font readiness and finite iframe animations, assert the panel is opaque and the iframe has no horizontal overflow, then disable animations for the capture. This avoids saving the opening fade as a blank or pale screenshot. The first passing Portal functional run was [40725520848](https://github.com/qq550723504/ghost-research-pro/actions/runs/40725520848), commit `324d69aaeba5d3db98b4d96e0bd2ff642d65c0cf`: 43 runtime checks passed. Use the latest head's artifact for current visual evidence.
+
 A passing runtime job validates the pinned Ghost 6.73.0 environment only. GScan's Ghost 5 compatibility result remains a static check; no Ghost 5 runtime claim is made. PR #10 remains Draft. Production deployment, merge and real payments are outside this acceptance run.
 
 ## First passing execution

@@ -27,7 +27,7 @@ Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary di
 - [x] Revoke member sessions via Admin API and verify access is removed.
 - [x] Verify 360px, 768px and 1440px layouts have no horizontal page overflow; test keyboard skip link.
 - [x] Scan source and ZIP against Ghost 5/6 specifications; actual runtime tested: Ghost 6.73.0, Node 24.22.1.
-- [ ] Verify new pinned Portal free signup/account/signout/signin assertions on the latest CI head; see [runtime acceptance](runtime-acceptance.md).
+- [x] Verify pinned Portal free signup/account/signout/signin: [workflow 40725520848](https://github.com/qq550723504/ghost-research-pro/actions/runs/40725520848), commit `324d69aaeba5d3db98b4d96e0bd2ff642d65c0cf`, **43 runtime checks passed**. Current visual evidence must come from the latest head; screenshot captures wait for Portal animations to finish.
 
 ## Remaining release gates
 - [ ] Manually exercise Ghost Admin UI theme installation; automated installation currently uses the same backend API.
