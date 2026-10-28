@@ -10,7 +10,7 @@ node -e 'require("node:os").networkInterfaces()'
 
 Node 24.22.1 reports `ERR_SYSTEM_ERROR`, syscall `uv_interface_addresses`, errno 1. The Ghost 6.73.0 stack is:
 
-`2-create-fixtures.js` → user model → `@tryghost/request` → `new CacheableLookup()` → `getIfaceInfo()` → `os.networkInterfaces()`.
+`2-create-fixtures.js` �� user model �� `@tryghost/request` �� `new CacheableLookup()` �� `getIfaceInfo()` �� `os.networkInterfaces()`.
 
 This locates the failure in host network-interface enumeration reached during module initialization, not a theme SQL migration. The exact rejected kernel call cannot be established here: `strace` itself is unavailable because `ptrace` is denied. No platform permission changes or monkey patches to Node/Ghost/DNS were made.
 
@@ -51,6 +51,10 @@ Portal is pinned as a development fixture and excluded from the theme ZIP. The d
 `ghost-runtime-ghost5` and `ghost-runtime-ghost6` workflow artifacts contain `results.json`, `portal-layout.json`, `accessibility.json` and screenshots. Earlier runs used `ghost-runtime-acceptance`. Raw server logs, passwords, member tokens, cookies and databases are not uploaded. The app process is stopped in `finally`, and the CI runner is discarded afterward.
 
 `contrast-review.json` supplements axe's incomplete contrast entries on scrollable content. It records actual computed text/ancestor background colors, opacity/filter constraints, font metrics, DOM tag/selector information and unrounded contrast ratios. The calculation follows [WCAG relative luminance](https://www.w3.org/TR/WCAG22/#dfn-relative-luminance); these fixture texts are checked conservatively against [4.5:1](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html). CI captures the table/code region at start, middle and end scroll positions for visual review. The raw axe `incomplete` entries remain in the report; they are not silently converted to passes. `npm run test:contrast` checks the calculation against black/white and near-threshold reference values.
+
+The [recorded contrast review](contrast-review.md) resolves the current two incomplete entries per profile for the default palette using measurements and visual inspection. It does not change axe's raw classification.
+
+`adapter-boundary.json` records controlled iframe failure/cleanup fixtures without external accounts or requests: an initially opaque sandbox document, iframe removal, an accessible document becoming opaque and a document getter throwing `SecurityError`. The first boundary run reproduced background `inert` leaks in the three inaccessible-document cases; removal already worked. The adapter now waits for an accessible document before locking the background, and restores its own recorded inert states and trigger focus if access fails. A preexisting inert element must stay inert. Failed frames retain their native behavior without further enhancement. These tests verify cleanup boundaries, not full cross-origin Portal support; actual Portal flows still use the pinned same-origin fixture.
 
 The theme ZIP source/packaging path is unchanged by serving the test Portal bundle. The general layout smoke pass blocks external scripts; the separate Portal pass captures signup/account at 360px and signin at 1440px. The theme's accessibility adapter supplements native Portal semantics/focus behavior and applies the theme's accent to its actions, without changing member or billing API behavior. Portal 2.51's clickable SVG close control receives button semantics and forwards activation to its original handler. Changing the theme palette requires rechecking contrast.
 

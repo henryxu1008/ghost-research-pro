@@ -4,6 +4,7 @@
     let trigger;
     let active;
     const background = new Map();
+    const inaccessibleFrames = new WeakSet();
     const focusable = doc => [...doc.querySelectorAll('a[href],button,input,select,textarea,[tabindex]')]
         .filter(el => el.tabIndex >= 0 && !el.disabled && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden');
 
@@ -20,21 +21,20 @@
         }
     }
 
-    function closeFrame() {
+    function closeFrame(restoreWithFrame = false) {
         if (!active) return;
         active.cleanup();
         active = null;
         for (const [element, inert] of background) element.inert = inert;
         background.clear();
         const target = trigger?.isConnected ? trigger : document.querySelector('.member-actions a');
-        queueMicrotask(() => { if (!document.querySelector(frameSelector)) target?.focus({preventScroll: true}); });
+        queueMicrotask(() => { if (restoreWithFrame || !document.querySelector(frameSelector)) target?.focus({preventScroll: true}); });
     }
 
     function setupFrame(frame) {
-        if (active?.frame === frame) return;
+        if (active?.frame === frame || inaccessibleFrames.has(frame)) return;
         closeFrame();
         if (!trigger?.isConnected && document.activeElement !== document.body) trigger = document.activeElement;
-        setBackgroundInert();
         let observer;
         let doc;
         const legacyCloseButtons = new WeakSet();
@@ -65,9 +65,10 @@
             }
         };
         const decorate = () => {
-            if (!doc?.head || !doc.body) return;
+            if (!doc?.head || !doc.body || active?.frame !== frame) return;
+            setBackgroundInert();
             if (!doc.documentElement.lang) doc.documentElement.lang = document.documentElement.lang || 'en';
-            if (!doc.title) doc.title = `${document.title} — Membership`;
+            if (!doc.title) doc.title = `${document.title} �� Membership`;
             // Portal 2.51 renders a clickable SVG inside a div. Preserve its native
             // click handler while making the same close action keyboard accessible.
             const close = doc.querySelector('[data-test-button="close-popup"]');
@@ -99,10 +100,18 @@
                 } else panel.setAttribute('aria-label', 'Membership');
             }
         };
-        const load = () => {
+        const load = event => {
             try {
                 const next = frame.contentDocument;
-                if (!next || next === doc) return;
+                if (!next) {
+                    // Before the first load, a document may simply not exist yet.
+                    if (event?.type === 'load') {
+                        inaccessibleFrames.add(frame);
+                        closeFrame(true);
+                    }
+                    return;
+                }
+                if (next === doc) return;
                 if (doc) doc.removeEventListener('keydown', keydown, true);
                 observer?.disconnect();
                 doc = next;
@@ -110,7 +119,12 @@
                 observer = new MutationObserver(decorate);
                 observer.observe(doc, {childList: true, subtree: true, attributes: true, attributeFilter: ['content']});
                 decorate();
-            } catch { /* A future cross-origin Portal must retain its own native behavior. */ }
+            } catch {
+                // Stop enhancing this document, restore only this adapter's background
+                // state and focus, and leave the iframe's own native behavior intact.
+                inaccessibleFrames.add(frame);
+                closeFrame(true);
+            }
         };
         frame.addEventListener('load', load);
         active = {frame, cleanup() {
