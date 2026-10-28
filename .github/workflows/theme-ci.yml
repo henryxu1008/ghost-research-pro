@@ -1,0 +1,26 @@
+name: Theme CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install GScan
+        run: npm install --no-save --ignore-scripts gscan@6.6.1
+      - name: Validate Ghost theme
+        run: npx gscan --fatal .
+      - name: Package theme
+        run: zip -r ghost-research-pro.zip *.hbs package.json assets partials
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ghost-research-pro-theme
+          path: ghost-research-pro.zip
