@@ -1,7 +1,9 @@
 # Ghost Research Pro — installation and acceptance checklist
 
 ## CI evidence
-The first theme validation and ZIP packaging workflow passed in GitHub Actions run 40656495494. This is **not** evidence of installation or runtime behavior.
+The first complete runtime acceptance passed in [workflow 40661983220](https://github.com/qq550723504/ghost-research-pro/actions/runs/40661983220), commit `ac89607494ccf5f8f83d8eb40683338fabe818a0`: **34 checks passed**, including stock Ghost 6.73.0 initialization, real ZIP activation, page routes, member authorization and Chromium smoke checks. The `ghost-runtime-acceptance` artifact includes JSON results and 12 screenshots. See [runtime acceptance](runtime-acceptance.md) for setup, diagnosis and limits.
+
+Screenshot review subsequently found redundant subscription CTA markup on restricted posts and missing public summaries on restricted report cards. These are fixed with regression assertions in the same runtime suite. Use the checks and artifacts on the latest PR head for final code validation.
 
 ## Validation hardening — 2026-10-28
 
@@ -14,18 +16,25 @@ The first theme validation and ZIP packaging workflow passed in GitHub Actions r
 
 ## Local runtime attempt — blocked before theme activation
 
-Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary directory with Node 24.22.1. Bootstrap failed during database fixture migration (`2-create-fixtures.js`): `uv_interface_addresses`, `ERR_SYSTEM_ERROR`, errno 1. The process exited before theme upload/activation. This is an environment-level blocker, not evidence of a theme runtime failure or a successful installation. Repeat installation and route/member checks on a normal Ghost development host.
+Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary directory with Node 24.22.1. Bootstrap failed during database fixture migration (`2-create-fixtures.js`): `uv_interface_addresses`, `ERR_SYSTEM_ERROR`, errno 1. The process exited before theme upload/activation. This is an environment-level blocker, not evidence of a theme runtime failure or a successful installation. The same stock Ghost version subsequently initialized successfully on the ephemeral CI runner. The original host restriction remains; no Node or Ghost monkey patch was applied.
 
-## Manual Ghost verification (not yet performed)
-- [ ] Download the `ghost-research-pro-theme` artifact from a successful Theme CI run.
-- [ ] Extract artifact and upload `ghost-research-pro.zip` in Ghost Admin → Settings → Design & branding → Change theme (location may vary by Ghost version).
-- [ ] Activate theme and confirm home, post, tag, author, page and 404 routes render.
-- [ ] Configure a Ghost page with custom template `Membership` and verify both membership cards.
-- [ ] Confirm native Ghost Portal signup/signin links work with memberships enabled.
-- [ ] Test anonymous, free member, paid member and restricted-content states; Ghost itself must enforce access rules.
-- [ ] Test mobile widths 360px, 768px and desktop 1440px; keyboard focus and screen reader landmarks.
-- [ ] Verify report tables, embeds, images, heading hierarchy and long article readability.
-- [ ] Re-run GScan against the final ZIP and record the Ghost version tested.
+## Automated real-instance acceptance
+- [x] Upload the built theme ZIP through Ghost Admin API and verify activation by reading back the active theme.
+- [x] Verify home, post, tag, author, page, custom membership page and 404 routes, plus stylesheet delivery.
+- [x] Log in free and complimentary tier members through real Ghost magic links captured by local SMTP.
+- [x] Verify public, members-only, paid and tier-specific post bodies for anonymous, free, tier A and tier B visitors.
+- [x] Verify unauthorized HTML contains no protected marker, including wrong-tier and anonymous-after-authorized requests.
+- [x] Revoke member sessions via Admin API and verify access is removed.
+- [x] Verify 360px, 768px and 1440px layouts have no horizontal page overflow; test keyboard skip link.
+- [x] Scan source and ZIP against Ghost 5/6 specifications; actual runtime tested: Ghost 6.73.0, Node 24.22.1.
+
+## Remaining release gates
+- [ ] Manually exercise Ghost Admin UI theme installation; automated installation currently uses the same backend API.
+- [ ] Verify third-party Portal UI signup/account flows and the paid-plan card with Stripe in **test mode**. No live Stripe connection or charge was used.
+- [ ] Test payment subscription lifecycle/webhooks in test mode; complimentary entitlements do not prove billing works.
+- [ ] Full accessibility audit, screen reader testing and broader editorial-card/image/embed/long-article coverage.
+- [ ] Test other advertised runtime versions, especially Ghost 5; static GScan compatibility is not runtime proof.
+- [ ] Resolve project licensing and complete design/commercial review.
 
 ## Release gate
-Do not label this production ready until installation, accessibility and member flows have been manually verified on a supported Ghost instance.
+PR #10 stays Draft. A passing disposable-instance acceptance run does not authorize merging, deploying or real payments, and is not a claim of production readiness.

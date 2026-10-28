@@ -149,6 +149,9 @@ async function main() {
     assert.equal((await anon.get('/qa-does-not-exist/')).status(), 404);
     assert.equal((await anon.get('/assets/css/screen.css')).status(), 200);
     record('404 and CSS asset routes');
+    const homeHtml = await (await anon.get('/')).text();
+    assert.equal((homeHtml.match(/Public summary of a QA research report\./g) || []).length, 4, 'All report cards should show their public custom excerpt');
+    record('Restricted report cards retain public summaries');
 
     const memberData = [];
     for (const label of ['free', 'tier-a', 'tier-b']) {
@@ -185,7 +188,11 @@ async function main() {
             assert.equal(response.status(), 200);
             const html = await response.text();
             assert.equal(html.includes(marker), allowed[i], `${label}: ${slug} body access mismatch`);
-            if (!allowed[i]) assert(html.includes('gh-post-upgrade-cta'), `${label}: missing restricted-content CTA`);
+            if (!allowed[i]) {
+                assert(html.includes('gh-post-upgrade-cta'), `${label}: missing restricted-content CTA`);
+                assert(!html.includes('class="subscribe"'), `${label}: duplicate subscription CTA`);
+                assert(!html.includes('class="member-note"'), `${label}: misleading membership thank-you on locked content`);
+            }
             record(`Access ${label} / ${slug}: ${allowed[i] ? 'body visible' : 'body absent from HTML'}`);
         }
     }
