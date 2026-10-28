@@ -34,6 +34,8 @@ Install `dist/ghost-research-pro.zip` in Ghost Admin. Both local development and
 
 Validation runs all GScan rules for Ghost 5 and 6 and fails on errors **or warnings**. Static compatibility checks do not prove runtime compatibility with every Ghost minor version. See [QA checklist](docs/engineering/qa-checklist.md) for remaining release gates. The author email in package metadata is the repository owner's GitHub noreply address, not a customer support inbox.
 
+GScan's Handlebars compiler is overridden to the security fix 4.7.10. The audit still reports high-severity ZIP extraction dependencies; see [dependency security](docs/engineering/dependency-security.md) for the exact findings and limits.
+
 ## Runtime acceptance
 
 Theme CI also boots an unmodified Ghost 6.73.0 instance on loopback, uploads/activates the ZIP, and checks page rendering, member permissions and three Chromium viewport sizes. It uses disposable complimentary membership fixtures and an in-memory local SMTP sink; no Stripe account or real email delivery is involved. Results and screenshots are uploaded as `ghost-runtime-acceptance` (14-day retention).
