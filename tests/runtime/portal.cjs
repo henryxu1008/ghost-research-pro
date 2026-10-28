@@ -2,6 +2,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const {checkPortalKeyboard} = require('./portal-keyboard.cjs');
 
 module.exports.checkPortal = async function checkPortal({browser, base, out, record, memberLink, mailCount, portalPackage}) {
     const bundle = path.join(path.dirname(require.resolve(`${portalPackage}/package.json`)), 'umd/portal.min.js');
@@ -90,7 +91,8 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
         const beforeInvalid = mailCount();
         await popup().getByLabel('Email', {exact: true}).fill('invalid-address');
         await popup().getByRole('button', {name: 'Sign up', exact: true}).click();
-        await popup().locator('input[name="email"][aria-invalid="true"]').waitFor({state: 'visible'});
+        // Portal 2.51 marks errors with .error; 2.72 also adds aria-invalid.
+        await popup().locator('input[name="email"].error').waitFor({state: 'visible'});
         assert.equal(mailCount(), beforeInvalid, 'Invalid email sent a message');
         record('Portal rejects invalid signup email before sending');
 
@@ -130,6 +132,7 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
         record('Theme header Account link opens real Portal account UI');
         assert.deepEqual(forbidden, [], 'Portal attempted a payment endpoint');
         record('Portal free flows request no checkout or billing endpoints');
+        await checkPortalKeyboard({page, ctx, base, out, record, mailCount});
     } finally {
         fs.writeFileSync(path.join(out, 'portal-layout.json'), JSON.stringify(layouts, null, 2));
         await ctx.close();

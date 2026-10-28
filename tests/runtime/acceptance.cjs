@@ -9,6 +9,8 @@ const {createRequire} = require('node:module');
 const {request, chromium} = require('playwright');
 const {simpleParser} = require('mailparser');
 const {checkPortal} = require('./portal.cjs');
+const {seedEditorCards, checkEditorAccess, checkEditorCards} = require('./editor-cards.cjs');
+const {audit, checkCoreKeyboard} = require('./accessibility.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -25,7 +27,10 @@ const base = 'http://127.0.0.1:2368';
 const out = path.join(root, 'artifacts/runtime');
 fs.mkdirSync(out, {recursive: true});
 const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account checks open the panel; profile/preference saving is not tested. No real email or checkout.'};
-const record = name => { results.checks.push({name, status: 'passed'}); console.log(`PASS ${name}`); };
+const record = (name, error) => {
+    results.checks.push({name, status: error ? 'failed' : 'passed', ...(error ? {error} : {})});
+    console.log(`${error ? 'FAIL' : 'PASS'} ${name}${error ? ': ' + error : ''}`);
+};
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 let ghost;
 let browser;
@@ -153,6 +158,7 @@ async function main() {
     for (const [slug, template] of [['about', null], ['membership', 'custom-membership']]) {
         await api(admin, 'post', 'pages/?source=html', {pages: [{title: `QA ${slug}`, slug, status: 'published', html: '<p>QA public page body.</p>', custom_template: template}]});
     }
+    await seedEditorCards({runtime, base, api, admin});
     const users = await api(admin, 'get', 'users/me/');
     const authorSlug = users.users[0].slug;
     const anon = await context();
@@ -213,19 +219,23 @@ async function main() {
             record(`Access ${label} / ${slug}: ${allowed[i] ? 'body visible' : 'body absent from HTML'}`);
         }
     }
+    await checkEditorAccess({anon, free, tierA, record});
     await api(admin, 'delete', `members/${memberData[1].id}/sessions/`);
     const revoked = await (await tierA.get('/tier-report/')).text();
     assert(!revoked.includes('TIER_A_SECRET_59c'), 'Revoked member session retained restricted content');
     record('Admin session revocation removes access');
 
     browser = await chromium.launch({headless: true});
+    await checkEditorCards({browser, base, out, record});
     // Explicit free-only publication settings in the disposable instance for Portal checks.
     await api(admin, 'put', 'settings/', {settings: [
         {key: 'paid_members_enabled', value: false},
         {key: 'members_signup_access', value: 'all'},
         {key: 'portal_name', value: true},
     ]});
-    await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length, portalPackage: profile.portalPackage});
+    try {
+        await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length, portalPackage: profile.portalPackage});
+    } catch (error) { record('Portal free-flow completion', error.message); }
     for (const width of [360, 768, 1440]) {
         const page = await browser.newPage({viewport: {width, height: 1000}});
         // Visual checks are self-contained; no analytics, payment provider or external embeds.
@@ -236,6 +246,14 @@ async function main() {
             const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
             assert(!overflow, `Horizontal overflow at ${width}px on ${slug || 'home'}`);
             await page.screenshot({path: path.join(out, `${slug || 'home'}-${width}.png`), fullPage: true});
+            if (width !== 768) await audit(page, {out, label: `${slug || 'home'}-${width}`, record});
+        }
+        if (width === 1440) await checkCoreKeyboard(page, {base, record});
+        if (width === 1440) {
+            for (const route of ['/about/', '/tag/research/', `/author/${authorSlug}/`]) {
+                await page.goto(`${base}${route}`, {waitUntil: 'networkidle'});
+                await audit(page, {out, label: route, record});
+            }
         }
         await page.goto(base);
         await page.keyboard.press('Tab');
@@ -245,6 +263,7 @@ async function main() {
         await page.close();
         record(`Browser layout and keyboard smoke at ${width}px`);
     }
+    assert(!results.checks.some(check => check.status === 'failed'), 'Acceptance checks failed; see results.json and accessibility.json');
     results.status = 'passed';
 }
 
