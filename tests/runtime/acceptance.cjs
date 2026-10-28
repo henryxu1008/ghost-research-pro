@@ -7,6 +7,7 @@ const {spawn} = require('node:child_process');
 const {randomBytes} = require('node:crypto');
 const {createRequire} = require('node:module');
 const {request, chromium} = require('playwright');
+const {simpleParser} = require('mailparser');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -68,7 +69,8 @@ async function signIn(email) {
     for (let i = 0; i < 30 && !emails.some(m => m.recipient.includes(email)); i++) await delay(100);
     const mail = emails.findLast(m => m.recipient.includes(email));
     assert(mail, 'Local SMTP sink did not receive sign-in email');
-    const decoded = mail.message.replace(/=\r\n/g, '').replace(/=([0-9A-F]{2})/gi, (_, h) => String.fromCharCode(parseInt(h, 16))).replace(/&amp;/g, '&');
+    const parsed = await simpleParser(mail.message);
+    const decoded = `${parsed.text || ''}\n${parsed.html || ''}`.replace(/&amp;/g, '&');
     const link = decoded.match(/http:\/\/127\.0\.0\.1:2368\/(?:members\/)?\?token=[^\s<>"']+/)?.[0];
     assert(link, 'No local magic link found');
     await ctx.get(link);
