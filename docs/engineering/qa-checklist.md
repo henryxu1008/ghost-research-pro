@@ -38,7 +38,8 @@ The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296b
 - [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.
 - [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
 - [ ] Full accessibility audit, screen readers, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
-- [ ] Account email-address changes, custom fields, comment/announcement preference writes and recovery from HTTP errors beyond the tested aborted-request scenario.
+- [ ] Resolve every failed controlled HTTP 503/429 account-recovery case before release; see [HTTP acceptance](account-http-acceptance.md).
+- [ ] Account email-address changes, custom fields, comment/announcement preference writes and HTTP failures outside the documented controlled probes.
 - [ ] Test runtime versions and browsers beyond the two exact pinned CI profiles; a broad engine range and static GScan result do not prove every minor version.
 - [ ] Resolve project licensing using the [release inventory](release-licensing-inventory.md), including the existing MIT metadata / missing LICENSE mismatch, and complete design/commercial review.
 

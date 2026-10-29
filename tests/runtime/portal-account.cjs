@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {probe, audit} = require('./accessibility.cjs');
 const {resolveColors} = require('./contrast.cjs');
+const {checkAccountHTTP} = require('./account-http.cjs');
 
 async function checkAccount({page, ctx, base, out, record, mailCount, screenshot}) {
     const evidence = [];
@@ -89,7 +90,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
         assert(response.status() === 200, 'Profile save did not reach the real Ghost API');
         await popup().getByRole('heading', {name: 'Your account', exact: true}).waitFor();
     };
-    const clickSwitch = async control => {
+    const clickSwitch = async (control, {recordPointer = true} = {}) => {
         await control.box.evaluate(async el => Promise.all(el.ownerDocument.getAnimations()
             .filter(animation => animation.effect?.getTiming().iterations !== Infinity)
             .map(animation => animation.finished.catch(() => {}))));
@@ -103,10 +104,12 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             return {tag: target?.tagName, className: target?.getAttribute('class'), controlRole: control?.getAttribute('role')};
         });
         assert(['button', 'switch'].includes(hit.controlRole), 'Graphic hit target is outside its accessible control');
-        pointerEvidence.push({width: page.viewportSize().width, hit, writesBefore: writes});
+        const observation = {width: page.viewportSize().width, hit, writesBefore: writes};
+        if (recordPointer) pointerEvidence.push(observation);
         // Hit the actual graphic. Modern decorative markup is inert, so the
         // browser must deliver this point to the native surrounding row.
         await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
+        return observation;
     };
     const toggle = async (control, keyboard = false) => {
         const [response] = await Promise.all([
@@ -239,6 +242,8 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             if (role === 'switch') assert(await control.row.getAttribute('aria-checked') === String(before), 'Switch semantics did not restore the saved value');
             assert(subscribed(await readMember()) === before, 'Keyboard preference restoration failed');
         });
+        await checkAccountHTTP({page, out, record, mailCount, profile, preferences,
+            clickSwitch: control => clickSwitch(control, {recordPointer: false}), waitChecked, readMember, memberURL, isWrite});
         await run('Portal signout removes fixture profile data from HTML, API and reopened UI', async () => {
             assert(mailCount() === initialMail, 'Profile or preference flow sent unexpected mail');
             const member = await readMember();
@@ -247,7 +252,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             await page.locator('.member-actions a[href="#/portal/account"]').click();
             await popup().getByRole('button', {name: 'Sign out', exact: true}).click();
             await page.locator('.member-actions a[href="#/portal/signin"]').waitFor();
-            const privateValues = [...markers, member.email];
+            const privateValues = [...markers, member.name, member.email].filter(Boolean);
             for (const route of ['/', '/membership/', '/members-report/']) {
                 const html = await (await ctx.request.get(base + route)).text();
                 assert(privateValues.every(value => !html.includes(value)), 'Anonymous HTML contains fixture profile data');
