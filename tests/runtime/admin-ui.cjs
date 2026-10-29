@@ -28,7 +28,8 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
     const expectedVersion = JSON.parse(fs.readFileSync(path.join(root, 'package.json'))).version;
     const report = {authentication: 'disposable owner session seeded by existing Admin API fixture; login UI not tested',
         zipSHA256: hash(archive), packageVersion: expectedVersion, checks: [], externalRequestsBlocked: [], paymentEndpointsBlocked: [],
-        resourceFailures: [], moduleResponses: [], browserErrors: []};
+        resourceFailures: [], moduleResponses: [], browserErrors: [],
+        fontStylesheetFallback: {origin: 'https://fonts.bunny.net', path: '/css', response: 'local empty CSS; system fonts; no outbound request', requests: 0}};
     assert(/^\/about(?:-\d+)?\/$/.test(fixturePagePath), 'Missing canonical disposable page fixture');
     // Cookies remain in memory; no storage state, credentials or raw API data
     // are uploaded. All theme mutations below originate from native UI actions.
@@ -38,6 +39,15 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         const url = new URL(route.request().url());
         if (url.origin === base && url.pathname === '/__qa__/portal.min.js') {
             return route.fulfill({contentType: 'application/javascript', body: fs.readFileSync(bundle)});
+        }
+        // Stock Ghost 6 preloads custom-fonts CSS with remote @imports. Aborting
+        // those stylesheets rejects the whole Admin route. Resolve this exact
+        // nonfunctional font dependency locally; preserve every native bundle
+        // and API request, and make no connection to the font provider.
+        if (url.origin === 'https://fonts.bunny.net' && url.pathname === '/css' && route.request().resourceType() === 'stylesheet') {
+            report.fontStylesheetFallback.requests++;
+            return route.fulfill({status: 200, contentType: 'text/css', headers: {'Access-Control-Allow-Origin': base},
+                body: '/* Offline acceptance fixture: use system font fallbacks. */'});
         }
         // The stock Admin imports local chunks such as stripe-button-*.js even
         // on non-billing screens. Static files are not payment API calls.
