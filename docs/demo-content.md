@@ -72,7 +72,7 @@ This creates a short post whose TOC should remain hidden. Briefs use the same ca
 
 ### Members-only body
 
-Add the fictional-content notice, H2 **Scenario appendix** and a paragraph such as “DEMO-MEMBER-BODY: this invented appendix is only for the disposable member-access check.” Keep this marker and its heading out of the title, custom excerpt, tags and image metadata. Do not add a public-preview divider for this simple check.
+Add the fictional-content notice, H2 **DEMO-MEMBER-HEADING-7C9** and a paragraph such as “DEMO-MEMBER-BODY: this invented appendix is only for the disposable member-access check.” The H2 is a unique fictional sentinel for the restricted body, distinct from the public title “Demo member note: Scenario appendix.” Keep both `DEMO-MEMBER-HEADING-7C9` and `DEMO-MEMBER-BODY` out of the title, custom excerpt, tags and image metadata. Do not add a public-preview divider for this simple check.
 
 Choose **Members only** in post access; a tag named “Members” would not restrict the body. Ghost grants this access to signed-in free and paid members. For the initial demo, no paid tier or Stripe connection is needed. Leave paid-only/tier scenarios to the separate [payment acceptance plan](engineering/payment-acceptance.md); a visible signup button is not evidence of checkout or payment success. See [Ghost's protected content guide](https://ghost.org/help/protected-content/).
 
@@ -99,8 +99,8 @@ This checklist describes manual acceptance to perform on the assembled demo. It 
 - [ ] **Author archive:** the byline opens the existing demo author's name/bio and three assigned posts. Pages do not appear in this collection.
 - [ ] **Public report:** title, custom excerpt, byline, table and body render. On this page lists Summary, Illustrative dataset, nested Assumptions and Limitations; activate a link with Tab/Enter and check focus moves to the matching heading.
 - [ ] **Brief:** its two paragraphs render and no empty On this page panel appears.
-- [ ] **Members-only report, signed out:** the public title/summary and Ghost access prompt are visible; neither the appendix heading nor `DEMO-MEMBER-BODY` appears in the rendered body or TOC. Use the ordinary published URL, not an Admin preview/share/gift URL that may grant access.
-- [ ] **Members-only report, authorized demo session:** if an existing disposable member session is available, the appendix and its TOC entry render. Otherwise mark this check unexecuted; do not claim it passed from an editor preview or from payment-free markup alone.
+- [ ] **Members-only report, signed out:** the public title/summary and Ghost access prompt are visible; neither `DEMO-MEMBER-HEADING-7C9` nor `DEMO-MEMBER-BODY` appears in the rendered body or TOC. “Scenario appendix” may still appear in the intended public metadata; it is not the private sentinel. Use the ordinary published URL, not an Admin preview/share/gift URL that may grant access.
+- [ ] **Members-only report, authorized demo session:** if an existing disposable member session is available, the `DEMO-MEMBER-HEADING-7C9` H2, its matching TOC entry and the `DEMO-MEMBER-BODY` paragraph render. Otherwise mark this check unexecuted; do not claim it passed from an editor preview or from payment-free markup alone.
 - [ ] **Pages/menu:** About and optional Membership open via the actual saved primary-navigation URLs. The Membership prompt agrees with the existing signup mode; this walkthrough does not test a payment or change that mode.
 - [ ] **Narrow screen and enlarged text:** inspect the homepage menu, cards, long heading/TOC and table. Text should wrap; a wide table may scroll inside its own area without making the entire page scroll sideways. These are checks to perform, not a substitute for the [remaining accessibility gates](engineering/qa-checklist.md#remaining-release-gates).
 
