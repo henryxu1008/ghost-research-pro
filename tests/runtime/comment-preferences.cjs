@@ -99,13 +99,18 @@ async function checkCommentPreferences({page, out, record, mailCount, home, acti
             // earlier success message from the same failed request.
             await popup().locator('body').evaluate(body => {
                 const messages = {success: false, failure: false};
+                const events = [], started = performance.now();
                 const observe = () => {
-                    messages.success ||= body.textContent.includes('Comment preferences updated.');
-                    messages.failure ||= body.textContent.includes('Failed to update newsletter settings');
+                    for (const [kind, text] of [['success', 'Comment preferences updated.'], ['failure', 'Failed to update newsletter settings']]) {
+                        if (!messages[kind] && body.textContent.includes(text)) {
+                            messages[kind] = true;
+                            events.push({kind, phase: body.__commentProbe.phase, atMs: Math.round(performance.now() - started)});
+                        }
+                    }
                 };
                 const observer = new MutationObserver(observe);
                 observer.observe(body, {childList: true, subtree: true, characterData: true});
-                body.__commentProbe = {messages, observer};
+                body.__commentProbe = {messages, events, observer, phase: 'pending'};
             });
             let attempts = 0;
             const fail = async route => {
@@ -114,6 +119,9 @@ async function checkCommentPreferences({page, out, record, mailCount, home, acti
                 // A bounded pair of render frames exposes premature feedback
                 // while this controlled request is still pending.
                 await popup().locator('body').evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+                entry.pendingFeedback = await popup().locator('body').evaluate(body => ({...body.__commentProbe.messages}));
+                await page.screenshot({path: path.join(out, 'comment-preferences-pending.png'), fullPage: true, animations: 'disabled'});
+                await popup().locator('body').evaluate(body => { body.__commentProbe.phase = 'aborted'; });
                 await route.abort('failed');
             };
             await page.route(memberURL, fail);
@@ -122,11 +130,12 @@ async function checkCommentPreferences({page, out, record, mailCount, home, acti
                 await clickSwitch(control);
                 await failed;
                 await popup().getByText('Failed to update newsletter settings', {exact: true}).waitFor();
-                entry.feedback = await popup().locator('body').evaluate(body => {
+                const observed = await popup().locator('body').evaluate(body => {
                     const probe = body.__commentProbe;
                     probe.observer.disconnect(); delete body.__commentProbe;
-                    return probe.messages;
+                    return {feedback: probe.messages, feedbackEvents: probe.events};
                 });
+                Object.assign(entry, observed);
                 entry.serverUnchanged = (await readMember()).enable_comment_notifications === before.enable_comment_notifications && otherState(await readMember()) === otherState(before);
                 entry.clientAccountRetained = await popup().locator('.gh-portal-content').count() === 1;
                 entry.attemptsBeforeExplicitRetry = attempts;

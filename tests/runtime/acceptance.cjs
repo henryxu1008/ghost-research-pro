@@ -242,10 +242,20 @@ async function main() {
     ]});
     try {
         const withComments = async action => {
-            const before = (await api(admin, 'get', 'settings/')).settings.find(setting => setting.key === 'comments_enabled').value;
-            await api(admin, 'put', 'settings/', {settings: [{key: 'comments_enabled', value: 'all'}]});
-            try { await action(); }
-            finally { await api(admin, 'put', 'settings/', {settings: [{key: 'comments_enabled', value: before}]}); }
+            const readSetting = async () => (await api(admin, 'get', 'settings/')).settings.find(setting => setting.key === 'comments_enabled').value;
+            const setting = {before: await readSetting(), requested: 'all'};
+            try {
+                await api(admin, 'put', 'settings/', {settings: [{key: 'comments_enabled', value: 'all'}]});
+                setting.enabled = await readSetting();
+                assert.equal(setting.enabled, 'all', 'Disposable comment setting was not persisted');
+                await action();
+            } finally {
+                await api(admin, 'put', 'settings/', {settings: [{key: 'comments_enabled', value: setting.before}]});
+                setting.after = await readSetting();
+                setting.restored = setting.after === setting.before;
+                fs.writeFileSync(path.join(out, 'comment-settings.json'), JSON.stringify(setting, null, 2));
+                assert(setting.restored, 'Disposable comment setting was not restored');
+            }
         };
         await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length, portalPackage: profile.portalPackage, withComments});
     } catch (error) { record('Portal free-flow completion', error.message); }

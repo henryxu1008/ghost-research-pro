@@ -39,7 +39,7 @@ The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296b
 - [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
 - [ ] Full accessibility audit, screen readers, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
 - [ ] Resolve every failed controlled HTTP 503/429 account-recovery case before release; see [HTTP acceptance](account-http-acceptance.md).
-- [ ] Verify the strict [comment notification preference probes](comment-preference-acceptance.md), including failure feedback; use exact-head artifacts, not the presence of a test, as evidence.
+- [ ] Resolve the strict [comment notification feedback failure](comment-preference-acceptance.md) in both pinned Portal profiles. Real save/reload/keyboard restoration passes; aborted saves still announce success before reporting failure.
 - [ ] Account email-address changes, custom fields, announcement preference writes and HTTP failures outside the documented controlled probes.
 - [ ] Test runtime versions and browsers beyond the two exact pinned CI profiles; a broad engine range and static GScan result do not prove every minor version.
 - [ ] Resolve project licensing using the [release inventory](release-licensing-inventory.md), including the existing MIT metadata / missing LICENSE mismatch, and complete design/commercial review.
