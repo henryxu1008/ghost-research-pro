@@ -16,11 +16,13 @@ async function checkAccountHTTP({page, out, record, mailCount, profile, preferen
             const entry = {kind, injectedStatus: status, status: 'failed', requests: [], responses: []};
             evidence.push(entry);
             await probe(record, `Portal ${kind} HTTP ${status} preserves draft/session and explicitly recovers`, async () => {
-                let phase = 'fault', firstResponseAt;
+                let phase = 'fault', firstResponseAt, firstRetryAt;
                 const started = performance.now();
                 const requestObserver = request => {
                     if (memberURL(new URL(request.url())) && request.method() === 'PUT') {
-                        entry.requests.push({phase, atMs: Math.round(performance.now() - started)});
+                        const now = performance.now();
+                        if (phase === 'retry' && firstRetryAt === undefined) firstRetryAt = now;
+                        entry.requests.push({phase, atMs: Math.round(now - started)});
                     }
                 };
                 const fail = async route => {
@@ -122,6 +124,7 @@ async function checkAccountHTTP({page, out, record, mailCount, profile, preferen
                     }
                     entry.restored = stateOf(await readMember()) === beforeState;
                     entry.noMail = mailCount() === initialMail;
+                    entry.actualRetryRequestDelayMs = Math.round(firstRetryAt - firstResponseAt);
                     entry.failedAssertions = [
                         ['failure response/header recorded', failureResponse.status() === status && failureResponse.headers()['retry-after'] === '1'],
                         ['server unchanged during failure', entry.serverUnchanged],
@@ -129,7 +132,7 @@ async function checkAccountHTTP({page, out, record, mailCount, profile, preferen
                         ['client account retained', entry.clientAccountRetained],
                         ['clear failure feedback without success feedback', entry.failureFeedback && !entry.falseSuccess],
                         ['no implicit retry', entry.faultAttempts === 1],
-                        ['explicit retry after Retry-After', entry.explicitRetryDelayMs >= 1000],
+                        ['explicit retry after Retry-After', entry.explicitRetryDelayMs >= 1000 && entry.actualRetryRequestDelayMs >= 1000],
                         ['real retry persists after reload', entry.reloadPersisted],
                         ['fixture restored', entry.restored],
                         ['no mail sent', entry.noMail],
