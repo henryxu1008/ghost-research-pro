@@ -1,6 +1,6 @@
 # Ghost Research Pro Product Requirements
 
-**First-version scope decision · Development preview · Evidence baseline: 2026-10-29 15:23 UTC; documentation/evidence update: 15:51 UTC**
+**First-version scope decision · Development preview · Evidence baseline: 2026-10-29 15:23 UTC; documentation/evidence update: 16:00 UTC**
 
 [Project overview](../../README.md) · [Market evidence](market-validation.md) · [Operator guide](../user-guide.md) · [Release checklist](../engineering/qa-checklist.md) · [Component and responsive specification](design-spec.md)
 
@@ -18,7 +18,7 @@ The following are target-user hypotheses, not validated customer segments:
 - **Professional reader:** scans recent work, follows a topic or author, and reads long reports on desktop or mobile.
 - **Member or prospective member:** understands the available access path and manages their account without a separate theme-owned identity or payment system.
 
-The product hypothesis is a coherent research-reading experience with straightforward installation, not unique TOC or membership features. The public survey inventories 10 themes and 20 Ghost-listed publication examples, but does not verify 20 commercial buyers. [Issue #1](https://github.com/henryxu1008/ghost-research-pro/issues/1)'s customer-validation gate remains open: 0/5 conversations, 0/3 confirmed unmet needs, and 0/2 credible paid-intent signals. Competitor prices and publisher subscriptions are not willingness to pay for this theme. The [market evidence](market-validation.md) is a repository deliverable, not completion of that customer-validation gate; see S3.
+The product hypothesis is a coherent research-reading experience with straightforward installation, not unique TOC or membership features. The public survey inventories 10 themes and 20 distinct commercial publication examples qualified by paired official Ghost evidence and publisher-owned paid offers. This supports the public-example count, not 20 customer interviews or evidence of demand for this theme. [Issue #1](https://github.com/henryxu1008/ghost-research-pro/issues/1)'s customer-validation gate remains open: 0/5 conversations, 0/3 confirmed unmet needs, and 0/2 credible paid-intent signals. Competitor prices and publisher subscriptions are not willingness to pay for this theme. The [market evidence](market-validation.md) is a repository deliverable, not completion of that customer-validation gate; see S3.
 
 ## First-version scope decisions
 
@@ -117,7 +117,7 @@ These gates define evidence and decisions needed for readiness. They are not app
 | License and commercial model | Package metadata says MIT but there is no LICENSE; README leaves licensing/pricing undecided. | Owner decision under [issue #8](https://github.com/henryxu1008/ghost-research-pro/issues/8). Do not infer a settled license, price, or support contract from metadata. |
 | Native Portal release risk | Stock Portal defects remain; an upstream draft fix is not installed. | Verify a supported fix. Any support-scope change needs a recorded owner decision and candidate rerun; failures still within scope remain blockers. |
 | Paid-commerce readiness | No real billing or Stripe sandbox lifecycle acceptance. | Authorized sandbox/environment and executed lifecycle before a paid-commerce-ready claim. |
-| Demand and distribution | A public theme/publication inventory exists; commercial-buyer qualification, issue #1's customer-validation gate, and marketplace eligibility remain open. | Evidence-backed go/no-go for commercial positioning and the selected distribution route; no invented paid-intent claim. |
+| Demand and distribution | The 10-theme/20-commercial-publication public inventory is supported under its stated qualification rule; issue #1's interviews/unmet-needs/paid-intent gate and marketplace eligibility remain open. | Evidence-backed go/no-go for commercial positioning and the selected distribution route; no invented paid-intent claim. |
 
 ## Evidence appendix
 
@@ -127,7 +127,7 @@ Snapshot: **2026-10-29 15:23 UTC**. Baseline is [PR #12](https://github.com/henr
 
 - **S1 — Implementation:** [README][readme], [homepage][home], [tag][tag], [author][author], [post][post], [card][card], [TOC JavaScript][toc], [ordinary Page][page], [Membership template][membership], and [layout][layout]. Repository-relative source links resolve in this branch; the snapshot and its CI evidence remain tied to the exact baseline commit above. Later implementation changes require refreshed acceptance, not automatic transfer of these results.
 - **S2 — Operator deliverables:** [user guide][guide] and [demo content][demo]. The demo recipe is fictional and unexecuted; its unique restricted heading is `DEMO-MEMBER-HEADING-7C9`, with body marker `DEMO-MEMBER-BODY`, both excluded from public metadata.
-- **S3 — Market survey:** [Bounded market evidence](market-validation.md), dated 2026-10-29, documents 10 competing themes and 20 Ghost-listed publication examples, including corporate/free/related-brand examples and unverified commercial status. The [issue-requested research path](../research/market-validation.md) points to that canonical document. No interviews, confirmed unmet needs, or paid-intent signals are established.
+- **S3 — Market survey:** [Bounded market evidence](market-validation.md), dated 2026-10-29, documents 10 competing themes and 20 distinct commercial publication examples with paired official Ghost evidence and publisher-owned paid offers. The revision retained six initial examples and replaced fourteen weak/adjacent entries; known sibling brands are not counted twice. Stock Market Nerd is excluded because publisher migration evidence contradicts directory-based Ghost attribution. This is commercial-offer evidence, not audited revenue, current full-stack inspection or buying intent for this theme. The [issue-requested research path](../research/market-validation.md) points to that canonical document. No interviews, confirmed unmet needs, or paid-intent signals are established.
 
 ### Verification scope and gaps
 
