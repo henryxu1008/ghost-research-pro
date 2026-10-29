@@ -63,6 +63,8 @@ jobs:
       - run: npm run zip
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
+      - name: Test report table of contents
+        run: npm run test:toc
       - name: Install isolated Ghost ${{ matrix.ghost }}
         shell: bash
         run: |

@@ -21,3 +21,13 @@ h1,h2,h3,.hero h1,.archive-header h1,.report h1,.card h3,.membership-plan h2{fon
 .gh-post-upgrade-cta h2{color:var(--ink)!important}
 .gh-content th,.gh-content td{min-width:9rem;overflow-wrap:normal}
 button:focus-visible,[data-theme-scroll]:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* The contents list remains in the reading column at every viewport size. */
+.report-toc{max-width:100%;margin-block:24px;padding:20px;background:var(--panel);border:1px solid var(--border);overflow-wrap:anywhere}
+.report-toc[hidden]{display:none}
+.report-toc-title{margin:0 0 8px;font-weight:700}
+.report-toc ol{margin:0;padding-inline-start:24px}
+.report-toc li{margin-block:4px}
+.report-toc a{display:inline-block;max-width:100%}
+.report .gh-content h2,.report .gh-content h3{scroll-margin-top:24px}
+.report .gh-content h2:focus-visible,.report .gh-content h3:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
