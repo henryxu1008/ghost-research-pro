@@ -1,5 +1,7 @@
 # Disposable Ghost Admin UI theme installation
 
+Status: **all four Admin UI probes pass in both pinned profiles** at runtime code `e53af9a678f3152d3183e7cc1822eeb16fa6459a`, [workflow 40809348925](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925). The complete runtime remains red only on the preserved Portal failures: Ghost 5 has 112 passed / 3 failed / 0 skipped; Ghost 6 has 114 passed / 1 failed / 0 skipped. The original passing checks have no regressions. This closes the documented UI installation workflow, not the overall release gate.
+
 Four strict browser probes exercise each pinned Ghost version's bundled official Admin interface in the existing loopback-only CI instance. The fixture seeds a temporary owner and authenticates through the existing Admin API setup, then transfers that session to an ephemeral browser context in memory. This tests theme management after authentication, not the login/device-verification interface. Cookies, passwords, storage state and raw Admin responses are never uploaded.
 
 The theme is absent before this UI suite. Content fixtures already exist so activation can be checked against actual public pages. After the UI suite, the original independent Admin API upload/activation baseline still runs and establishes the theme for all existing page/permission/Portal checks. That later API write is not UI evidence and cannot make a failed UI assertion pass.
@@ -7,7 +9,7 @@ The theme is absent before this UI suite. Content fixtures already exist so acti
 | Probe | Required evidence |
 | --- | --- |
 | First installation | Open the official theme-management screen, click Upload theme, select the actual built ZIP in its file input, observe a real browser POST 200 and success dialog, click the native activation button and observe a real PUT 200. The installed row must show the packaged version and Active; backend readback must show one matching active theme. |
-| Cancel | Cancel the upload picker, then select the same ZIP and cancel the native overwrite confirmation. No theme POST/PUT/DELETE may occur; the original active name/version stays intact after reload. |
+| Cancel | Cancel the upload modal before selecting a file, then select the same ZIP and cancel the native overwrite confirmation. No theme POST/PUT/DELETE may occur; the original active name/version stays intact after reload. |
 | Confirm repeat upload | Select the same ZIP, confirm Overwrite and observe exactly one real POST 200. The active state/version remain and only one installed entry exists; an already active theme must not trigger another activation request. |
 | Invalid ZIP | Upload a valid ZIP container containing only synthetic package metadata, deliberately missing required templates. Real Ghost must return 422, the UI must identify the missing index.hbs and allow closing the error. The invalid theme must not be installed or replace the active release. |
 
@@ -22,5 +24,18 @@ The next run at `8befe1e`, [40805252299](https://github.com/qq550723504/ghost-re
 At `a6d8e3d`, [40807131868](https://github.com/qq550723504/ghost-research-pro/actions/runs/40807131868), all four Ghost 5 UI probes passed, including the exact visible body on `/about-2/`; its full result was 112 passed / 3 known Portal failures. Ghost 6 still had four UI bootstrap failures plus its known Portal failure. The sanitized network failures only named the blocked external font stylesheet, so they did not yet identify the rejected import. Diagnostic messages are deduplicated and a passive `vite:preloadError`/CSP listener now records the actual loader rejection before React handles it; same-origin module status/MIME metadata are also recorded. These listeners do not prevent errors, change fetch, modify bundles or relax network rules.
 
 The passive listener established the exact cause at `eaf76d8`, [40808529827](https://github.com/qq550723504/ghost-research-pro/actions/runs/40808529827): `Unable to preload CSS for .../ghost/assets/custom-fonts-B8bjF-gO.css`. That stock file returned 200 with text/css; all 168 observed module responses had appropriate JavaScript/CSS MIME types. The official package's file contains 21 Bunny CSS @imports, and those external stylesheets were the only recorded failed resources. The bundled Vite helper rejects a route when its preloaded stylesheet fires error. The fixture therefore resolves only the exact font-CSS endpoint locally with empty CSS instead of a network error, retaining system fallback fonts. No official Admin/stylesheet file is rewritten, no external fetch is enabled, and all Ghost upload/activation calls and strict request/state/content assertions remain unchanged. `fontStylesheetFallback` records the mode and handled-request count; font appearance is outside this functional acceptance.
+
+## Final evidence
+
+[Ghost 5 reports/screenshots](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925/artifacts/12869732399) and [Ghost 6 reports/screenshots](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925/artifacts/12869852017) each contain 55 screenshots, including 11 Admin/frontend captures. Both profiles record the same exact UI mutation sequence:
+
+- First install: selected ZIP bytes in POST 200, native Activate in PUT 200, one Active version 0.1.0 shown in the UI and read back from Ghost.
+- Cancel upload/overwrite: zero theme mutations.
+- Confirm overwrite: one POST 200, one installed active entry, no unnecessary activation.
+- Invalid ZIP: one POST 422, visible missing-index.hbs feedback, error closes, invalid theme absent and active release unchanged.
+
+Home CSS matches the uploaded payload; public report and actual seeded `/about-2/` page both return 200 and contain the expected visible/HTML markers, including after the invalid upload. Installed-version, native validation-error and frontend screenshots were visually reviewed on both exact-profile artifacts. Each profile handled 42 font-CSS requests locally, recorded zero payment endpoint attempts and no Vite/CSP/uncaught loader errors. The existing 17 selected axe documents cover theme/Portal pages; they are not an Admin UI accessibility audit.
+
+The [theme artifact](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925/artifacts/12870085522) and [full repository dependency audit](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925/artifacts/12869731667) remain separate outputs. Source/ZIP validation passed; the repository audit still exposes 0 critical and 3 known high dependency nodes. This batch changed only tests/documentation, leaving the 12 theme payload files, package/lock and packaging script unchanged.
 
 Use the exact code head's CI results to establish pass/fail. Adding these probes does not resolve or suppress the existing [Portal release blockers](portal-release-decision.md). The current supported scope and Draft/no-deployment boundary are unchanged.

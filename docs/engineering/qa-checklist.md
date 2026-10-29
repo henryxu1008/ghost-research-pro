@@ -20,6 +20,7 @@ Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary di
 
 ## Automated real-instance acceptance
 - [x] Upload the built theme ZIP through Ghost Admin API and verify activation by reading back the active theme.
+- [x] Verify actual Ghost Admin UI upload/activation, cancellation, repeat upload and invalid-ZIP feedback in both pinned profiles: [runtime code e53af9a / workflow 40809348925](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925). All four UI cases pass per profile; [scope and offline font fallback](admin-ui-acceptance.md) remain explicit. This is browser UI automation with screenshot review, not login or remote-font acceptance.
 - [x] Verify home, post, tag, author, page, custom membership page and 404 routes, plus stylesheet delivery.
 - [x] Log in free and complimentary tier members through real Ghost magic links captured by local SMTP.
 - [x] Verify public, members-only, paid and tier-specific post bodies for anonymous, free, tier A and tier B visitors.
@@ -35,9 +36,8 @@ The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296b
 
 ## Remaining release gates
 
-See the [Portal repair boundary and release route](portal-release-decision.md) for the smallest upstream responsibilities, support options and the next independent installation deliverable. The current supported scope and strict failures are unchanged.
+See the [Portal repair boundary and release route](portal-release-decision.md) for the smallest upstream responsibilities, support options and completed installation evidence. The current supported scope and strict failures are unchanged.
 
-- [ ] Verify actual Ghost Admin UI upload/activation, cancellation, repeat upload and invalid-ZIP feedback using the [browser probes](admin-ui-acceptance.md). The older API baseline alone does not establish UI acceptance.
 - [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.
 - [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
 - [ ] Full accessibility audit, screen readers, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
