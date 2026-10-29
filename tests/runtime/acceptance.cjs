@@ -29,7 +29,7 @@ assert(!runtime.startsWith(root), 'Ghost test data must live outside the theme r
 const base = 'http://127.0.0.1:2368';
 const out = path.join(root, 'artifacts/runtime');
 fs.mkdirSync(out, {recursive: true});
-const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account checks open the panel; profile/preference saving is not tested. No real email or checkout.'};
+const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account writes update disposable fixture names/newsletter subscriptions, with aborted-request recovery; email-address/custom-field changes, comment-preference writes and HTTP error responses are not covered. No real email or checkout.'};
 const record = (name, error) => {
     results.checks.push({name, status: error ? 'failed' : 'passed', ...(error ? {error} : {})});
     console.log(`${error ? 'FAIL' : 'PASS'} ${name}${error ? ': ' + error : ''}`);

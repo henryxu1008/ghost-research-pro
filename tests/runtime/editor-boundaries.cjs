@@ -33,6 +33,11 @@ async function checkEditorBoundaries({browser, base, out, record}) {
                 await page.evaluate(() => Promise.all([...document.querySelectorAll('.gh-content img')].map(image => image.decode())));
                 await probe(record, `Long editor card text and three-image gallery fit at ${width}px`, async () => {
                     const state = await page.evaluate(() => ({width: innerWidth, scrollWidth: document.documentElement.scrollWidth,
+                        buttons: [...document.querySelectorAll('.kg-button-card a')].map(el => ({
+                            clientHeight: el.clientHeight, scrollHeight: el.scrollHeight,
+                            height: getComputedStyle(el).height, overflowY: getComputedStyle(el).overflowY,
+                            lineHeight: getComputedStyle(el).lineHeight,
+                        })),
                         elements: [...document.querySelectorAll('.gh-content .kg-card,.gh-content a')].map(el => {
                             const rect = el.getBoundingClientRect();
                             return {tag: el.tagName, className: el.className, left: rect.left, right: rect.right};
@@ -40,6 +45,7 @@ async function checkEditorBoundaries({browser, base, out, record}) {
                     evidence.push(state);
                     assert(state.scrollWidth <= width + 1, 'Long card text causes horizontal page overflow');
                     assert(state.elements.every(el => el.left >= -1 && el.right <= width + 1), 'An editor card or action exceeds the viewport');
+                    assert(state.buttons.every(button => button.scrollHeight <= button.clientHeight + 1), 'Long CTA text is vertically clipped');
                     assert(await page.locator('.kg-gallery-card img').count() === 3, 'Three-image gallery did not render');
                     assert(await page.locator('.kg-gallery-card img').evaluateAll(images => images.every(image => image.naturalWidth > 0)), 'Gallery image failed to load');
                 });
