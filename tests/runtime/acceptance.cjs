@@ -13,6 +13,7 @@ const {seedEditorCards, checkEditorAccess, checkEditorCards} = require('./editor
 const {audit, checkCoreKeyboard} = require('./accessibility.cjs');
 const {checkAdapterBoundaries} = require('./adapter-boundary.cjs');
 const {checkDelayedPortalOpen} = require('./portal-interruption.cjs');
+const {seedEditorBoundaries, checkEditorBoundaries} = require('./editor-boundaries.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -161,6 +162,7 @@ async function main() {
         await api(admin, 'post', 'pages/?source=html', {pages: [{title: `QA ${slug}`, slug, status: 'published', html: '<p>QA public page body.</p>', custom_template: template}]});
     }
     await seedEditorCards({runtime, base, api, admin});
+    await seedEditorBoundaries({base, api, admin});
     const users = await api(admin, 'get', 'users/me/');
     const authorSlug = users.users[0].slug;
     const anon = await context();
@@ -231,6 +233,7 @@ async function main() {
     await checkAdapterBoundaries({browser, out, record});
     await checkDelayedPortalOpen({browser, out, record});
     await checkEditorCards({browser, base, out, record});
+    await checkEditorBoundaries({browser, base, out, record});
     // Explicit free-only publication settings in the disposable instance for Portal checks.
     await api(admin, 'put', 'settings/', {settings: [
         {key: 'paid_members_enabled', value: false},

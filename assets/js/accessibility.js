@@ -38,7 +38,9 @@
         let observer;
         let doc;
         const legacyCloseButtons = new WeakSet();
+        const legacySwitches = new WeakSet();
         const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#174e8b';
+        const muted = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim() || '#58657a';
         const activateClose = () => {
             const close = doc.querySelector('[data-test-button="close-popup"],button[aria-label="Close popup"]');
             if (close?.tagName === 'BUTTON') close.click();
@@ -82,22 +84,57 @@
             const viewport = doc.querySelector('meta[name="viewport"]');
             if (viewport && viewport.content !== 'width=device-width, initial-scale=1') viewport.content = 'width=device-width, initial-scale=1';
             doc.documentElement.style.setProperty('--brandcolor', accent);
+            doc.documentElement.style.setProperty('--theme-muted', muted);
+            const signout = doc.querySelector('[data-test-button="footer-signout"]');
+            if (signout?.textContent.trim()) signout.setAttribute('aria-label', signout.textContent.trim());
+            for (const box of doc.querySelectorAll('.gh-portal-for-switch')) {
+                const input = box.querySelector('input[type="checkbox"]');
+                if (!input) continue;
+                if (box.getAttribute('aria-hidden') === 'true') {
+                    // Modern Portal makes the row the control; the visual switch is
+                    // decorative. Let pointer hits reach that native row handler too.
+                    if (box.closest('[role="button"][aria-pressed]')) box.inert = true;
+                    continue;
+                }
+                const label = box.closest('section')?.querySelector('h3')?.textContent.trim();
+                if (!label) continue;
+                box.setAttribute('role', 'switch');
+                box.setAttribute('aria-label', label);
+                box.setAttribute('aria-checked', String(input.checked));
+                box.tabIndex = 0;
+                input.tabIndex = -1;
+                input.setAttribute('aria-hidden', 'true');
+                input.inert = true;
+                if (!legacySwitches.has(box)) {
+                    legacySwitches.add(box);
+                    box.addEventListener('keydown', event => {
+                        if (event.target !== box || !['Enter', ' '].includes(event.key)) return;
+                        event.preventDefault(); event.stopPropagation();
+                        box.querySelector('.input-toggle-component')?.dispatchEvent(new doc.defaultView.MouseEvent('click', {bubbles: true, cancelable: true}));
+                        queueMicrotask(decorate);
+                    });
+                    box.addEventListener('click', () => queueMicrotask(decorate));
+                }
+            }
             if (!doc.getElementById('theme-portal-accessibility')) {
                 const style = doc.createElement('style');
                 style.id = 'theme-portal-accessibility';
-                style.textContent = '.gh-portal-btn-main{background-color:var(--brandcolor)!important;color:#fff!important}.gh-portal-btn-link,.gh-portal-btn-branded{color:var(--brandcolor)!important}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--brandcolor);outline-offset:3px}';
+                style.textContent = '.gh-portal-btn-main{background-color:var(--brandcolor)!important;color:#fff!important}.gh-portal-btn-link,.gh-portal-btn-branded,.gh-portal-btn-back{color:var(--brandcolor)!important}.gh-portal-list-detail p{color:var(--theme-muted)!important}button:focus-visible,a:focus-visible,input:focus-visible,[role="switch"]:focus-visible{outline:3px solid var(--brandcolor);outline-offset:3px}';
                 doc.head.append(style);
             }
             const panel = doc.querySelector('.gh-portal-popup-container');
             if (panel) {
                 panel.setAttribute('role', 'dialog');
                 panel.setAttribute('aria-modal', 'true');
-                const heading = panel.querySelector('h1,h2');
+                const heading = panel.querySelector('h1,h2,h3');
                 if (heading) {
                     if (!heading.id) heading.id = 'theme-portal-heading';
                     panel.setAttribute('aria-labelledby', heading.id);
                     panel.removeAttribute('aria-label');
-                } else panel.setAttribute('aria-label', 'Membership');
+                } else {
+                    panel.removeAttribute('aria-labelledby');
+                    panel.setAttribute('aria-label', 'Membership');
+                }
             }
         };
         const load = event => {

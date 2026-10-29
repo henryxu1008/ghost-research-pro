@@ -2,9 +2,11 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const {probe, audit} = require('./accessibility.cjs');
+const {resolveColors} = require('./contrast.cjs');
 
 async function checkAccount({page, ctx, base, out, record, mailCount, screenshot}) {
     const evidence = [];
+    const contrastEvidence = [];
     const popup = () => page.frameLocator('iframe[title="portal-popup"]');
     const memberURL = url => url.origin === base && url.pathname.replace(/\/$/, '') === '/members/api/member';
     const isWrite = response => memberURL(new URL(response.url())) && response.request().method() === 'PUT';
@@ -53,6 +55,32 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
         await page.waitForFunction(({id, checked}) => document.querySelector('iframe[title="portal-popup"]')
             ?.contentDocument?.getElementById(id)?.checked === checked, {id, checked});
     };
+    const assertDialogName = async expected => {
+        const valid = await popup().locator('.gh-portal-popup-container').evaluate((panel, expected) => {
+            const ids = panel.getAttribute('aria-labelledby')?.trim().split(/\s+/) || [];
+            const elements = ids.map(id => panel.ownerDocument.getElementById(id));
+            return elements.length > 0 && elements.every(Boolean) && elements.map(el => el.textContent.trim()).join(' ') === expected;
+        }, expected);
+        assert(valid, 'Dialog title reference is missing, stale or incorrect');
+    };
+    const measure = async (label, width) => {
+        await probe(record, `Measured Portal account text contrast: ${label}`, async () => {
+            const samples = await popup().locator('body').evaluate(body => [...body.querySelectorAll('.gh-portal-btn-back,.gh-portal-list-detail p,.right-arrow')]
+                .filter(el => el.textContent.trim() && el.getClientRects().length).map(el => {
+                    const style = getComputedStyle(el), ancestors = [];
+                    for (let layer = el; layer; layer = layer.parentElement) {
+                        const css = getComputedStyle(layer);
+                        ancestors.unshift({backgroundColor: css.backgroundColor, backgroundImage: css.backgroundImage,
+                            opacity: css.opacity, filter: css.filter, mixBlendMode: css.mixBlendMode});
+                    }
+                    return {tag: el.tagName, className: el.className, color: style.color, fontSize: style.fontSize, ancestors};
+                }));
+            const entry = {label, width, samples: samples.map(sample => ({...sample, ...resolveColors(sample)}))};
+            contrastEvidence.push(entry);
+            assert(entry.samples.length > 0, 'Missing account contrast samples');
+            assert(entry.samples.every(sample => sample.ratio >= 4.5), 'Account text contrast falls below 4.5:1');
+        });
+    };
     const saveName = async label => {
         const [response] = await Promise.all([
             page.waitForResponse(isWrite), popup().getByRole('button', {name: label, exact: true}).click(),
@@ -63,7 +91,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
     const toggle = async (control, keyboard = false) => {
         const [response] = await Promise.all([
             page.waitForResponse(isWrite),
-            keyboard ? control.row.press('Space') : control.box.locator('.input-toggle-component').click(),
+            keyboard ? control.row.press('Space') : (await control.box.getAttribute('aria-hidden') === 'true' ? control.row : control.box.locator('.input-toggle-component')).click(),
         ]);
         assert(response.status() === 200, 'Preference save did not reach the real Ghost API');
     };
@@ -71,7 +99,13 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
     const run = async (name, action) => {
         const entry = {name, status: 'failed'};
         evidence.push(entry);
-        await probe(record, name, async () => { await action(entry); entry.status = 'passed'; });
+        await probe(record, name, async () => {
+            try { await action(entry); entry.status = 'passed'; }
+            catch (error) {
+                await page.screenshot({path: path.join(out, `account-failure-${evidence.length}.png`), fullPage: true, animations: 'disabled'});
+                throw error;
+            }
+        });
     };
     const markers = ['PROFILE_SAVED_06f', 'PROFILE_RETRY_17a', 'PROFILE_CANCEL_28b'];
     const initialMail = mailCount();
@@ -86,7 +120,9 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             assert(saved.name === markers[0] && saved.email === before.email, 'Profile persistence or email isolation failed');
             await profile();
             assert(await popup().getByLabel('Name', {exact: true}).inputValue() === markers[0], 'Reload lost saved fixture name');
+            await assertDialogName('Account settings');
             await screenshot('portal-profile-360.png');
+            await measure('profile-360', 360);
             const frame = await (await page.locator('iframe[title="portal-popup"]').elementHandle()).contentFrame();
             await audit(frame, {out, label: 'portal-profile-360', record});
         });
@@ -138,7 +174,9 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             await toggle(control);
             await waitChecked(control, before);
             assert(subscribed(await readMember()) === before, 'Newsletter restoration failed');
+            await assertDialogName(await popup().getByRole('heading', {name: 'Your account', exact: true}).count() ? 'Your account' : 'Email preferences');
             await screenshot('portal-preferences-1440.png');
+            await measure('preferences-1440', 1440);
             const frame = await (await page.locator('iframe[title="portal-popup"]').elementHandle()).contentFrame();
             await audit(frame, {out, label: 'portal-preferences-1440', record});
         });
@@ -149,7 +187,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             const fail = route => route.request().method() === 'PUT' ? (attempts++, route.abort('failed')) : route.fallback();
             await page.route(memberURL, fail);
             try {
-                await control.box.locator('.input-toggle-component').click();
+                await (await control.box.getAttribute('aria-hidden') === 'true' ? control.row : control.box.locator('.input-toggle-component')).click();
                 await popup().getByText('Failed to update newsletter settings', {exact: true}).waitFor();
                 await waitChecked(control, !before);
                 assert(subscribed(await readMember()) === before, 'Aborted preference save changed server state');
@@ -172,9 +210,11 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             await control.row.focus();
             await toggle(control, true);
             await waitChecked(control, !before);
+            if (role === 'switch') assert(await control.row.getAttribute('aria-checked') === String(!before), 'Switch semantics did not reflect the saved value');
             assert(subscribed(await readMember()) === !before, 'Keyboard preference change did not reach Ghost');
             await toggle(control, true);
             await waitChecked(control, before);
+            if (role === 'switch') assert(await control.row.getAttribute('aria-checked') === String(before), 'Switch semantics did not restore the saved value');
             assert(subscribed(await readMember()) === before, 'Keyboard preference restoration failed');
         });
         await run('Portal signout removes fixture profile data from HTML, API and reopened UI', async () => {
@@ -183,7 +223,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             await home();
             await page.goto(`${base}/membership/`, {waitUntil: 'networkidle'});
             await page.locator('.member-actions a[href="#/portal/account"]').click();
-            await popup().getByRole('button', {name: 'logout', exact: true}).click();
+            await popup().getByRole('button', {name: 'Sign out', exact: true}).click();
             await page.locator('.member-actions a[href="#/portal/signin"]').waitFor();
             const privateValues = [...markers, member.email];
             for (const route of ['/', '/membership/', '/members-report/']) {
@@ -208,6 +248,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
     } finally {
         page.off('request', countWrite);
         fs.writeFileSync(path.join(out, 'account-results.json'), JSON.stringify(evidence, null, 2));
+        fs.writeFileSync(path.join(out, 'account-contrast.json'), JSON.stringify(contrastEvidence, null, 2));
     }
 }
 

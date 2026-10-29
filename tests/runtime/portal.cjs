@@ -112,7 +112,7 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
         await popup().getByRole('heading', {name: 'Your account', exact: true}).waitFor({state: 'visible'});
         await screenshot('portal-account-360.png');
         record('Signed-in membership page offers account management instead of duplicate signup');
-        await popup().getByRole('button', {name: 'logout', exact: true}).click();
+        await popup().getByRole('button', {name: 'Sign out', exact: true}).click();
         await page.locator('.member-actions a[href="#/portal/signin"]').waitFor({state: 'visible'});
         await hasBody('members-report', 'MEMBERS_SECRET_71b', false);
         await hasBody('paid-report', 'PAID_SECRET_28f', false);
