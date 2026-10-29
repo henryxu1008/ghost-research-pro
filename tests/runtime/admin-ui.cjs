@@ -27,7 +27,7 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
     const name = 'ghost-research-pro';
     const expectedVersion = JSON.parse(fs.readFileSync(path.join(root, 'package.json'))).version;
     const report = {authentication: 'disposable owner session seeded by existing Admin API fixture; login UI not tested',
-        zipSHA256: hash(archive), packageVersion: expectedVersion, checks: [], externalRequestsBlocked: []};
+        zipSHA256: hash(archive), packageVersion: expectedVersion, checks: [], externalRequestsBlocked: [], paymentEndpointsBlocked: []};
     // Cookies remain in memory; no storage state, credentials or raw API data
     // are uploaded. All theme mutations below originate from native UI actions.
     const ctx = await browser.newContext({storageState: await admin.storageState(), viewport: {width: 1440, height: 1000}});
@@ -37,15 +37,34 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         if (url.origin === base && url.pathname === '/__qa__/portal.min.js') {
             return route.fulfill({contentType: 'application/javascript', body: fs.readFileSync(bundle)});
         }
-        if (url.origin === base && !/checkout|billing|stripe/i.test(url.pathname)) return route.continue();
+        // The stock Admin imports local chunks such as stripe-button-*.js even
+        // on non-billing screens. Static files are not payment API calls.
+        if (url.origin === base && (url.pathname.startsWith('/ghost/assets/') || !/checkout|billing|stripe/i.test(url.pathname))) return route.continue();
         const label = url.origin + url.pathname;
-        if (!report.externalRequestsBlocked.includes(label)) report.externalRequestsBlocked.push(label);
+        const blocked = url.origin === base ? report.paymentEndpointsBlocked : report.externalRequestsBlocked;
+        if (!blocked.includes(label)) blocked.push(label);
         return route.abort();
     });
     const page = await ctx.newPage();
     const front = await ctx.newPage();
     page.setDefaultTimeout(15000);
     front.setDefaultTimeout(15000);
+    const dialog = title => page.getByTestId('confirmation-modal')
+        .filter({has: page.getByRole('heading', {name: title, exact: true})});
+    const responseAfter = async (document, predicate, action) => {
+        let listener, timer;
+        const pending = new Promise((resolve, reject) => {
+            listener = response => { if (predicate(response)) resolve(response); };
+            document.on('response', listener);
+            timer = setTimeout(() => reject(new Error('Admin UI response did not arrive within 15000ms')), 15000);
+        });
+        try {
+            // Both branches are handled before the action runs. If an action
+            // fails, remove its waiter instead of leaking a later rejection.
+            const [response] = await Promise.all([pending, Promise.resolve().then(action)]);
+            return response;
+        } finally { clearTimeout(timer); document.off('response', listener); }
+    };
     let current, expectedUpload;
     const themeWrite = request => new URL(request.url()).pathname.startsWith('/ghost/api/admin/themes/') && ['POST', 'PUT', 'DELETE'].includes(request.method());
     const uploaded = response => response.request().method() === 'POST' && new URL(response.url()).pathname === '/ghost/api/admin/themes/upload/';
@@ -87,10 +106,8 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         await page.locator('input#theme-upload').setInputFiles({name: fileName, mimeType: 'application/zip', buffer});
     };
     const frontend = async entry => {
-        const [css] = await Promise.all([
-            front.waitForResponse(response => new URL(response.url()).pathname === '/assets/css/screen.css'),
-            front.goto(base, {waitUntil: 'networkidle'}),
-        ]);
+        const css = await responseAfter(front, response => new URL(response.url()).pathname === '/assets/css/screen.css',
+            () => front.goto(base, {waitUntil: 'networkidle'}));
         assert(css.status() === 200, 'Activated theme stylesheet was not delivered');
         entry.frontendCSSMatchesArchive = hash(await css.body()) === hash(fs.readFileSync(path.join(root, 'assets/css/screen.css')));
         assert(entry.frontendCSSMatchesArchive, 'Frontend CSS differs from the uploaded release payload');
@@ -125,13 +142,13 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
             assert(!before.some(theme => theme.name === name), 'UI installation must start before API theme installation');
             entry.initialThemeAbsent = true;
             await openThemes();
-            const response = page.waitForResponse(uploaded);
-            await select(`${name}.zip`, archive);
-            assert((await response).status() === 200, 'Native Admin upload failed');
-            await page.getByText('Upload successful', {exact: true}).waitFor();
-            const activation = page.waitForResponse(activated);
-            await page.getByRole('button', {name: /^Activate(?: theme)?$/}).click();
-            assert((await activation).status() === 200, 'Native Admin activation failed');
+            const response = await responseAfter(page, uploaded, () => select(`${name}.zip`, archive));
+            assert(response.status() === 200, 'Native Admin upload failed');
+            const success = dialog('Upload successful');
+            await success.waitFor();
+            const activation = await responseAfter(page, activated,
+                () => success.getByRole('button', {name: /^Activate(?: theme)?$/}).click());
+            assert(activation.status() === 200, 'Native Admin activation failed');
             entry.backend = await assertActive();
             await openThemes();
             await installed();
@@ -143,11 +160,11 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
             await openThemes();
             await page.getByRole('button', {name: 'Upload theme', exact: true}).click();
             await page.locator('input#theme-upload').waitFor({state: 'attached'});
-            await page.getByRole('button', {name: 'Cancel', exact: true}).click();
+            await dialog('Upload theme').getByRole('button', {name: 'Cancel', exact: true}).click();
             await select(`${name}.zip`, archive);
-            await page.getByText('Overwrite theme', {exact: true}).waitFor();
+            await dialog('Overwrite theme').waitFor();
             await page.screenshot({path: path.join(out, 'admin-ui-overwrite-confirmation.png'), fullPage: true, animations: 'disabled'});
-            await page.getByRole('button', {name: 'Cancel', exact: true}).click();
+            await dialog('Overwrite theme').getByRole('button', {name: 'Cancel', exact: true}).click();
             await page.reload({waitUntil: 'domcontentloaded'});
             await page.getByRole('button', {name: 'Upload theme', exact: true}).waitFor();
             entry.backend = await assertActive();
@@ -156,13 +173,14 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         await run('Admin UI confirmed repeat upload keeps one active packaged theme', async entry => {
             await openThemes();
             await select(`${name}.zip`, archive);
-            await page.getByText('Overwrite theme', {exact: true}).waitFor();
-            const response = page.waitForResponse(uploaded);
-            await page.getByRole('button', {name: 'Overwrite', exact: true}).click();
-            assert((await response).status() === 200, 'Confirmed repeat upload did not reach Ghost');
-            await page.getByText(/^(Upload successful|It's live!)$/).waitFor();
+            await dialog('Overwrite theme').waitFor();
+            const response = await responseAfter(page, uploaded,
+                () => dialog('Overwrite theme').getByRole('button', {name: 'Overwrite', exact: true}).click());
+            assert(response.status() === 200, 'Confirmed repeat upload did not reach Ghost');
+            const success = dialog(/^(Upload successful|It's live!)$/);
+            await success.waitFor();
             // The theme was already active; no activation request is necessary.
-            await page.getByRole('button', {name: 'OK', exact: true}).click();
+            await success.getByRole('button', {name: 'OK', exact: true}).click();
             entry.backend = await assertActive();
             await openThemes();
             await installed();
@@ -170,17 +188,16 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         });
         await run('Admin UI rejects a missing-template ZIP without replacing the active release', async entry => {
             await openThemes();
-            const response = page.waitForResponse(uploaded);
-            await select('qa-invalid-theme.zip', invalidArchive());
-            assert((await response).status() === 422, 'Invalid theme was not rejected by Ghost validation');
-            const errorHeading = page.getByText(/^(Invalid Theme|Theme not uploaded)$/);
-            await errorHeading.waitFor();
-            const text = await page.locator('body').innerText();
+            const response = await responseAfter(page, uploaded, () => select('qa-invalid-theme.zip', invalidArchive()));
+            assert(response.status() === 422, 'Invalid theme was not rejected by Ghost validation');
+            const errorDialog = dialog(/^(Invalid Theme|Theme not uploaded)$/);
+            await errorDialog.waitFor();
+            const text = await errorDialog.innerText();
             entry.actionableTemplateError = /index\.hbs/.test(text);
             assert(entry.actionableTemplateError, 'Invalid ZIP feedback does not identify the missing required template');
             await page.screenshot({path: path.join(out, 'admin-ui-invalid-zip.png'), fullPage: true, animations: 'disabled'});
-            await page.getByRole('button', {name: /^(Close|Cancel)$/}).last().click();
-            await errorHeading.waitFor({state: 'hidden'});
+            await errorDialog.getByRole('button', {name: /^(Close|Cancel)$/}).click();
+            await errorDialog.waitFor({state: 'hidden'});
             entry.backend = await assertActive();
             assert(!(await readThemes()).some(theme => theme.name === 'qa-invalid-theme'), 'Invalid theme was installed');
             await frontend(entry);
