@@ -93,7 +93,14 @@
                 if (box.getAttribute('aria-hidden') === 'true') {
                     // Modern Portal makes the row the control; the visual switch is
                     // decorative. Let pointer hits reach that native row handler too.
-                    if (box.closest('[role="button"][aria-pressed]')) box.inert = true;
+                    const row = box.closest('[role="button"][aria-pressed]');
+                    if (row) {
+                        const wrapper = box.parentElement;
+                        // Portal's sole-child wrapper stops click propagation. It
+                        // must be decorative too, so hits reach the native row.
+                        if (wrapper?.tagName === 'DIV' && wrapper !== row && wrapper.childElementCount === 1) wrapper.inert = true;
+                        else box.inert = true;
+                    }
                     continue;
                 }
                 const label = box.closest('section')?.querySelector('h3')?.textContent.trim();

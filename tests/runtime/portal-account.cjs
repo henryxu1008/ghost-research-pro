@@ -7,6 +7,7 @@ const {resolveColors} = require('./contrast.cjs');
 async function checkAccount({page, ctx, base, out, record, mailCount, screenshot}) {
     const evidence = [];
     const contrastEvidence = [];
+    const pointerEvidence = [];
     const popup = () => page.frameLocator('iframe[title="portal-popup"]');
     const memberURL = url => url.origin === base && url.pathname.replace(/\/$/, '') === '/members/api/member';
     const isWrite = response => memberURL(new URL(response.url())) && response.request().method() === 'PUT';
@@ -95,6 +96,14 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
         await control.box.scrollIntoViewIfNeeded();
         const rect = await control.box.boundingBox();
         assert(rect && rect.width > 0 && rect.height > 0, 'Visible switch has no pointer target');
+        const hit = await control.box.evaluate(el => {
+            const rect = el.getBoundingClientRect();
+            const target = el.ownerDocument.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+            const control = target?.closest('[role="switch"],[role="button"][aria-pressed]');
+            return {tag: target?.tagName, className: target?.getAttribute('class'), controlRole: control?.getAttribute('role')};
+        });
+        assert(['button', 'switch'].includes(hit.controlRole), 'Graphic hit target is outside its accessible control');
+        pointerEvidence.push({width: page.viewportSize().width, hit, writesBefore: writes});
         // Hit the actual graphic. Modern decorative markup is inert, so the
         // browser must deliver this point to the native surrounding row.
         await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
@@ -105,6 +114,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             keyboard ? control.row.press('Space') : clickSwitch(control),
         ]);
         assert(response.status() === 200, 'Preference save did not reach the real Ghost API');
+        if (!keyboard) pointerEvidence.at(-1).writesAfter = writes;
     };
     const subscribed = member => Boolean(member.newsletters?.length);
     const run = async (name, action) => {
@@ -203,6 +213,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
                 await waitChecked(control, !before);
                 assert(subscribed(await readMember()) === before, 'Aborted preference save changed server state');
                 assert(attempts === 1, 'Preference failure retried without interaction');
+                pointerEvidence.at(-1).writesAfter = writes;
             } finally { await page.unroute(memberURL, fail); }
             control = await preferences();
             await waitChecked(control, before);
@@ -260,6 +271,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
         page.off('request', countWrite);
         fs.writeFileSync(path.join(out, 'account-results.json'), JSON.stringify(evidence, null, 2));
         fs.writeFileSync(path.join(out, 'account-contrast.json'), JSON.stringify(contrastEvidence, null, 2));
+        fs.writeFileSync(path.join(out, 'account-pointer.json'), JSON.stringify(pointerEvidence, null, 2));
     }
 }
 
