@@ -153,15 +153,19 @@ async function main() {
             html: `<h2>Findings</h2><p>${marker}</p><table><thead><tr><th>Indicator</th><th>Value</th></tr></thead><tbody><tr><td>Sample</td><td>42</td></tr></tbody></table>`,
         }]});
     }
+    let fixturePagePath;
     for (const [slug, template] of [['about', null], ['membership', 'custom-membership']]) {
-        await api(admin, 'post', 'pages/?source=html', {pages: [{title: `QA ${slug}`, slug, status: 'published', html: '<p>QA public page body.</p>', custom_template: template}]});
+        const seeded = await api(admin, 'post', 'pages/?source=html', {pages: [{title: `QA ${slug}`, slug, status: 'published', html: '<p>QA public page body.</p>', custom_template: template}]});
+        // Stock Ghost already seeds /about/. Observe the actual new fixture's
+        // canonical slug rather than expecting its text on the stock page.
+        if (slug === 'about') fixturePagePath = `/${seeded.pages[0].slug}/`;
     }
     await seedEditorCards({runtime, base, api, admin});
     await seedEditorBoundaries({base, api, admin});
     const users = await api(admin, 'get', 'users/me/');
     const authorSlug = users.users[0].slug;
     browser = await chromium.launch({headless: true});
-    await checkAdminUI({browser, admin, base, out, root, archive, record, portalPackage: profile.portalPackage});
+    await checkAdminUI({browser, admin, base, out, root, archive, record, portalPackage: profile.portalPackage, fixturePagePath});
     // Keep the original independent API installation baseline after the UI
     // workflow. It also restores the real theme before all existing checks if
     // an Admin UI case fails. It is never counted as UI installation evidence.

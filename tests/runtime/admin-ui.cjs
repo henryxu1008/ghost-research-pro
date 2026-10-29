@@ -23,11 +23,13 @@ function invalidArchive() {
     }
 }
 
-async function checkAdminUI({browser, admin, base, out, root, archive, record, portalPackage}) {
+async function checkAdminUI({browser, admin, base, out, root, archive, record, portalPackage, fixturePagePath}) {
     const name = 'ghost-research-pro';
     const expectedVersion = JSON.parse(fs.readFileSync(path.join(root, 'package.json'))).version;
     const report = {authentication: 'disposable owner session seeded by existing Admin API fixture; login UI not tested',
-        zipSHA256: hash(archive), packageVersion: expectedVersion, checks: [], externalRequestsBlocked: [], paymentEndpointsBlocked: []};
+        zipSHA256: hash(archive), packageVersion: expectedVersion, checks: [], externalRequestsBlocked: [], paymentEndpointsBlocked: [],
+        resourceFailures: [], browserErrors: []};
+    assert(/^\/about(?:-\d+)?\/$/.test(fixturePagePath), 'Missing canonical disposable page fixture');
     // Cookies remain in memory; no storage state, credentials or raw API data
     // are uploaded. All theme mutations below originate from native UI actions.
     const ctx = await browser.newContext({storageState: await admin.storageState(), viewport: {width: 1440, height: 1000}});
@@ -47,6 +49,20 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
     });
     const page = await ctx.newPage();
     const front = await ctx.newPage();
+    const safeError = text => text.split('\n')[0].replace(/https?:\/\/[^\s"'<>]+/g, value => {
+        try { const url = new URL(value); return url.origin + url.pathname; } catch { return '[url]'; }
+    }).replace(/[A-Za-z0-9_-]{32,}/g, '[redacted]').slice(0, 800);
+    const resourceFailure = (request, status, error) => {
+        const url = new URL(request.url());
+        const item = {origin: url.origin, path: url.pathname, type: request.resourceType(), ...(status ? {status} : {}), ...(error ? {error} : {})};
+        if (report.resourceFailures.length < 80 && !report.resourceFailures.some(previous => JSON.stringify(previous) === JSON.stringify(item))) report.resourceFailures.push(item);
+    };
+    page.on('requestfailed', request => resourceFailure(request, undefined, request.failure()?.errorText));
+    page.on('response', response => { if (response.status() >= 400) resourceFailure(response.request(), response.status()); });
+    page.on('pageerror', error => { if (report.browserErrors.length < 20) report.browserErrors.push({kind: 'uncaught', message: safeError(error.message)}); });
+    page.on('console', message => {
+        if (message.type() === 'error' && report.browserErrors.length < 20) report.browserErrors.push({kind: 'console', message: safeError(message.text())});
+    });
     page.setDefaultTimeout(15000);
     front.setDefaultTimeout(15000);
     const dialog = title => page.getByTestId('confirmation-modal')
@@ -112,12 +128,15 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         entry.frontendCSSMatchesArchive = hash(await css.body()) === hash(fs.readFileSync(path.join(root, 'assets/css/screen.css')));
         assert(entry.frontendCSSMatchesArchive, 'Frontend CSS differs from the uploaded release payload');
         assert(await front.locator('.site-header.wrap').count() === 1, 'Frontend is not rendered by the installed theme');
-        for (const [route, marker] of [['/public-report/', 'PUBLIC_BODY'], ['/about/', 'QA public page body.']]) {
-            await front.goto(base + route, {waitUntil: 'networkidle'});
-            assert((await front.locator('main').innerText()).includes(marker), 'Activated frontend page is missing its fixture content');
+        entry.frontendChecks = [];
+        for (const [route, marker] of [['/public-report/', 'PUBLIC_BODY'], [fixturePagePath, 'QA public page body.']]) {
+            const response = await front.goto(base + route, {waitUntil: 'networkidle'});
+            const observed = {route, status: response.status(), markerVisible: (await front.locator('main').innerText()).includes(marker), markerInHTML: (await front.content()).includes(marker)};
+            entry.frontendChecks.push(observed);
+            await front.screenshot({path: path.join(out, `admin-ui-frontend-${report.checks.length}-${route.replace(/\//g, '')}.png`), fullPage: true, animations: 'disabled'});
+            assert(observed.status === 200 && observed.markerVisible && observed.markerInHTML, `Activated frontend fixture content missing on ${route}`);
         }
-        entry.frontendPages = ['/', '/public-report/', '/about/'];
-        await front.screenshot({path: path.join(out, `admin-ui-frontend-${report.checks.length}.png`), fullPage: true, animations: 'disabled'});
+        entry.frontendPages = ['/', '/public-report/', fixturePagePath];
     };
     const run = async (label, action) => {
         const entry = {name: label, status: 'failed', requests: [], responses: []};
