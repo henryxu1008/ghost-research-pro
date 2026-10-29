@@ -6,6 +6,8 @@ Open-source Ghost theme project for research publishers, B2B intelligence and pr
 
 Installing a development preview? Start with the [installation, configuration, upgrade and rollback guide](docs/user-guide.md). It distinguishes the installable artifact from a source ZIP and documents the controls this theme actually exposes.
 
+Preparing a demonstration publication? Use the [demo content setup plan](docs/demo-content.md) for fictional reports, Briefs, a members-only post and a manual homepage/archive checklist.
+
 ## Roadmap
 
 Track research, product requirements, design, implementation and release in [GitHub Issues](https://github.com/qq550723504/ghost-research-pro/issues).

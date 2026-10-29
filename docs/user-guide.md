@@ -55,6 +55,8 @@ These rules apply to the theme's own prompts. Publication navigation, editor lin
 
 The page introduction and editor content are editable in Ghost. The homepage eyebrow, section labels, membership-option copy, theme palette and 12-post default are currently theme source values. They are not additional Admin controls.
 
+To populate a disposable publication, follow the [research demo content recipe](demo-content.md). It supplies fictional Research, Brief and members-only examples, ordered tags, public summaries, pages and a manual homepage/archive walkthrough. The recipe does not create content or change membership settings automatically.
+
 ## Update the theme
 
 1. Download the current installed theme and retain the exact candidate ZIP/commit, as above. Preserve your code edits separately: overwriting replaces those files.
