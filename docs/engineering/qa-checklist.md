@@ -1,5 +1,7 @@
 # Ghost Research Pro — installation and acceptance checklist
 
+The [first-version PRD](../product/prd.md#acceptance-matrix) defines user-facing acceptance and scope; its [release gates](../product/prd.md#release-gates) distinguish implementation evidence from unexecuted checks and commercial readiness. The [market gate](../product/market-validation.md#issue-and-completion-boundary) remains separate from CI. Historical passes below do not override current failures.
+
 ## CI evidence
 The first complete runtime acceptance passed in [workflow 40661983220](https://github.com/qq550723504/ghost-research-pro/actions/runs/40661983220), commit `ac89607494ccf5f8f83d8eb40683338fabe818a0`: **34 checks passed**, including stock Ghost 6.73.0 initialization, real ZIP activation, page routes, member authorization and Chromium smoke checks. The `ghost-runtime-acceptance` artifact includes JSON results and 12 screenshots. See [runtime acceptance](runtime-acceptance.md) for setup, diagnosis and limits.
 

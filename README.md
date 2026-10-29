@@ -8,6 +8,10 @@ Installing a development preview? Start with the [installation, configuration, u
 
 Preparing a demonstration publication? Use the [demo content setup plan](docs/demo-content.md) for fictional reports, Briefs, a members-only post and a manual homepage/archive checklist.
 
+## Product definition
+
+The [first-version PRD](docs/product/prd.md) records the selected small research-publication scope, testable acceptance criteria and remaining release gates. The [market evidence](docs/product/market-validation.md) compares 10 themes and 20 Ghost-listed publication examples; it does **not** validate 20 commercial buyers or customer demand. Customer conversations, validated unmet needs and paid-intent signals remain **0/5, 0/3 and 0/2** respectively.
+
 ## Roadmap
 
 Track research, product requirements, design, implementation and release in [GitHub Issues](https://github.com/qq550723504/ghost-research-pro/issues).
