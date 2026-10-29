@@ -31,8 +31,8 @@ The test runner:
 
 1. Starts stock Ghost with a new SQLite database, listening only on `127.0.0.1:2368`.
 2. Creates a disposable owner via the setup API, then logs into the Admin API.
-3. Uploads the actual built ZIP, activates it and reads back the active theme.
-4. Creates public, members-only, paid and tier-restricted research fixtures, plus page, author and tag routes.
+3. Creates public, members-only, paid and tier-restricted research fixtures, plus page, author and tag routes.
+4. Exercises the [official Admin UI](admin-ui-acceptance.md) for actual ZIP upload/activation, cancellation, repeat upload and invalid-template feedback, then retains the independent API installation baseline before all existing theme checks.
 5. Creates test members and assigns two complimentary tier fixtures in the disposable database.
 6. Requests real member sign-in links, captures them in a loopback-only SMTP sink and redeems them through Ghost to obtain real session cookies.
 7. Checks response HTML for authorized content and absence of secret markers for unauthorized visitors, including anonymous requests after a privileged session, wrong-tier access and revoked sessions.

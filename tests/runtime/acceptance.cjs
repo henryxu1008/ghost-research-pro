@@ -14,6 +14,7 @@ const {audit, checkCoreKeyboard} = require('./accessibility.cjs');
 const {checkAdapterBoundaries} = require('./adapter-boundary.cjs');
 const {checkDelayedPortalOpen} = require('./portal-interruption.cjs');
 const {seedEditorBoundaries, checkEditorBoundaries} = require('./editor-boundaries.cjs');
+const {checkAdminUI} = require('./admin-ui.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -133,12 +134,6 @@ async function main() {
     await api(admin, 'post', 'authentication/setup/', {setup: [{name: 'QA Researcher', email: 'owner@example.test', password, blogTitle: 'Research QA'}]});
     await api(admin, 'post', 'session/', {username: 'owner@example.test', password});
     const archive = fs.readFileSync(path.join(root, 'dist/ghost-research-pro.zip'));
-    await api(admin, 'post', 'themes/upload/', null, {multipart: {file: {name: 'ghost-research-pro.zip', mimeType: 'application/zip', buffer: archive}}});
-    await api(admin, 'put', 'themes/ghost-research-pro/activate/');
-    const active = await api(admin, 'get', 'themes/active/');
-    assert.equal(active.themes[0].name, 'ghost-research-pro');
-    assert.equal(active.themes[0].active, true);
-    record('Built ZIP uploads and activates through Ghost Admin API');
 
     const tiers = [];
     for (const name of ['Research A', 'Research B']) {
@@ -165,6 +160,17 @@ async function main() {
     await seedEditorBoundaries({base, api, admin});
     const users = await api(admin, 'get', 'users/me/');
     const authorSlug = users.users[0].slug;
+    browser = await chromium.launch({headless: true});
+    await checkAdminUI({browser, admin, base, out, root, archive, record, portalPackage: profile.portalPackage});
+    // Keep the original independent API installation baseline after the UI
+    // workflow. It also restores the real theme before all existing checks if
+    // an Admin UI case fails. It is never counted as UI installation evidence.
+    await api(admin, 'post', 'themes/upload/', null, {multipart: {file: {name: 'ghost-research-pro.zip', mimeType: 'application/zip', buffer: archive}}});
+    await api(admin, 'put', 'themes/ghost-research-pro/activate/');
+    const active = await api(admin, 'get', 'themes/active/');
+    assert.equal(active.themes[0].name, 'ghost-research-pro');
+    assert.equal(active.themes[0].active, true);
+    record('Built ZIP uploads and activates through Ghost Admin API');
     const anon = await context();
     for (const route of ['/', '/public-report/', '/tag/research/', `/author/${authorSlug}/`, '/about/', '/membership/']) {
         const response = await anon.get(route);
@@ -229,7 +235,6 @@ async function main() {
     assert(!revoked.includes('TIER_A_SECRET_59c'), 'Revoked member session retained restricted content');
     record('Admin session revocation removes access');
 
-    browser = await chromium.launch({headless: true});
     await checkAdapterBoundaries({browser, out, record});
     await checkDelayedPortalOpen({browser, out, record});
     await checkEditorCards({browser, base, out, record});

@@ -37,7 +37,7 @@ The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296b
 
 See the [Portal repair boundary and release route](portal-release-decision.md) for the smallest upstream responsibilities, support options and the next independent installation deliverable. The current supported scope and strict failures are unchanged.
 
-- [ ] Manually exercise Ghost Admin UI theme installation; automated installation currently uses the same backend API.
+- [ ] Verify actual Ghost Admin UI upload/activation, cancellation, repeat upload and invalid-ZIP feedback using the [browser probes](admin-ui-acceptance.md). The older API baseline alone does not establish UI acceptance.
 - [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.
 - [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
 - [ ] Full accessibility audit, screen readers, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
