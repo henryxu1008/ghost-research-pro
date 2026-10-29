@@ -28,7 +28,7 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
     const expectedVersion = JSON.parse(fs.readFileSync(path.join(root, 'package.json'))).version;
     const report = {authentication: 'disposable owner session seeded by existing Admin API fixture; login UI not tested',
         zipSHA256: hash(archive), packageVersion: expectedVersion, checks: [], externalRequestsBlocked: [], paymentEndpointsBlocked: [],
-        resourceFailures: [], browserErrors: []};
+        resourceFailures: [], moduleResponses: [], browserErrors: []};
     assert(/^\/about(?:-\d+)?\/$/.test(fixturePagePath), 'Missing canonical disposable page fixture');
     // Cookies remain in memory; no storage state, credentials or raw API data
     // are uploaded. All theme mutations below originate from native UI actions.
@@ -52,16 +52,38 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
     const safeError = text => text.split('\n')[0].replace(/https?:\/\/[^\s"'<>]+/g, value => {
         try { const url = new URL(value); return url.origin + url.pathname; } catch { return '[url]'; }
     }).replace(/[A-Za-z0-9_-]{32,}/g, '[redacted]').slice(0, 800);
+    const recordError = (kind, message) => {
+        const item = {kind, message: safeError(message)};
+        if (report.browserErrors.length < 40 && !report.browserErrors.some(previous => JSON.stringify(previous) === JSON.stringify(item))) report.browserErrors.push(item);
+    };
+    // Observe Vite's actual rejected import before React's error boundary or
+    // automatic reload handles it. Do not prevent the event or alter loading.
+    await ctx.exposeBinding('__qaAdminDiagnostic', (source, item) => recordError(item.kind, item.message));
+    await ctx.addInitScript(() => {
+        window.addEventListener('vite:preloadError', event => {
+            window.__qaAdminDiagnostic({kind: 'vite-preload', message: String(event.payload?.message || event.payload)}).catch(() => {});
+        });
+        window.addEventListener('securitypolicyviolation', event => {
+            window.__qaAdminDiagnostic({kind: 'csp', message: `${event.violatedDirective}: ${event.blockedURI}`}).catch(() => {});
+        });
+    });
     const resourceFailure = (request, status, error) => {
         const url = new URL(request.url());
         const item = {origin: url.origin, path: url.pathname, type: request.resourceType(), ...(status ? {status} : {}), ...(error ? {error} : {})};
         if (report.resourceFailures.length < 80 && !report.resourceFailures.some(previous => JSON.stringify(previous) === JSON.stringify(item))) report.resourceFailures.push(item);
     };
-    page.on('requestfailed', request => resourceFailure(request, undefined, request.failure()?.errorText));
-    page.on('response', response => { if (response.status() >= 400) resourceFailure(response.request(), response.status()); });
-    page.on('pageerror', error => { if (report.browserErrors.length < 20) report.browserErrors.push({kind: 'uncaught', message: safeError(error.message)}); });
+    ctx.on('requestfailed', request => resourceFailure(request, undefined, request.failure()?.errorText));
+    ctx.on('response', response => {
+        if (response.status() >= 400) resourceFailure(response.request(), response.status());
+        const url = new URL(response.url());
+        if (url.origin === base && url.pathname.startsWith('/ghost/assets/') && /\.(?:js|css)$/.test(url.pathname)) {
+            const item = {path: url.pathname, status: response.status(), mime: response.headers()['content-type']};
+            if (report.moduleResponses.length < 600 && !report.moduleResponses.some(previous => JSON.stringify(previous) === JSON.stringify(item))) report.moduleResponses.push(item);
+        }
+    });
+    page.on('pageerror', error => recordError('uncaught', error.message));
     page.on('console', message => {
-        if (message.type() === 'error' && report.browserErrors.length < 20) report.browserErrors.push({kind: 'console', message: safeError(message.text())});
+        if (message.type() === 'error') recordError('console', message.text());
     });
     page.setDefaultTimeout(15000);
     front.setDefaultTimeout(15000);
