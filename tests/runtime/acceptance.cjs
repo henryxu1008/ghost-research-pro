@@ -15,6 +15,7 @@ const {checkAdapterBoundaries} = require('./adapter-boundary.cjs');
 const {checkDelayedPortalOpen} = require('./portal-interruption.cjs');
 const {seedEditorBoundaries, checkEditorBoundaries} = require('./editor-boundaries.cjs');
 const {checkAdminUI} = require('./admin-ui.cjs');
+const {checkMembershipSettings} = require('./membership-settings.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -234,6 +235,8 @@ async function main() {
         }
     }
     await checkEditorAccess({anon, free, tierA, record});
+    await checkMembershipSettings({browser, admin, base, out, root, runtime, portalPackage: profile.portalPackage,
+        contexts: {anonymous: anon, free, 'complimentary-paid': tierA}, record});
     await api(admin, 'delete', `members/${memberData[1].id}/sessions/`);
     const revoked = await (await tierA.get('/tier-report/')).text();
     assert(!revoked.includes('TIER_A_SECRET_59c'), 'Revoked member session retained restricted content');

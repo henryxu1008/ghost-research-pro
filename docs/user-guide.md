@@ -43,12 +43,15 @@ The theme currently has no custom controls under theme design settings. Use Ghos
 | Post feature image and alt text | Image on the full report page. Research cards currently use a text layout. |
 | Page title/feature-image visibility | The normal page header follows the editor's visibility control. The Membership template uses the title/excerpt visibility control for its own introduction. |
 | Post access setting | Ghost controls public, members, paid and tier-specific bodies. Titles, excerpts, tags and feature images remain public metadata; place protected findings in the protected body. |
+| Membership signup access | Public signup offers free registration; paid-only offers plans only when Ghost reports paid signup available; invitation-only offers sign in without open registration. Existing members retain account links. |
 
 Create ordinary static content under **Pages**. Publish it, copy its actual URL, then add it to primary navigation if needed. A requested slug can already be occupied; use the published URL rather than assuming `/about/` is yours. See [Ghost pages](https://ghost.org/help/pages/).
 
-For the membership landing page, create a page and select **Membership** in the editor's **Template** setting, then publish it. Add its actual URL to navigation. The theme supplies the layout, not a pre-created page. Signed-out readers see free signup and, when enabled in Ghost, a paid-membership link; signed-in readers get account management. These buttons open native Portal. They do not create products or configure billing. Actual paid checkout and lifecycle acceptance remain unexecuted.
+For the membership landing page, create a page and select **Membership** in the editor's **Template** setting, then publish it. Add its actual URL to navigation. The theme supplies the layout, not a pre-created page. Its buttons open native Portal; they do not create products or configure billing.
 
-The current Membership layout always includes a free-signup invitation for signed-out visitors. Paid-only and invite-only signup combinations have not been validated; check your publication's signup access before evaluating that landing page.
+The Membership page follows Ghost's signup access setting. In public signup mode it offers **Join for free**, plus **View plans** when paid memberships are available. Paid-only mode never promises a free membership: it shows **View plans** when available, or an unavailable message and **Sign in** while paid signup is unavailable. Invitation-only mode shows an invitation notice and **Sign in**, with no open-registration button. Free and paid-access members who are already signed in get **Manage membership**. The header, homepage and public-report prompts follow the same availability rules; the homepage sends existing members to their account instead of asking them to register again.
+
+These rules apply to the theme's own prompts. Publication navigation, editor links, code injection and native Portal settings remain under your control. The [configuration acceptance scope](engineering/membership-signup-acceptance.md) separates real signup-setting/member checks from render-only paid-enabled examples. Actual Stripe checkout and paid lifecycle acceptance remain unexecuted.
 
 The page introduction and editor content are editable in Ghost. The homepage eyebrow, section labels, membership-option copy, theme palette and 12-post default are currently theme source values. They are not additional Admin controls.
 
