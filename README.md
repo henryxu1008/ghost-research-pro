@@ -25,7 +25,7 @@ Public source repository, with optional paid installation, customization and sup
 
 ## Local checks and packaging
 
-Use Node.js 22.17+ (22.x) or 24.x, npm, and the `zip` command (Linux/macOS or WSL).
+Use Node.js 22.17+ (22.x) or 24.x and npm. Packaging uses Node's built-in modules; a system `zip` command or WSL is not required.
 
 ```sh
 npm ci --ignore-scripts
@@ -33,11 +33,16 @@ npm run test:security
 npm run test:contrast
 npm run audit:ci
 npm run test:ci
+node --test tests/package.test.cjs
 npm run zip
 npm run test:zip
 ```
 
-Install `dist/ghost-research-pro.zip` in Ghost Admin. Both local development and CI use this packaging command. It includes template partials and recreates the archive to prevent stale entries. Development dependencies and project scripts are excluded.
+Install `dist/ghost-research-pro.zip` in Ghost Admin. Both local development and CI use this packaging command. It includes template partials and recreates the archive to prevent stale entries. Development dependencies and project scripts are excluded. The command prints the installable ZIP's SHA-256; this is distinct from GitHub's outer artifact-download ZIP hash.
+
+For identical payload paths and file bytes, packaging is deterministic: entries sort by UTF-8 path bytes, use the fixed DOS timestamp `1980-01-01 00:00:00`, and record regular Unix `0644` files without extra fields, comments, owner IDs or directory entries. Files use ZIP's uncompressed **stored** method so different Node/zlib compressor versions cannot change the output. The current small theme therefore has a slightly larger archive; file contents and install paths are preserved. Only root `*.hbs`, `package.json`, and files under `assets/` and `partials/` are included, excluding `*.map`; symlinks and non-regular inputs are rejected. The writer supports ZIP32 only and fails rather than silently overflowing its limits.
+
+The packaging regression checks creation order, file times/modes/timezones, excluded documentation/dependencies, changed/removed payload files, independent ZIP extraction and CLI replacement. CI runs them with both pinned runtime Node versions. Git attributes fix LF checkout bytes for the packaged text files; the packager itself does not rewrite text, normalize binary bytes or derive metadata from checkout time. Different file bytes intentionally produce a different hash. See the [reproducible packaging notes](docs/engineering/reproducible-packaging.md) for the original evidence and verification boundary.
 
 Validation runs all GScan rules for Ghost 5 and 6 and fails on errors **or warnings**. Static compatibility checks do not prove runtime compatibility with every Ghost minor version. See [QA checklist](docs/engineering/qa-checklist.md) for remaining release gates. The author email in package metadata is the repository owner's GitHub noreply address, not a customer support inbox.
 

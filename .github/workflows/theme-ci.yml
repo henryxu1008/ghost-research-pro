@@ -24,10 +24,14 @@ jobs:
         run: npm run audit:ci
       - name: Validate Ghost theme
         run: npm run test:ci
+      - name: Verify reproducible theme packaging
+        run: node --test tests/package.test.cjs
       - name: Package theme
         run: npm run zip
       - name: Validate installable archive
         run: npm run test:zip
+      - name: Verify archive CRCs with independent unzip
+        run: unzip -t dist/ghost-research-pro.zip
       - uses: actions/upload-artifact@v4
         with:
           name: ghost-research-pro-theme
@@ -60,6 +64,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm ci --ignore-scripts
+      - name: Verify reproducible theme packaging
+        run: node --test tests/package.test.cjs
       - run: npm run zip
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
