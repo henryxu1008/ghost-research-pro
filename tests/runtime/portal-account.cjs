@@ -88,10 +88,21 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
         assert(response.status() === 200, 'Profile save did not reach the real Ghost API');
         await popup().getByRole('heading', {name: 'Your account', exact: true}).waitFor();
     };
+    const clickSwitch = async control => {
+        await control.box.evaluate(async el => Promise.all(el.ownerDocument.getAnimations()
+            .filter(animation => animation.effect?.getTiming().iterations !== Infinity)
+            .map(animation => animation.finished.catch(() => {}))));
+        await control.box.scrollIntoViewIfNeeded();
+        const rect = await control.box.boundingBox();
+        assert(rect && rect.width > 0 && rect.height > 0, 'Visible switch has no pointer target');
+        // Hit the actual graphic. Modern decorative markup is inert, so the
+        // browser must deliver this point to the native surrounding row.
+        await page.mouse.click(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    };
     const toggle = async (control, keyboard = false) => {
         const [response] = await Promise.all([
             page.waitForResponse(isWrite),
-            keyboard ? control.row.press('Space') : (await control.box.getAttribute('aria-hidden') === 'true' ? control.row : control.box.locator('.input-toggle-component')).click(),
+            keyboard ? control.row.press('Space') : clickSwitch(control),
         ]);
         assert(response.status() === 200, 'Preference save did not reach the real Ghost API');
     };
@@ -187,7 +198,7 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
             const fail = route => route.request().method() === 'PUT' ? (attempts++, route.abort('failed')) : route.fallback();
             await page.route(memberURL, fail);
             try {
-                await (await control.box.getAttribute('aria-hidden') === 'true' ? control.row : control.box.locator('.input-toggle-component')).click();
+                await clickSwitch(control);
                 await popup().getByText('Failed to update newsletter settings', {exact: true}).waitFor();
                 await waitChecked(control, !before);
                 assert(subscribed(await readMember()) === before, 'Aborted preference save changed server state');
