@@ -12,6 +12,7 @@
     "test:ci": "npm test",
     "zip": "node scripts/package.cjs",
     "test:zip": "node scripts/validate.cjs dist/ghost-research-pro.zip",
+    "test:toc": "node --test tests/runtime/toc-unit.test.cjs tests/runtime/toc.test.cjs",
     "test:runtime": "node tests/runtime/acceptance.cjs",
     "test:security": "node --test tests/security/audit.test.cjs",
     "test:contrast": "node --test tests/runtime/contrast.test.cjs",

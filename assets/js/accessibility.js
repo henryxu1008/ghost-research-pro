@@ -1,5 +1,46 @@
 (() => {
     'use strict';
+    // Read only headings Ghost has rendered for this visitor. Never request the
+    // full post, and do not include upgrade prompts or hidden card content.
+    for (const toc of document.querySelectorAll('.report > .report-toc')) {
+        const content = toc.parentElement.querySelector('.gh-content');
+        const list = toc.querySelector('ol');
+        if (!content || !list) continue;
+        let section;
+        for (const heading of content.querySelectorAll('h2,h3')) {
+            if (heading.closest('[hidden],[inert],[aria-hidden="true"],details:not([open]),.gh-post-upgrade-cta') ||
+                !heading.getClientRects().length || getComputedStyle(heading).visibility !== 'visible' ||
+                (heading.checkVisibility && !heading.checkVisibility({checkOpacity: true, checkVisibilityCSS: true}))) continue;
+            const label = heading.innerText.trim();
+            if (!label) continue;
+            if (!heading.id) {
+                const slug = Array.from(label.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '')).slice(0, 80).join('') || 'section';
+                const base = `report-${slug}`;
+                let id = base, suffix = 2;
+                while (document.getElementById(id)) id = `${base}-${suffix++}`;
+                heading.id = id;
+            }
+            // Preserve author-supplied IDs, but never link to a different node
+            // when authored markup already contains a duplicate ID.
+            if (document.getElementById(heading.id) !== heading) continue;
+            if (!heading.hasAttribute('tabindex')) heading.tabIndex = -1;
+            const item = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = `#${encodeURIComponent(heading.id)}`;
+            link.textContent = label;
+            item.append(link);
+            if (heading.tagName === 'H3' && section) {
+                let children = section.querySelector('ol');
+                if (!children) { children = document.createElement('ol'); section.append(children); }
+                children.append(item);
+            } else {
+                list.append(item);
+                if (heading.tagName === 'H2') section = item;
+            }
+        }
+        toc.hidden = !list.children.length;
+    }
+
     const frameSelector = 'iframe[title="portal-popup"]';
     let trigger;
     let active;
