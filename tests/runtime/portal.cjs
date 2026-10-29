@@ -5,7 +5,7 @@ const path = require('node:path');
 const {checkPortalKeyboard} = require('./portal-keyboard.cjs');
 const {checkAccount} = require('./portal-account.cjs');
 
-module.exports.checkPortal = async function checkPortal({browser, base, out, record, memberLink, mailCount, portalPackage}) {
+module.exports.checkPortal = async function checkPortal({browser, base, out, record, memberLink, mailCount, portalPackage, withComments}) {
     const bundle = path.join(path.dirname(require.resolve(`${portalPackage}/package.json`)), 'umd/portal.min.js');
     const ctx = await browser.newContext({viewport: {width: 360, height: 1000}});
     const forbidden = [];
@@ -131,7 +131,7 @@ module.exports.checkPortal = async function checkPortal({browser, base, out, rec
         await page.getByRole('link', {name: 'Account', exact: true}).click();
         await popup().getByRole('heading', {name: 'Your account', exact: true}).waitFor({state: 'visible'});
         record('Theme header Account link opens real Portal account UI');
-        await checkAccount({page, ctx, base, out, record, mailCount, screenshot});
+        await checkAccount({page, ctx, base, out, record, mailCount, screenshot, withComments});
         assert.deepEqual(forbidden, [], 'Portal attempted a payment endpoint');
         record('Portal free flows request no checkout or billing endpoints');
         await checkPortalKeyboard({page, ctx, base, out, record, mailCount});

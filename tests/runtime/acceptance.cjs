@@ -29,7 +29,7 @@ assert(!runtime.startsWith(root), 'Ghost test data must live outside the theme r
 const base = 'http://127.0.0.1:2368';
 const out = path.join(root, 'artifacts/runtime');
 fs.mkdirSync(out, {recursive: true});
-const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account writes update disposable fixture names/newsletter subscriptions. HTTP 503/429 are injected only for local failure probes; successful recovery must reach real Ghost. See account-http.json for strict outcomes. Email-address/custom-field changes and comment-preference writes are not covered. No real email or checkout.'};
+const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account writes update disposable fixture names/newsletter/comment preferences. HTTP 503/429 and network aborts are injected only for local failure probes; successful recovery must reach real Ghost. See account-http.json and comment-preferences.json for strict outcomes. Email-address/custom-field/announcement changes are not covered. No real email or checkout.'};
 const record = (name, error) => {
     results.checks.push({name, status: error ? 'failed' : 'passed', ...(error ? {error} : {})});
     console.log(`${error ? 'FAIL' : 'PASS'} ${name}${error ? ': ' + error : ''}`);
@@ -241,7 +241,13 @@ async function main() {
         {key: 'portal_name', value: true},
     ]});
     try {
-        await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length, portalPackage: profile.portalPackage});
+        const withComments = async action => {
+            const before = (await api(admin, 'get', 'settings/')).settings.find(setting => setting.key === 'comments_enabled').value;
+            await api(admin, 'put', 'settings/', {settings: [{key: 'comments_enabled', value: 'all'}]});
+            try { await action(); }
+            finally { await api(admin, 'put', 'settings/', {settings: [{key: 'comments_enabled', value: before}]}); }
+        };
+        await checkPortal({browser, base, out, record, memberLink, mailCount: () => emails.length, portalPackage: profile.portalPackage, withComments});
     } catch (error) { record('Portal free-flow completion', error.message); }
     for (const width of [360, 768, 1440]) {
         const page = await browser.newPage({viewport: {width, height: 1000}});

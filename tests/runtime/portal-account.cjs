@@ -4,8 +4,9 @@ const path = require('node:path');
 const {probe, audit} = require('./accessibility.cjs');
 const {resolveColors} = require('./contrast.cjs');
 const {checkAccountHTTP} = require('./account-http.cjs');
+const {checkCommentPreferences} = require('./comment-preferences.cjs');
 
-async function checkAccount({page, ctx, base, out, record, mailCount, screenshot}) {
+async function checkAccount({page, ctx, base, out, record, mailCount, screenshot, withComments}) {
     const evidence = [];
     const contrastEvidence = [];
     const pointerEvidence = [];
@@ -244,6 +245,8 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
         });
         await checkAccountHTTP({page, out, record, mailCount, profile, preferences,
             clickSwitch: control => clickSwitch(control, {recordPointer: false}), waitChecked, readMember, memberURL, isWrite});
+        await withComments(() => checkCommentPreferences({page, out, record, mailCount, home, activate,
+            clickSwitch: control => clickSwitch(control, {recordPointer: false}), waitChecked, readMember, memberURL, isWrite}));
         await run('Portal signout removes fixture profile data from HTML, API and reopened UI', async () => {
             assert(mailCount() === initialMail, 'Profile or preference flow sent unexpected mail');
             const member = await readMember();
