@@ -4,9 +4,38 @@ const os = require('node:os');
 const path = require('node:path');
 const {createHash} = require('node:crypto');
 const {execFileSync} = require('node:child_process');
+const {createRequire} = require('node:module');
 const {probe} = require('./accessibility.cjs');
 
 const hash = buffer => createHash('sha256').update(buffer).digest('hex');
+
+async function upgradeArchive(root, version) {
+    const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'ghost-admin-upgrade-'));
+    try {
+        const payload = path.join(temporary, 'payload');
+        fs.mkdirSync(payload);
+        for (const file of fs.readdirSync(root).filter(file => file.endsWith('.hbs'))) {
+            fs.copyFileSync(path.join(root, file), path.join(payload, file));
+        }
+        for (const folder of ['assets', 'partials']) fs.cpSync(path.join(root, folder), path.join(payload, folder), {recursive: true});
+        const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json')));
+        pkg.version = version;
+        fs.writeFileSync(path.join(payload, 'package.json'), JSON.stringify(pkg));
+        const template = fs.readFileSync(path.join(payload, 'default.hbs'), 'utf8');
+        assert(template.includes('<body class="{{body_class}}">'), 'Missing upgrade fixture insertion point');
+        fs.writeFileSync(path.join(payload, 'default.hbs'), template.replace('<body class="{{body_class}}">', '<body class="{{body_class}}" data-qa-theme-revision="upgrade">'));
+        fs.appendFileSync(path.join(payload, 'assets/css/screen.css'), '\n/* Disposable upgrade fixture only. */\n:root{--qa-theme-revision:upgrade}\n');
+        // GScan already declares this locked ZIP utility. It only builds a
+        // disposable variant; the release ZIP and packager remain untouched.
+        const zip = createRequire(require.resolve('gscan/package.json'))('@tryghost/zip');
+        const destination = path.join(temporary, 'ghost-research-pro.zip');
+        await zip.compress(payload, destination, {ignore: ['**/*.map']});
+        return {archive: fs.readFileSync(destination), css: fs.readFileSync(path.join(payload, 'assets/css/screen.css'))};
+    } finally {
+        assert(path.resolve(temporary).startsWith(path.resolve(os.tmpdir()) + path.sep + 'ghost-admin-upgrade-'));
+        fs.rmSync(temporary, {recursive: true, force: true});
+    }
+}
 
 function invalidArchive() {
     const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'ghost-admin-negative-'));
@@ -33,7 +62,7 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
     assert(/^\/about(?:-\d+)?\/$/.test(fixturePagePath), 'Missing canonical disposable page fixture');
     // Cookies remain in memory; no storage state, credentials or raw API data
     // are uploaded. All theme mutations below originate from native UI actions.
-    const ctx = await browser.newContext({storageState: await admin.storageState(), viewport: {width: 1440, height: 1000}});
+    const ctx = await browser.newContext({storageState: await admin.storageState(), viewport: {width: 1440, height: 1000}, acceptDownloads: true});
     const bundle = path.join(path.dirname(require.resolve(`${portalPackage}/package.json`)), 'umd/portal.min.js');
     await ctx.route('**/*', route => {
         const url = new URL(route.request().url());
@@ -130,9 +159,9 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         assert(response.status() === 200, 'Cannot observe disposable theme state');
         return (await response.json()).themes;
     };
-    const assertActive = async () => {
+    const assertActive = async (version = expectedVersion) => {
         const themes = await readThemes(), own = themes.filter(theme => theme.name === name);
-        assert(own.length === 1 && own[0].active && own[0].package?.version === expectedVersion, 'Active theme name/version/uniqueness is incorrect');
+        assert(own.length === 1 && own[0].active && own[0].package?.version === version, 'Active theme name/version/uniqueness is incorrect');
         return {name, version: own[0].package.version, active: true, count: own.length};
     };
     const openThemes = async () => {
@@ -140,32 +169,34 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
         await page.goto(`${base}/ghost/#/settings/design/change-theme`, {waitUntil: 'domcontentloaded'});
         await page.getByRole('button', {name: 'Upload theme', exact: true}).waitFor();
     };
-    const installed = async () => {
+    const installed = async (version = expectedVersion) => {
         await page.getByRole('tab', {name: 'Installed', exact: true})
             .or(page.getByRole('button', {name: 'Installed', exact: true})).click();
         const row = page.locator('[data-testid="theme-list-item"]').filter({hasText: name});
         await row.waitFor();
-        assert((await row.innerText()).includes(expectedVersion), 'Admin list does not show the packaged version');
+        assert((await row.innerText()).includes(version), 'Admin list does not show the packaged version');
         assert((await row.innerText()).includes('Active'), 'Admin list does not identify the active theme');
+        return row;
     };
     const select = async (fileName, buffer) => {
         expectedUpload = buffer;
         await page.getByRole('button', {name: 'Upload theme', exact: true}).click();
         await page.locator('input#theme-upload').setInputFiles({name: fileName, mimeType: 'application/zip', buffer});
     };
-    const frontend = async entry => {
+    const frontend = async (entry, expectedCSS = fs.readFileSync(path.join(root, 'assets/css/screen.css')), revision = null) => {
         const css = await responseAfter(front, response => new URL(response.url()).pathname === '/assets/css/screen.css',
             () => front.goto(base, {waitUntil: 'networkidle'}));
         assert(css.status() === 200, 'Activated theme stylesheet was not delivered');
-        entry.frontendCSSMatchesArchive = hash(await css.body()) === hash(fs.readFileSync(path.join(root, 'assets/css/screen.css')));
+        entry.frontendCSSMatchesArchive = hash(await css.body()) === hash(expectedCSS);
         assert(entry.frontendCSSMatchesArchive, 'Frontend CSS differs from the uploaded release payload');
         assert(await front.locator('.site-header.wrap').count() === 1, 'Frontend is not rendered by the installed theme');
+        assert.equal(await front.locator('body').getAttribute('data-qa-theme-revision'), revision, 'Frontend template revision differs from the selected archive');
         entry.frontendChecks = [];
         for (const [route, marker] of [['/public-report/', 'PUBLIC_BODY'], [fixturePagePath, 'QA public page body.']]) {
             const response = await front.goto(base + route, {waitUntil: 'networkidle'});
             const observed = {route, status: response.status(), markerVisible: (await front.locator('main').innerText()).includes(marker), markerInHTML: (await front.content()).includes(marker)};
             entry.frontendChecks.push(observed);
-            await front.screenshot({path: path.join(out, `admin-ui-frontend-${report.checks.length}-${route.replace(/\//g, '')}.png`), fullPage: true, animations: 'disabled'});
+            await front.screenshot({path: path.join(out, `admin-ui-frontend-${report.checks.length}-${entry.version ? entry.version + '-' : ''}${route.replace(/\//g, '')}.png`), fullPage: true, animations: 'disabled'});
             assert(observed.status === 200 && observed.markerVisible && observed.markerInHTML, `Activated frontend fixture content missing on ${route}`);
         }
         entry.frontendPages = ['/', '/public-report/', fixturePagePath];
@@ -236,6 +267,77 @@ async function checkAdminUI({browser, admin, base, out, root, archive, record, p
             await openThemes();
             await installed();
             assert(entry.requests.length === 1 && entry.requests[0].method === 'POST' && entry.requests[0].containsSelectedArchive && entry.responses[0].status === 200, 'Repeat upload duplicated a theme mutation');
+        });
+        await run('Admin UI upgrades and rolls back the active theme without changing publication data', async entry => {
+            await openThemes();
+            const row = await installed();
+            entry.backupMenuButtons = await row.getByRole('button').evaluateAll(buttons => buttons.map(button => ({
+                text: button.textContent, label: button.getAttribute('aria-label'), title: button.getAttribute('title'), hasPopup: button.getAttribute('aria-haspopup'),
+            })));
+            await row.getByRole('button', {name: /Menu|More|Actions|Options/i})
+                .or(row.locator('button[aria-haspopup="true"],button[aria-haspopup="menu"]')).click();
+            await page.screenshot({path: path.join(out, 'admin-ui-backup-menu.png'), fullPage: true, animations: 'disabled'});
+            const downloadAction = page.getByRole('menuitem', {name: /^Download(?: theme)?$/})
+                .or(page.getByRole('link', {name: /^Download(?: theme)?$/}))
+                .or(page.getByRole('button', {name: /^Download(?: theme)?$/}));
+            const [download] = await Promise.all([page.waitForEvent('download'), downloadAction.click()]);
+            assert.equal(await download.failure(), null, 'Native theme backup download failed');
+            const chunks = [];
+            for await (const chunk of await download.createReadStream()) chunks.push(chunk);
+            const backup = Buffer.concat(chunks);
+            assert(backup.length > 0, 'Downloaded backup ZIP is empty');
+            entry.backup = {source: 'native installed-theme Download action', filename: download.suggestedFilename(), zipSHA256: hash(backup)};
+            assert(/^\d+\.\d+\.\d+$/.test(expectedVersion), 'Upgrade probe needs a plain release version');
+            const next = expectedVersion.split('.').map(Number); next[2]++;
+            const version = `${next.join('.')}-qa-upgrade`;
+            const candidate = await upgradeArchive(root, version);
+            const snapshot = async () => {
+                const get = async route => {
+                    const response = await admin.get(`${base}/ghost/api/admin/${route}`);
+                    assert.equal(response.status(), 200, 'Cannot observe disposable publication data');
+                    return response.json();
+                };
+                const settings = (await get('settings/')).settings
+                    .filter(item => ['title', 'description', 'navigation', 'secondary_navigation', 'logo', 'accent_color', 'members_signup_access', 'paid_members_enabled', 'comments_enabled'].includes(item.key))
+                    .map(({key, value}) => ({key, value})).sort((a, b) => a.key.localeCompare(b.key));
+                const content = items => items.map(item => ({id: item.id, slug: item.slug, title: item.title, status: item.status,
+                    visibility: item.visibility, html: item.html, custom_template: item.custom_template,
+                    tiers: (item.tiers || []).map(tier => tier.id).sort()})).sort((a, b) => a.id.localeCompare(b.id));
+                return hash(JSON.stringify({settings, posts: content((await get('posts/?limit=all&formats=html')).posts),
+                    pages: content((await get('pages/?limit=all&formats=html')).pages)}));
+            };
+            const before = await snapshot();
+            entry.versions = {original: expectedVersion, temporaryUpgrade: version};
+            entry.upgradeZipSHA256 = hash(candidate.archive);
+            entry.stages = [];
+            for (const target of [{version, bytes: candidate.archive, css: candidate.css, revision: 'upgrade'},
+                {version: expectedVersion, bytes: backup, css: fs.readFileSync(path.join(root, 'assets/css/screen.css')), revision: null}]) {
+                await openThemes();
+                await select(`${name}.zip`, target.bytes);
+                await dialog('Overwrite theme').waitFor();
+                const response = await responseAfter(page, uploaded,
+                    () => dialog('Overwrite theme').getByRole('button', {name: 'Overwrite', exact: true}).click());
+                assert.equal(response.status(), 200, 'Version overwrite was rejected');
+                const success = dialog(/^(Upload successful|It's live!)$/); await success.waitFor();
+                await success.getByRole('button', {name: 'OK', exact: true}).click();
+                const stage = {version: target.version, backend: await assertActive(target.version)};
+                entry.stages.push(stage);
+                await openThemes(); await installed(target.version);
+                await frontend(stage, target.css, target.revision);
+                assert.equal(await snapshot(), before, 'Theme overwrite changed publication settings or content');
+                stage.publicationDataPreserved = true;
+                for (const [route, marker] of [['members-report', 'MEMBERS_SECRET_71b'], ['paid-report', 'PAID_SECRET_28f'], ['tier-report', 'TIER_A_SECRET_59c']]) {
+                    const response = await front.goto(`${base}/${route}/`, {waitUntil: 'networkidle'});
+                    assert.equal(response.status(), 200, 'Protected fixture route failed after overwrite');
+                    assert(!(await front.content()).includes(marker), 'Theme overwrite exposed protected content to an anonymous reader');
+                }
+                stage.anonymousProtectedBodiesAbsent = true;
+                await page.screenshot({path: path.join(out, `admin-ui-version-${target.revision || 'rollback'}.png`), fullPage: true, animations: 'disabled'});
+            }
+            entry.publicationSnapshotSHA256 = before;
+            assert.equal(entry.requests.length, 2, 'Upgrade/rollback duplicated a theme mutation');
+            assert(entry.requests.every(request => request.method === 'POST' && request.containsSelectedArchive), 'Version change did not upload the selected archive');
+            assert(entry.responses.length === 2 && entry.responses.every(response => response.status === 200), 'Upgrade/rollback did not complete both writes');
         });
         await run('Admin UI rejects a missing-template ZIP without replacing the active release', async entry => {
             await openThemes();

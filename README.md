@@ -4,6 +4,8 @@ Open-source Ghost theme project for research publishers, B2B intelligence and pr
 
 > Status: theme scaffold in development. Source/ZIP validation and isolated Ghost 5/6 runtime/member-access checks are automated; broader release gates remain. No production-ready theme has been released.
 
+Installing a development preview? Start with the [installation, configuration, upgrade and rollback guide](docs/user-guide.md). It distinguishes the installable artifact from a source ZIP and documents the controls this theme actually exposes.
+
 ## Roadmap
 
 Track research, product requirements, design, implementation and release in [GitHub Issues](https://github.com/qq550723504/ghost-research-pro/issues).
