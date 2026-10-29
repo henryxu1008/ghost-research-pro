@@ -1,5 +1,7 @@
 # Disposable comment notification preference acceptance
 
+The [release decision material](portal-release-decision.md) records why a theme DOM change cannot safely repair this request/notification lifecycle and what a narrow upstream repair must establish.
+
 The existing account checklist includes comment preference writes. These probes exercise only that native control on the temporary `example.test` member. The disposable publication's `comments_enabled` setting is temporarily changed to `all` through Ghost Admin API, then restored in a finally block. The official Ghost 5 schema permits `off`, `all` and `paid`; no live publication setting is changed. Existing profile/newsletter/HTTP checks run before this setting change.
 
 Three strict probes cover:

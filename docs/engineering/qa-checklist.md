@@ -34,6 +34,9 @@ The expanded matrix checks actual Lexical editor cards, protected-card HTML, sel
 The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296bbc6886`, [workflow 40732686825](https://github.com/qq550723504/ghost-research-pro/actions/runs/40732686825): 77 checks per Ghost profile, plus the dependency audit gate and its 10 fixed-fixture tests. Later refinements to embed/table checks require their own passing run.
 
 ## Remaining release gates
+
+See the [Portal repair boundary and release route](portal-release-decision.md) for the smallest upstream responsibilities, support options and the next independent installation deliverable. The current supported scope and strict failures are unchanged.
+
 - [ ] Manually exercise Ghost Admin UI theme installation; automated installation currently uses the same backend API.
 - [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.
 - [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.

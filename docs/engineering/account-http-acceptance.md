@@ -1,5 +1,7 @@
 # Controlled account HTTP failure acceptance
 
+The [release decision material](portal-release-decision.md) records repair ownership, exact package provenance, support options and the recommended delivery sequence. It changes no required result or support claim.
+
 Four strict cases extend the existing disposable member tests: profile name and newsletter subscription, each under HTTP 503 and HTTP 429. Only browser PUTs to the loopback `/members/api/member/` endpoint receive the injected JSON error and `Retry-After: 1`. No real service is overloaded or rate-limited. The official pinned Portal bundles are unchanged.
 
 Each case records request phases/counts, response status/header, relative timing and boolean observations in `account-http.json`. Member responses, draft values, cookies and tokens remain in memory. Fault screenshots show only deliberately created `example.test` fixture data.
