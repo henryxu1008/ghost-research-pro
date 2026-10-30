@@ -4,7 +4,7 @@ Updated 2026-10-30 after the owner selected standard MIT. The actual [LICENSE](.
 
 ## Actual theme ZIP
 
-The current [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) licensed ZIP is **40,023 bytes /16 files**, SHA-256 `6264dc52d249bdb3348fbd4b5e2eb748ff30524d389b0a29d6b4a50ff62dee55`. The 15 previous runtime files are byte-identical to the 38,865-byte `cd6dd6b3…a2d706` font-fix ZIP; only `LICENSE` is added. Its 16 regular files match source; exact head/run is recorded in the PR and handoff manifest. Existing2380 still runs the previous15-file deployment, not this new licensed ZIP. Older PR16/e515558f and12-file inventories remain historical evidence.
+The current [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) licensed ZIP is **40,181 bytes /16 files**, SHA-256 `a8f0f6642c2a747cc06ac48b4781f1861a4b668ef1464d3463d10f23f11ee5ac`. Only `assets/js/accessibility.js` changes from the previous licensed `6264dc52…dee55` ZIP: its existing iframe stylesheet now supplies readable placeholder text. The other15 entries, including standard MIT `LICENSE`, retain their bytes. Its16 regular files match source; exact head/run and any local frontend deployment are recorded separately in the PR/handoff manifest. No official Portal bundle is shipped in this archive. Older PR16/e515558f and12-file inventories remain historical evidence.
 
 | Included files | Source / license evidence | Notice status |
 | --- | --- | --- |

@@ -13,7 +13,7 @@ before(async () => { browser = await chromium.launch({headless: true}); });
 after(async () => { await browser?.close(); });
 for (const pkg of ['portal-ghost5', '@tryghost/portal']) {
     for (const mode of ['signup', 'signin']) {
-        test(`${pkg} ${mode}: native Tab order, Escape, close, focus return and reopening`, async t => {
+        test(`${pkg} ${mode}: placeholder contrast, native Tab order, Escape, close, focus return and reopening`, async t => {
             const bundle = fs.readFileSync(path.join(path.dirname(require.resolve(`${pkg}/package.json`)), 'umd/portal.min.js'));
             for (const width of [360, 1280]) {
                 const context = await browser.newContext({viewport: {width, height: 900}});
@@ -44,7 +44,8 @@ for (const pkg of ['portal-ghost5', '@tryghost/portal']) {
                     await trigger().focus(); await trigger().press('Enter');
                     assert.equal(await page.locator('iframe[title="portal-popup"]').count() <= 1, true);
                 };
-                await checkAnonymousFocus({page, trigger, open, firstLabel: mode === 'signup' ? 'Name' : 'Email'});
+                const contrast = await checkAnonymousFocus({page, trigger, open, firstLabel: mode === 'signup' ? 'Name' : 'Email'});
+                t.diagnostic(JSON.stringify({width, contrast}));
                 assert.deepEqual(writes, [], 'Anonymous keyboard flow must not send writes');
                 await context.close();
             }

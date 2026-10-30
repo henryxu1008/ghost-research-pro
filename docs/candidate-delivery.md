@@ -10,11 +10,11 @@ This is not a production-readiness claim or an additional license restriction.
 
 | Item | Exact value |
 | --- | --- |
-| Runtime source | Unified PR17, font fix plus owner-selected MIT; exact source HEAD is recorded in its PR and the handoff manifest |
+| Runtime source | Unified PR17, native font and Portal placeholder contrast fixes plus owner-selected MIT; exact source HEAD is recorded in its PR and the handoff manifest |
 | Package name / version | `ghost-research-pro` / `0.1.0` |
 | Installable filename | `ghost-research-pro.zip` |
-| Size / payload | 40,023 bytes / 16 regular files, including `LICENSE` |
-| SHA-256 | `6264dc52d249bdb3348fbd4b5e2eb748ff30524d389b0a29d6b4a50ff62dee55` |
+| Size / payload | 40,181 bytes / 16 regular files, including `LICENSE` |
+| SHA-256 | `a8f0f6642c2a747cc06ac48b4781f1861a4b668ef1464d3463d10f23f11ee5ac` |
 | Current candidate checks | [PR17 checks](https://github.com/henryxu1008/ghost-research-pro/pull/17/checks); record the exact head/run before relying on their results |
 
 This follow-up fixes archive H2 cards ignoring Ghost's configured heading font;
@@ -24,9 +24,16 @@ reproduced the three archive mismatches before repair and pass afterward. The
 packager preserves provided root `LICENSE`/`NOTICE` files. The owner has now
 selected standard MIT and the actual root `LICENSE` is included unchanged;
 no additional NOTICE obligation was identified for the original project payload.
-The 15 previous runtime files are byte-identical to the font-fix ZIP; the new
-license entry gives this ZIP a new identity. Existing2380 still uses the previous
-15-file `cd6dd6b3…a2d706` deployment and is not claimed as a new licensed-ZIP install.
+The Portal adapter also makes visible input placeholders `#6B6B6B`, with computed
+white-background contrast 5.33:1, instead of stock `#AEAEAE` at 2.22:1. Real
+Chromium tests cover stock Portal 2.51.5/2.72.11 signup/signin at 360/1280px,
+forward/reverse Tab, Escape, focus return and reopening without form submission.
+Only the existing accessible-iframe stylesheet is extended; official Portal
+bundles, permissions and membership/payment logic are unchanged. This is not a
+complete WCAG or 200% zoom acceptance claim. This ZIP differs from the prior
+licensed `6264dc52…dee55` build only in `assets/js/accessibility.js`; all other
+15 entries, including MIT, retain their bytes. Local preview deployment and
+independent visual/buyer acceptance must be identified separately by exact hash.
 Keep the full commit/hash: several development builds
 share version 0.1.0. An outer handoff/artifact ZIP is not the installable inner
 ZIP. Verify the inner file with `Get-FileHash .\ghost-research-pro.zip -Algorithm SHA256`

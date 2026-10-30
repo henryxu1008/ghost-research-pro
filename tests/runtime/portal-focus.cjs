@@ -1,8 +1,42 @@
 const assert = require('node:assert/strict');
+const {resolveColors} = require('./contrast.cjs');
+
+async function checkPlaceholderContrast(frameElement) {
+    // Sample the displayed form after Portal's finite entrance animation, rather
+    // than treating a transient fade as its resting text/background contrast.
+    await frameElement.evaluate(async frame => {
+        const doc = frame.contentDocument;
+        await Promise.all(doc.getAnimations().filter(animation => animation.effect.getComputedTiming().iterations !== Infinity)
+            .map(animation => animation.finished.catch(() => {})));
+    });
+    const samples = await frameElement.evaluate(frame => [...frame.contentDocument.querySelectorAll('.gh-portal-input[placeholder]')]
+        .filter(el => el.placeholder && el.getClientRects().length)
+        .map(el => {
+            const style = getComputedStyle(el, '::placeholder');
+            const ancestors = [];
+            for (let current = el; current; current = current.parentElement) {
+                const css = getComputedStyle(current);
+                ancestors.unshift({backgroundColor: css.backgroundColor, backgroundImage: css.backgroundImage,
+                    opacity: css.opacity, filter: css.filter, mixBlendMode: css.mixBlendMode});
+            }
+            ancestors.push({backgroundColor: 'rgba(0, 0, 0, 0)', backgroundImage: 'none', opacity: style.opacity,
+                filter: style.filter, mixBlendMode: style.mixBlendMode});
+            return {name: el.name, color: style.color, fontSize: style.fontSize, ancestors};
+        }));
+    assert(samples.length > 0, 'Expected visible stock Portal placeholders');
+    for (const sample of samples) {
+        const colors = resolveColors(sample);
+        assert(colors.ratio >= 4.5, `${sample.name} placeholder ${sample.color} contrast ${colors.ratio.toFixed(2)} < 4.5`);
+    }
+    assert.equal(await frameElement.evaluate(frame => frame.contentDocument.querySelectorAll('#theme-portal-accessibility').length), 1,
+        'Reopening must install exactly one adapter style in the current document');
+    return samples.map(sample => ({name: sample.name, color: sample.color, fontSize: sample.fontSize, ratio: resolveColors(sample).ratio}));
+}
 
 // Used with both stock Portal/browser fixtures and disposable real Ghost.
 // Never fills or submits a form, creates a session, or sends mail.
 async function checkAnonymousFocus({page, trigger, firstLabel, open}) {
+    const contrastSamples = [];
     const frameElement = () => page.locator('iframe[title="portal-popup"]');
     const popup = () => page.frameLocator('iframe[title="portal-popup"]');
     const first = () => popup().getByLabel(firstLabel, {exact: true});
@@ -21,6 +55,8 @@ async function checkAnonymousFocus({page, trigger, firstLabel, open}) {
         const frame = await (await first().elementHandle()).ownerFrame();
         await frame.waitForFunction(name => document.activeElement?.getAttribute('name') === name,
             firstLabel === 'Name' ? 'name' : 'email', {timeout: 5000});
+        contrastSamples.push({repeat, samples: await checkPlaceholderContrast(frameElement())});
+        assert.equal(await page.locator('#theme-portal-accessibility').count(), 0, 'Iframe styles must not leak to the parent document');
         const count = await frameElement().evaluate(frame => [...frame.contentDocument.querySelectorAll('a[href],button,input,select,textarea,[tabindex]')]
             .filter(el => el.tabIndex >= 0 && !el.disabled && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden').length);
         assert(count >= 3, 'Expected the actual form and close controls');
@@ -55,6 +91,7 @@ async function checkAnonymousFocus({page, trigger, firstLabel, open}) {
     await frameElement().waitFor({state: 'detached'});
     assert(await trigger().evaluate(el => el === document.activeElement), 'Close button did not restore the trigger');
     assert.equal(await page.locator('main').evaluate(el => el.inert), false);
+    return contrastSamples;
 }
 
 module.exports = {checkAnonymousFocus};
