@@ -9,12 +9,12 @@ These steps use ordinary posts, public tags and existing authors. They do not re
 | Content | What readers see |
 | --- | --- |
 | Published posts | The homepage's **Latest research** list includes all posts in Ghost's home collection, including Brief and members-only posts. The theme does not filter that list by tag. With standard Ghost routing, newer publication dates appear first; the theme defaults to 12 posts per page. |
-| First public tag on a post | The card label and report's linked eyebrow. The card also shows date, title, excerpt and reading time; it has no thumbnail or author byline. |
+| First public tag on a post | The card label and report's linked eyebrow. The card also shows date, title, excerpt and reading time when the visitor has access; it uses a text layout, with an author byline and actual access-policy label. |
 | Any public tag assigned to a post | Its tag archive includes the post, even when that tag is not primary. The archive heading uses the tag name and description. With standard routing, a tag with slug `research` has the URL `/tag/research/`. |
 | Post author | The report byline links to the author's archive. That archive uses the author's name and available bio, followed by their posts. |
 | Custom excerpt | The card summary and report introduction. Without one, the card attempts a generated 28-word excerpt; the report introduction is omitted. Write a public-safe custom excerpt for every demo post, especially a restricted one. |
 | Visible body H2/H3 headings | The report's **On this page** navigation. H3 sections nest under the preceding H2; headings excluded from the rendered body cannot supply entries. A post without eligible headings keeps the navigation hidden. Ordinary Pages do not have this post TOC. |
-| Featured flag or a tag named Brief | No special hero placement or separate layout. Brief is an editorial convention using the same post template. There is no bundled `/research/` route or dedicated Brief template. |
+| Featured flag / Brief tag | The newest Featured post becomes the homepage editorial selection. Without one, a reading introduction appears. Brief remains a tag convention using the shared post template. |
 
 The mapping comes from [index.hbs](../index.hbs), [card.hbs](../partials/card.hbs), [post.hbs](../post.hbs), [tag.hbs](../tag.hbs), [author.hbs](../author.hbs) and the [TOC enhancement](../assets/js/accessibility.js). Existing custom routing may change URLs or collection membership; this recipe does not replace it.
 
@@ -86,7 +86,7 @@ Publishing is a step for the operator of the disposable demo. Adding this docume
 
 Under **Pages**, create a public **Demo About** page describing the fictional publication. Use the default page template; Pages are static content and do not join the homepage post list. For an optional **Demo Membership** page, select the **Membership** template, add a fictional introduction and publish it. Its native Portal buttons follow existing signup availability; the page does not create plans or change who can join. The [installation guide](user-guide.md#configure-the-existing-layout) covers this template.
 
-Use the publication's primary navigation editor to add **Home**, **Research**, **Brief**, **Demo Logistics** and **About**, plus **Membership** if you created it. Use the actual tag-archive/page URLs collected above. Under standard routing, Research and Brief point to `/tag/research/` and `/tag/brief/`; linking `/research/` would require a separate routing decision. Do not create a static Research page expecting it to list posts automatically. Creating content alone does not add menu items, and secondary navigation is not rendered by this theme.
+Use the publication's primary navigation editor to add **Home**, **Research**, **Brief**, **Demo Logistics** and **About**, plus **Membership** if you created it. Use the actual tag-archive/page URLs collected above. Under standard routing, Research and Brief point to `/tag/research/` and `/tag/brief/`; linking `/research/` would require a separate routing decision. Do not create a static Research page expecting it to list posts automatically. Creating content alone does not add menu items, and secondary navigation supplies the research sidebar. For the optional global Library and actual publication-year channels, use the [research desk setup](research-publishing-setup.md).
 
 Use an existing author byline link to open the author archive; it need not occupy the main menu. No author account changes are required. See Ghost's [Pages](https://ghost.org/help/pages/) and [navigation](https://ghost.org/help/updating-navigation/) guides for the manual controls.
 
@@ -94,7 +94,7 @@ Use an existing author byline link to open the author archive; it need not occup
 
 This checklist describes manual acceptance to perform on the assembled demo. It is not a record that these content-setup steps or browser checks have been executed.
 
-- [ ] **Home:** three sample posts appear under Latest research. Each card has the intended primary tag, public-safe excerpt, date and reading time. Existing publication title/description supply the home introduction. Feature images and the Featured flag do not create a hero carousel.
+- [ ] **Home:** three sample posts appear under Latest research. Each card has the intended primary tag, public-safe excerpt, date and access label. Reading time appears with access. Existing publication title/description supply the home introduction. Feature images do not create a carousel. An optional Featured post supplies the editorial selection.
 - [ ] **Research archive:** both Research-tagged posts appear. **Brief archive:** only the Brief appears. **Demo Logistics archive:** all three appear, despite this being their secondary tag. Each archive shows its tag name/description.
 - [ ] **Author archive:** the byline opens the existing demo author's name/bio and three assigned posts. Pages do not appear in this collection.
 - [ ] **Public report:** title, custom excerpt, byline, table and body render. On this page lists Summary, Illustrative dataset, nested Assumptions and Limitations; activate a link with Tab/Enter and check focus moves to the matching heading.

@@ -16,6 +16,7 @@ const {checkDelayedPortalOpen} = require('./portal-interruption.cjs');
 const {seedEditorBoundaries, checkEditorBoundaries} = require('./editor-boundaries.cjs');
 const {checkAdminUI} = require('./admin-ui.cjs');
 const {checkMembershipSettings} = require('./membership-settings.cjs');
+const {checkPublishingExperience} = require('./publishing-experience.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const runtime = process.env.GHOST_RUNTIME_DIR;
@@ -108,6 +109,8 @@ async function main() {
     const engines = require(path.join(runtime, 'package.json')).engines.node;
     assert(runtimeRequire('semver').satisfies(process.version, engines), `Node ${process.version} must satisfy Ghost's official engines ${engines}`);
     assert(!fs.existsSync(path.join(runtime, 'content/data/ghost-dev.db')), 'Refuse to reuse a database');
+    fs.mkdirSync(path.join(runtime, 'content/settings'), {recursive: true});
+    fs.copyFileSync(path.join(root, 'examples/research-routes.yaml'), path.join(runtime, 'content/settings/routes.yaml'));
     await new Promise(resolve => smtp.listen(2525, '127.0.0.1', resolve));
     fs.writeFileSync(path.join(runtime, 'config.development.json'), JSON.stringify({
         url: base, server: {host: '127.0.0.1', port: 2368},
@@ -307,6 +310,7 @@ async function main() {
         await page.close();
         record(`Browser layout and keyboard smoke at ${width}px`);
     }
+    await checkPublishingExperience({browser, base, admin, anon, api, out, record});
     assert(!results.checks.some(check => check.status === 'failed'), 'Acceptance checks failed; see results.json and accessibility.json');
     results.status = 'passed';
 }

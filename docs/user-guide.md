@@ -30,16 +30,18 @@ Cancelling the upload before selection or cancelling the overwrite confirmation 
 
 ## Configure the existing layout
 
+For the optional paginated Library and publication-year channels, follow the [research desk setup](research-publishing-setup.md). The normal home/tag/author pages work without installing that optional routing.
+
 The theme currently has no custom controls under theme design settings. Use Ghost's publication/editor settings:
 
 | Setting/content | Result in this theme |
 | --- | --- |
 | Publication title and description | Title in the home heading; description below it. The header uses the title when no logo is set. |
 | Publication logo | Logo in the header, constrained to the available header size. |
-| Primary navigation | Header menu. Add the actual published URLs of your pages; creating a page does not add a menu item automatically. Secondary navigation is not rendered. See [Ghost navigation](https://ghost.org/help/updating-navigation/). |
+| Primary navigation | Header menu. Add the actual published URLs of your pages; creating a page does not add a menu item automatically. Secondary navigation supplies the research sidebar's topic/year links. See [Ghost navigation](https://ghost.org/help/updating-navigation/). |
 | Heading/body fonts, where exposed by Ghost | Ghost's font variables are honored; unset values fall back to Georgia/system fonts. Remote-font appearance is outside the offline acceptance coverage. |
 | Publication accent color | This theme does not map Ghost's publication accent setting to its palette. Theme links/buttons and styled native card/upgrade buttons use the CSS `--accent` value (blue `#174e8b` by default). When the accessibility adapter can access the Portal iframe, it also sets Portal's `--brandcolor` to that theme value. Changing the publication accent alone therefore does not recolor these controls. Custom CSS palette edits require contrast review; there is no custom theme-color setting. |
-| Post title, publication date, primary tag, excerpt | Research cards show these with reading time. A custom excerpt overrides the generated excerpt. The default listing is 12 posts per page. |
+| Post title, publication date, primary tag, excerpt | Research cards show these with author and access-policy labels; reading time is shown with access. A custom excerpt overrides the generated excerpt. The default listing is 12 posts per page. |
 | Post feature image and alt text | Image on the full report page. Research cards currently use a text layout. |
 | Page title/feature-image visibility | The normal page header follows the editor's visibility control. The Membership template uses the title/excerpt visibility control for its own introduction. |
 | Post access setting | Ghost controls public, members, paid and tier-specific bodies. Titles, excerpts, tags and feature images remain public metadata; place protected findings in the protected body. |
@@ -77,7 +79,7 @@ If installation failed before activation, first inspect the existing active entr
 ## Troubleshooting and current limits
 
 - **No Membership template:** activate this theme, reload the editor and check the page's template selector. The package must include `custom-membership.hbs`; installing the theme does not create that page or a navigation item.
-- **A page is missing from the menu:** add its published URL to primary navigation and save. The footer currently shows copyright and RSS, not the secondary menu.
+- **A page is missing from the menu:** add its published URL to primary navigation and save. The footer shows copyright and RSS; secondary navigation appears in the research sidebar.
 - **Upload/version confusion:** confirm you selected the inner package, retained its filename and checked the intended active row. Cancelling or receiving a validation error is not a successful update.
 - **Account save reports success before failing:** this is a known issue in the pinned native Portal versions. See [account HTTP](engineering/account-http-acceptance.md) and [comment preference](engineering/comment-preference-acceptance.md) evidence. The [upstream Draft PR](https://github.com/TryGhost/Ghost/pull/32314) is a contribution under review, not an installed or released fix. This theme does not replace Portal.
 - **Choosing a preview for release:** review all [QA gates](engineering/qa-checklist.md), [licensing inventory](engineering/release-licensing-inventory.md) and [dependency findings](engineering/dependency-security.md). A successful theme upload alone is not production-readiness evidence.

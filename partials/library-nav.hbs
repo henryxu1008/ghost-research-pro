@@ -1,0 +1,8 @@
+<aside class="library-sidebar" aria-label="Research collections">
+{{#get "tags" filter="slug:[research,brief]" include="count.posts" limit="2" order="name asc"}}
+{{#if tags}}<section>{{#if ../in_section}}<h3>Publication formats</h3>{{else}}<h2>Publication formats</h2>{{/if}}<ul class="collection-links">
+{{#foreach tags}}<li><a href="{{url}}"><span>{{name}}</span><span class="collection-count">{{count.posts}}</span></a></li>{{/foreach}}
+</ul></section>{{/if}}{{/get}}
+{{#if @site.secondary_navigation}}<nav aria-label="Topics and publishing years">{{#if in_section}}<h3>Explore the collection</h3>{{else}}<h2>Explore the collection</h2>{{/if}}{{navigation type="secondary"}}</nav>{{/if}}
+<p class="library-note">Follow a topic, publication format or publishing year. Each collection has its own reading list.</p>
+</aside>

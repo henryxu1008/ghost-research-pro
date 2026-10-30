@@ -1,0 +1,6 @@
+{{!< default}}
+<header class="archive-header library-header"><p class="eyebrow">The research desk</p>
+{{#if page}}{{#page}}<h1>{{title}}</h1>{{#if custom_excerpt}}<p>{{custom_excerpt}}</p>{{/if}}{{/page}}
+{{else}}<h1>Research library</h1><p>Reports and briefings, organized for a closer look.</p>{{/if}}
+<p class="collection-summary">{{pagination.total}} {{#match pagination.total 1}}publication{{else}}publications{{/match}} · Newest first · Page {{pagination.page}} of {{pagination.pages}}</p></header>
+<div class="library-layout">{{> "library-nav"}}<section class="library-results" aria-label="Publications"><div class="cards">{{#foreach posts}}{{> "card"}}{{else}}<p class="empty-state">No publications in this collection yet. Explore another topic or return to <a href="{{@site.url}}">the research desk</a>.</p>{{/foreach}}</div>{{pagination}}</section></div>
