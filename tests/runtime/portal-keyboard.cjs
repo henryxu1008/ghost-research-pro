@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const {probe, audit} = require('./accessibility.cjs');
 const {checkInterruption} = require('./portal-interruption.cjs');
+const {checkAnonymousFocus} = require('./portal-focus.cjs');
 
 module.exports.checkPortalKeyboard = async function checkPortalKeyboard({page, ctx, base, out, record, mailCount}) {
     await ctx.request.delete(`${base}/members/api/session/`);
@@ -40,6 +41,15 @@ module.exports.checkPortalKeyboard = async function checkPortalKeyboard({page, c
                     assert(await frameElement().evaluate(el => document.activeElement === el), `${key} escaped the Portal iframe`);
                 }
             }
+        });
+        await probe(record, `Portal signup Tab boundaries, Escape, focus return and reopening at ${width}px`, async () => {
+            const before = mailCount();
+            await page.goto(base, {waitUntil: 'networkidle'});
+            const signup = () => page.locator('.member-actions a[href="#/portal/signup"]');
+            await checkAnonymousFocus({page, trigger: signup, firstLabel: 'Name', open: async () => {
+                await signup().focus(); await signup().press('Enter');
+            }});
+            assert.equal(mailCount(), before, 'Anonymous keyboard checks sent mail');
         });
         await probe(record, `Portal form switching and reopening preserve a single usable dialog at ${width}px`, async () => {
             const repeats = width === 1440 ? Number(process.env.PORTAL_INTERRUPTION_REPEATS || 1) : 1;

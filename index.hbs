@@ -11,4 +11,4 @@
   {{else}}<a class="button" href="#/portal/signin">Sign in</a>{{/if}}
 {{/if}}
 </section>
-<section class="section"><h2>Latest research</h2><div class="cards">{{#foreach posts}}{{> "card"}}{{else}}<p>Research is coming soon.</p>{{/foreach}}</div>{{pagination}}</section>
+<section class="section"><h2>Latest research</h2><div class="cards">{{#foreach posts}}{{> "card" in_section=true}}{{else}}<p>Research is coming soon.</p>{{/foreach}}</div>{{pagination}}</section>
