@@ -1,5 +1,7 @@
 # Ghost Research Pro — installation and acceptance checklist
 
+For the current exact-payload status, local installation methods, PR integration and unresolved release conditions, start with the [candidate handoff](../candidate-delivery.md). The dated runs below are historical evidence, not the current result.
+
 ## CI evidence
 The first complete runtime acceptance passed in [workflow 40661983220](https://github.com/qq550723504/ghost-research-pro/actions/runs/40661983220), commit `ac89607494ccf5f8f83d8eb40683338fabe818a0`: **34 checks passed**, including stock Ghost 6.73.0 initialization, real ZIP activation, page routes, member authorization and Chromium smoke checks. The `ghost-runtime-acceptance` artifact includes JSON results and 12 screenshots. See [runtime acceptance](runtime-acceptance.md) for setup, diagnosis and limits.
 

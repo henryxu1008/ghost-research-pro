@@ -3,8 +3,7 @@
 This batch extends the content-discovery decision recorded in the separate
 [PR14 PRD](https://github.com/henryxu1008/ghost-research-pro/blob/5fcec3162be2fff50383d3541b55d511250567d8/docs/product/prd.md).
 It implements the owner's subsequent request for an identifiable research desk,
-native topic/format/year browsing and a practical setup path. PR14 is a source
-reference; its documentation branch is not merged here. No market-validation,
+native topic/format/year browsing and a practical setup path. The candidate documentation now integrates and updates the [product contract](../product/prd.md) and [design specification](../product/design-spec.md) from that parallel branch. No market-validation,
 pricing, licensing or release-readiness gate is marked complete.
 
 | Surface | Data and boundary |

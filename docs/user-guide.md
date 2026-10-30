@@ -2,6 +2,8 @@
 
 This is a development preview, not a production release. The tested runtime profiles are Ghost 5.130.6 and Ghost 6.73.0; the wider engine declaration is not a test of every Ghost version. Native Portal recovery, payments, accessibility and project licensing still have [open release gates](engineering/qa-checklist.md#remaining-release-gates).
 
+For the current payload's version/hash, scoped installation results and complete handoff contents, read the [candidate delivery guide](candidate-delivery.md). Its API configuration evidence is distinguished from graphical editor walkthroughs.
+
 ## Get the theme ZIP
 
 Use the built `ghost-research-pro.zip` from the exact commit you are evaluating. In the repository's Actions tab, open its Theme CI run and download the `ghost-research-pro-theme` artifact. Unpack the artifact download and select the **inner** `ghost-research-pro.zip` for installation. GitHub's **Code → Download ZIP** is a source checkout, not the installable theme package.
@@ -81,5 +83,5 @@ If installation failed before activation, first inspect the existing active entr
 - **No Membership template:** activate this theme, reload the editor and check the page's template selector. The package must include `custom-membership.hbs`; installing the theme does not create that page or a navigation item.
 - **A page is missing from the menu:** add its published URL to primary navigation and save. The footer shows copyright and RSS; secondary navigation appears in the research sidebar.
 - **Upload/version confusion:** confirm you selected the inner package, retained its filename and checked the intended active row. Cancelling or receiving a validation error is not a successful update.
-- **Account save reports success before failing:** this is a known issue in the pinned native Portal versions. See [account HTTP](engineering/account-http-acceptance.md) and [comment preference](engineering/comment-preference-acceptance.md) evidence. The [upstream Draft PR](https://github.com/TryGhost/Ghost/pull/32314) is a contribution under review, not an installed or released fix. This theme does not replace Portal.
+- **Account save reports success before failing:** this is a known issue in the pinned native Portal versions. See [account HTTP](engineering/account-http-acceptance.md) and [comment preference](engineering/comment-preference-acceptance.md) evidence. The [upstream PR](https://github.com/TryGhost/Ghost/pull/32314) is a contribution under review, not an installed or released fix. This theme does not replace Portal.
 - **Choosing a preview for release:** review all [QA gates](engineering/qa-checklist.md), [licensing inventory](engineering/release-licensing-inventory.md) and [dependency findings](engineering/dependency-security.md). A successful theme upload alone is not production-readiness evidence.

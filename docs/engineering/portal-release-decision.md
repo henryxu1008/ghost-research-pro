@@ -1,8 +1,20 @@
 # Portal blockers and release route
 
-Decision material as of 2026-10-29. This does not change the published Ghost engine range, pinned runtime profiles, required assertions or Draft status. The current scope still includes Ghost 5 and Ghost 6. No merge, deployment, paid service connection or project license choice is authorized by this document.
+Updated 2026-10-30. The [candidate handoff](../candidate-delivery.md) is the current delivery/status summary. This changes no engine range, pinned runtime profile or strict assertion; the theme PRs remain Draft. No merge, production deployment, payment connection or license choice is authorized here.
 
-## What the exact code proves
+## Current candidate status
+
+Payload `993b4e25bd3d9aa227041b74f3e44bc3875c8054`, [CI41011050241](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41011050241): Ghost5 **135 pass /3 fail**, Ghost6 **137 pass /1 fail**, with zero runtime skips. Validate passed; runtime and overall CI remain failed. The failure identities below are unchanged. Local Ghost6 buyer-copy installation/configuration acceptance has completed; its official API steps are distinguished from actual Admin UI upload/activation in the candidate guide.
+
+The comment fix is now submitted as [official Ghost PR32314](https://github.com/TryGhost/Ghost/pull/32314), open and unmerged when checked on 2026-10-30 (head `f9812bb38e1b891df3668738faf401664eb515c9`). The local upstream experiments and contribution do not replace the stock Portal packages in this theme or establish a released fix.
+
+The legacy non-2xx-to-null API chain was already fixed on Ghost's main line by [6076cd0](https://github.com/TryGhost/Ghost/commit/6076cd0f0b924e2a2189521a494a706a420ad7d4). No duplicate main-line fix is proposed for it. A verified Ghost5-compatible 2.51 backport has not been established. A main-line change is not evidence that pinned 2.51.5 is repaired.
+
+For evaluation, use the exact stock Ghost6.73.0 profile as the primary local target; retain Ghost5's automated/static coverage and disclose that this handoff adds no local authenticated Ghost5 buyer run. Neither profile has full runtime acceptance. Notification false success can leave an intended opt-out unsaved and notifications enabled; the legacy errors can lose a local draft/client account display. These controlled probes did not demonstrate body leakage, server-session revocation or actual billing.
+
+The dated counts, observations and proposals below document the original diagnosis; they are not the current completion state. Release still requires a supported stock repair and exact-candidate rerun. No theme-level notification suppression, global fetch interception, feature removal or experimental Portal replacement is a substitute.
+
+## Historical diagnosis — 2026-10-29
 
 Runtime code commit `89b2faf235ad123bb929f9e2686255f3f46ea99d`, [workflow 40801584624](https://github.com/qq550723504/ghost-research-pro/actions/runs/40801584624):
 
@@ -19,12 +31,12 @@ Evidence: [Ghost 5 reports and 44 screenshots](https://github.com/qq550723504/gh
 
 Neither failure has a safe theme-only repair. The theme controls templates/CSS and an accessibility DOM adapter; it does not own Portal's API result handling, React member state, action outcomes or notification lifecycle. A DOM adapter cannot safely reconstruct the lost member/draft or determine whether a success message represents a completed write. Hiding a toast would conceal the defect; reloading the page would discard the draft. No such workaround is implemented.
 
-Two narrow source changes are plausible inside Portal itself, but are **proposals, not validated fixes**:
+The original diagnosis proposed two narrow source changes inside Portal itself. The later isolated experiments and current contribution above are separate from the unchanged stock-theme acceptance:
 
 1. **Legacy newsletter failure:** in `updateNewsletterPreference`, reject a missing member immediately after awaiting `api.member.update`, before returning the success action/member. Its existing catch path can then retain the prior member and report failure. This action-local guard is narrower than changing every consumer of the API helper's null result. A central API-helper change is an alternative requiring broader consumer review. Either candidate must pass the existing real 503/429 draft/session/feedback tests.
 2. **Comment success feedback, both lines:** make the comment success notification depend on the confirmed successful member update inside the owning action, and remove the component's unconditional success notification. Preserve distinct notification intents for comment-only changes versus unsubscribe-all/other preference actions. If an implementation instead returns an explicit action outcome to the caller, the caller must check that outcome. Merely adding `await` is insufficient: both installed dispatchers apply failure state and do not return the updated result; the action itself also catches failures. The current regression must observe no success while pending or after abort, followed by a real explicit recovery.
 
-These are small upstream responsibilities rather than a new theme account API. Implementing a source candidate in an isolated upstream checkout and preparing an unsubmitted patch is possible independently. It must not become a shipped theme bundle, global fetch patch, runtime bundle rewrite or replacement of the stock tested Portal. No upstream issue/PR has been posted and no patched upstream build has been claimed as accepted or production-ready.
+These are upstream responsibilities rather than a new theme account API. Isolated candidate experiments were kept outside the theme; only the applicable current-main comment fix was submitted upstream. No patched bundle, global fetch patch or runtime bundle rewrite is shipped. The contribution is not claimed as accepted, released or production-ready.
 
 ## Exact 2.51.5 provenance and scope limits
 
@@ -50,10 +62,10 @@ Disabling comments or removing account controls would change product behavior an
 
 Concentrate the first release candidate on **stock Ghost 6 plus a verified upstream comment-feedback repair**; retain the current dual-version scope and red evidence until the owner explicitly approves a narrower initial support range. Ghost 6 already passes the controlled newsletter HTTP cases, so this candidate has one upstream responsibility rather than the legacy line's two. This is a sequencing recommendation, not a support-range change or a promise of an available fixed version.
 
-Prepare the two source-level upstream repair proposals with their existing strict reproductions; do not add unrelated account/media matrices. An official fixed release or approved compatibility decision must then be pinned and the unchanged relevant matrix rerun on the exact candidate. A local patched demonstration alone cannot close the stock-runtime release gate.
+The applicable comment repair has been submitted upstream; the old API chain has an existing main-line fix. Preserve the strict reproductions and seek a supported released repair/backport. Pin it and rerun the unchanged relevant matrix on the exact candidate. A local patched demonstration alone cannot close the stock-runtime release gate.
 
 The **Ghost Admin UI ZIP upload/activation regression** is now complete at runtime code `e53af9a678f3152d3183e7cc1822eeb16fa6459a`, [workflow 40809348925](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925): all four UI cases pass on both versions. [Installation evidence](admin-ui-acceptance.md) records real native writes, cancellation, invalid-ZIP safety, canonical frontend fixtures and the explicit offline system-font fallback. The remaining runtime results are 112/3 on Ghost 5 and 114/1 on Ghost 6, with only the existing Portal failures.
 
-The next release-path responsibility is the native Portal outcome repair or an explicit compatibility/support decision, not another unrelated test matrix. The source repair designs above remain proposals; this Admin batch creates no upstream fork, patch build or external issue/PR. The existing license/ZIP inventory and payment scenario evidence are available for review; project licensing, Stripe sandbox connection and actual screen-reader acceptance still need their respective external inputs/environments. No live service connection or legal choice is made here.
+The remaining release-path responsibility is a supported native Portal repair and candidate validation. The historical Admin batch did not itself create a fork or PR; the later contribution is recorded above. Project licensing, Stripe sandbox lifecycle and screen-reader acceptance still require their respective decisions/environments. No live service connection or legal choice is made here.
 
 Release remains blocked until the native Portal failures and the remaining [QA gates](qa-checklist.md) are resolved. [HTTP scope](account-http-acceptance.md), [comment scope](comment-preference-acceptance.md), [payment preparation](payment-acceptance.md) and [licensing inventory](release-licensing-inventory.md) distinguish completed evidence from outstanding work. The full development audit still has 0 critical and 3 known high nodes; no clean-audit claim is made.

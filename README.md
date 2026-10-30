@@ -1,8 +1,10 @@
 # Ghost Research Pro
 
-Open-source Ghost theme project for research publishers, B2B intelligence and professional newsletters.
+Ghost theme candidate for research publishers, B2B intelligence and professional newsletters. Project licensing remains unresolved; see the candidate handoff before distribution.
 
-> Status: theme scaffold in development. Source/ZIP validation and isolated Ghost 5/6 runtime/member-access checks are automated; broader release gates remain. No production-ready theme has been released.
+> Status: unmerged evaluation candidate. Research publishing, installation and scoped Ghost 5/6 acceptance evidence are available; stock Portal failures and other release gates remain. No production-ready theme has been released.
+
+Review the [candidate handoff](docs/candidate-delivery.md) for the exact installable ZIP/hash, configuration cost, tested profiles, integration plan and known limits. The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included; licensing and pricing remain undecided.
 
 Installing a development preview? Start with the [installation, configuration, upgrade and rollback guide](docs/user-guide.md). It distinguishes the installable artifact from a source ZIP and documents the controls this theme actually exposes.
 

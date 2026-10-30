@@ -1,16 +1,16 @@
 # Release licensing inventory
 
-Reviewed 2026-10-28. This records the current payload and unresolved decisions; it does not select a project license or clear a commercial release.
+Updated 2026-10-30 for the PR16 candidate payload. This records files and unresolved decisions; it does not select a project license, grant buyer rights or clear commercial distribution.
 
 ## Actual theme ZIP
 
-Inspected the [theme artifact from workflow 40741718958](https://github.com/qq550723504/ghost-research-pro/actions/runs/40741718958/artifacts/12838609581), code commit `08cbdb488aac3dc2c180eeb341d49ee0f116db77`. The inner `ghost-research-pro.zip` SHA-256 is `c85aa026b63e53df08f84bfb8aa69bf750edf5311f583979d29c89de2ebe4d50`. Its 12 files match that Git commit byte for byte; directory entries are not counted below.
+Inspected the exact [PR16](https://github.com/henryxu1008/ghost-research-pro/pull/16) payload `993b4e25bd3d9aa227041b74f3e44bc3875c8054`, also built by [CI41011050241](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41011050241). The inner `ghost-research-pro.zip` is 38,856 bytes; SHA-256 `e515558fdb7eb35cb27f9f85b28d5a5bbe8e2b9e24d8fe6bb31413de3a73cb5f`. Its 15 regular files match source byte for byte. The older 12-file inventory is historical; the table below covers all current files.
 
 | Included files | Source / license evidence | Notice status |
 | --- | --- | --- |
-| `author.hbs`, `custom-membership.hbs`, `default.hbs`, `error.hbs`, `index.hbs`, `page.hbs`, `post.hbs`, `tag.hbs`, `partials/card.hbs` | Repository scaffold; [UPSTREAM.md](UPSTREAM.md) records original implementation informed by Ghost's specification and Starter. Files were introduced individually in this repository. | No vendored third-party file or license header identified. Project license remains unresolved below; authorship is a repository provenance statement, not independently certified ownership. |
+| `author.hbs`, `custom-membership.hbs`, `default.hbs`, `error.hbs`, `index.hbs`, `library.hbs`, `page.hbs`, `post.hbs`, `tag.hbs`, `partials/access-badge.hbs`, `partials/card.hbs`, `partials/library-nav.hbs` | Repository scaffold and research-publishing extensions; [UPSTREAM.md](UPSTREAM.md) records implementation informed by Ghost's specification and Starter. Files were introduced individually here. | No vendored third-party file or license header identified. Authorship is repository provenance, not independently certified ownership. Project license remains unresolved. |
 | `assets/css/screen.css` | Repository styles; system font stacks, Georgia and Ghost font variables. No `@font-face`, imported stylesheet, embedded font or image URL. | No font files or third-party CSS bundle shipped. |
-| `assets/js/accessibility.js` | Repository Portal accessibility adapter, introduced in `f9cd97d` and refined here. No vendored library, SVG path data or external script URL. | No third-party script bundle identified. Its selectors operate on Ghost/Portal's own runtime controls. |
+| `assets/js/accessibility.js` | Repository visible-content TOC, scroll-region and Portal accessibility adapter, introduced in `f9cd97d` and refined through PR16. No vendored library, SVG path data or external script URL. | No third-party script bundle identified. Its selectors operate on Ghost/Portal runtime controls; no Portal bundle is shipped. |
 | `package.json` | Project metadata, including `license: "MIT"` and names/versions of development dependencies. | Metadata declaration conflicts with the still-open project licensing decision; no `LICENSE`, `COPYING` or `NOTICE` file is present. Dependency names in metadata are not copies of those packages. |
 
 There are **no font, image, icon, video or audio files** in the archive. Template logo/feature-image URLs and post content come from the publication. CSS font names do not bundle their font binaries; Ghost's configured font variables may select other runtime resources. `ghost_head`, `ghost_foot` and `card_assets` allow Ghost to provide its own assets, including Portal/card scripts and icons. Those resources are outside this ZIP inventory. Publication names, logos, uploaded media, external embeds and configured fonts require their own provenance review; no commercial or trademark permission is inferred here.
@@ -42,4 +42,4 @@ Inspected the locked installed package metadata and available license files. Thi
 - Confirm authorship/derivation and the intended project license, then supply its actual text and reconcile package metadata, documentation and archive inclusion.
 - Inventory any later demo/customer media, fonts, logos or vendored code separately, with exact source/version and applicable notices. The current absence of bundled third-party media does not approve future assets.
 
-This documentation change leaves all 12 payload files and the packaging script unchanged. Runtime evidence remains tied to the code commit above; a new runtime matrix is not claimed for this inventory-only change.
+This documentation integration leaves all 15 payload files and the packager unchanged. Product/research documents, route examples, tests, screenshots, synthetic data and local receipts are outside the installable ZIP. Runtime evidence remains tied to the exact payload commit above; newer documentation CI is identified separately in its PR.
