@@ -1,10 +1,10 @@
 # Ghost Research Pro
 
-Ghost theme candidate for research publishers, B2B intelligence and professional newsletters. Project licensing remains unresolved; see the candidate handoff before distribution.
+MIT-licensed Ghost theme candidate for research publishers, B2B intelligence and professional newsletters. See [LICENSE](LICENSE) for permissions and notice conditions; functional release readiness is tracked separately.
 
 > Status: unmerged evaluation candidate. Research publishing, installation and scoped Ghost 5/6 acceptance evidence are available; stock Portal failures and other release gates remain. No production-ready theme has been released.
 
-Review the [candidate handoff](docs/candidate-delivery.md) for the exact installable ZIP/hash, configuration cost, tested profiles, integration plan and known limits. The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included; licensing and pricing remain undecided.
+Review the [candidate handoff](docs/candidate-delivery.md) for the exact installable ZIP/hash, configuration cost, tested profiles, integration plan and known limits. The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included. The owner selected standard MIT; no paid-service pricing is set here.
 
 Installing a development preview? Start with the [installation, configuration, upgrade and rollback guide](docs/user-guide.md). It distinguishes the installable artifact from a source ZIP and documents the controls this theme actually exposes.
 
@@ -19,11 +19,11 @@ Track research, product requirements, design, implementation and release in [Git
 - Keep `main` stable; develop via feature branches and pull requests.
 - Validate customer demand before committing to advanced features.
 - Prefer Ghost-native memberships, posts, tags and authors.
-- Confirm the upstream Starter license and choose a compatible project license before distributing theme code.
+- Keep the project MIT license and applicable upstream notices with distributed code; review separately introduced assets and dependencies under their own terms.
 
 ## Commercial approach
 
-Public source repository, with optional paid installation, customization and support services. Pricing and licensing remain under evaluation.
+Public source under MIT, which permits commercial use, redistribution and sale subject to its notice conditions. Optional paid installation, customization or support services may be offered separately; their pricing is not set here. Technical release readiness is not a restriction added to the MIT license.
 
 ## Local checks and packaging
 
@@ -61,7 +61,7 @@ delivery commitment. Its strict tests and failures are retained; the permissive
 The first delivery does not promise the unexecuted paid-subscription lifecycle
 (creation/checkout, renewal, cancellation/refunds and recovery). Native Ghost
 membership/paid features and access rules are unchanged; this is not an
-end-to-end commercial-readiness claim. Licensing remains undecided.
+end-to-end commercial-readiness claim. The project license is MIT.
 
 Theme CI exercises stock Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.11 on separate loopback-only runners. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. Both environments use disposable complimentary membership fixtures and an in-memory local SMTP sink. The matching official Portal bundle exercises free signup/signin/signout and fixture name/newsletter saves, reload persistence, cancellation, aborted-request recovery and signed-out data isolation. See [account acceptance](docs/engineering/account-acceptance.md) for the exact coverage and limits. All external browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost5` and `ghost-runtime-ghost6` (14-day retention).
 

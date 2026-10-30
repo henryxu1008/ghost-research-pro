@@ -2,25 +2,31 @@
 
 Prepared 2026-10-30. This is a reviewable installation/evaluation candidate.
 The ZIP is operational on the tested paths; stock Portal failures and other
-release gates remain. It is not cleared for production, sale or redistribution.
+technical release gates remain. Project files are under [MIT](../LICENSE),
+including its commercial-use/distribution/sale permissions and notice conditions.
+This is not a production-readiness claim or an additional license restriction.
 
 ## Identify this build
 
 | Item | Exact value |
 | --- | --- |
-| Runtime source | Unified PR17, native heading-font follow-up; exact source HEAD is recorded in its PR and the handoff manifest |
+| Runtime source | Unified PR17, font fix plus owner-selected MIT; exact source HEAD is recorded in its PR and the handoff manifest |
 | Package name / version | `ghost-research-pro` / `0.1.0` |
 | Installable filename | `ghost-research-pro.zip` |
-| Size / payload | 38,865 bytes / 15 regular files |
-| SHA-256 | `cd6dd6b32ab384b96bc7eb0b888b27369cd2ba98878cc3d02c200e6ce5a2d706` |
+| Size / payload | 40,023 bytes / 16 regular files, including `LICENSE` |
+| SHA-256 | `6264dc52d249bdb3348fbd4b5e2eb748ff30524d389b0a29d6b4a50ff62dee55` |
 | Current candidate checks | [PR17 checks](https://github.com/henryxu1008/ghost-research-pro/pull/17/checks); record the exact head/run before relying on their results |
 
 This follow-up fixes archive H2 cards ignoring Ghost's configured heading font;
 homepage H3 and archive H2 cards now use the same native font variable, retaining
 their semantics, 24px size and 30px line height. Actual-template Chromium probes
 reproduced the three archive mismatches before repair and pass afterward. The
-packager also preserves provided root `LICENSE`/`NOTICE` files; neither exists
-in this candidate and no license is generated. The ZIP now has a new identity.
+packager preserves provided root `LICENSE`/`NOTICE` files. The owner has now
+selected standard MIT and the actual root `LICENSE` is included unchanged;
+no additional NOTICE obligation was identified for the original project payload.
+The 15 previous runtime files are byte-identical to the font-fix ZIP; the new
+license entry gives this ZIP a new identity. Existing2380 still uses the previous
+15-file `cd6dd6b3…a2d706` deployment and is not claimed as a new licensed-ZIP install.
 Keep the full commit/hash: several development builds
 share version 0.1.0. An outer handoff/artifact ZIP is not the installable inner
 ZIP. Verify the inner file with `Get-FileHash .\ghost-research-pro.zip -Algorithm SHA256`
@@ -182,10 +188,12 @@ does not resolve licensing, Portal recovery or the other technical gates.
    alternate-browser review, arbitrary palettes/fonts/content combinations and
    individual graphical configuration-editor paths. Complimentary access and
    official-API saves are not substitutes for those outcomes.
-4. **Owner decisions:** resolve the MIT metadata / missing project LICENSE
-   mismatch, authorship/notices and eventual distribution terms before release.
-   The [payload inventory](engineering/release-licensing-inventory.md) grants no
-   new rights. No price, commercial license or marketplace eligibility is set.
+4. **License and release status:** standard MIT is now selected and included,
+   matching package metadata. The [payload inventory](engineering/release-licensing-inventory.md)
+   records attribution and third-party boundaries. MIT does not prohibit resale
+   or redistribution; keep its copyright/permission notice. No price or
+   marketplace eligibility is established, and this work has not merged,
+   published a Release or started a sale on the owner's behalf.
 
 ## Minimal integration plan
 

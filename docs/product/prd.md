@@ -46,12 +46,12 @@ already authorized HTML and never retrieves protected bodies.
 | Complete browsing | Exact-payload CI passes all nine new research checks in both pinned Ghost profiles, including old work beyond page one, UTC year bounds, access labels and protected Featured metadata. Local Ghost6 installation acceptance traversed all 20 publications across two Library pages and checked separate year/tag/format views. |
 | Reading and keyboard | Actual-template Chromium and stock-Portal focus fixtures pass on the payload baseline. Independent visual review reported no P0/P1/P2 in its 21 captured screens. This is sampled visual/interaction evidence, not full screen-reader or WCAG certification. |
 | Install and recover | Pinned CI includes real Admin UI upload/cancel/repeat/invalid-ZIP and backup/upgrade/rollback probes. The additional local Ghost6 buyer-copy run uploaded and activated the exact ZIP through Admin UI; tags/Pages/routes/menus used official Admin APIs. Their graphical editor click paths were not individually tested. |
-| Repeatable package | PR13's packager is in the PR16 ancestor chain. Current packaging checks also preserve optional supplied LICENSE/NOTICE; none exists in this 15-file candidate. Inspect exact-head CI for the seven current packaging cases. Docs, routes, Portal bundles and demo data are excluded. |
+| Repeatable package | PR13's packager is in the PR16 ancestor chain. Current packaging checks preserve supplied LICENSE/NOTICE; standard MIT LICENSE now joins the 15 runtime files in the 16-file ZIP. Inspect exact-head CI for all seven packaging cases. Docs, routes, Portal bundles and demo data are excluded. |
 | Account recovery | **Known fail:** Ghost5 newsletter HTTP503/429 client recovery; both pinned Portals' premature success on aborted comment-preference saves. Successful ordinary saves do not clear those failures. |
 | Compatibility | Static Ghost5/6 scans pass; exact-runtime results remain Ghost5 135 pass/3 fail and Ghost6 137 pass/1 fail at the payload baseline. No full-runtime green or every-minor support claim. |
 | Toolchain | Audit gate remains enabled: 0 critical / 3 known high dependency nodes in development ZIP tooling. This is not a clean audit; the dependencies are excluded from the theme ZIP. |
 | Paid lifecycle | **Owner decision: no first-version promise of the unexecuted paid lifecycle or end-to-end commercial readiness.** Subscription creation/checkout, renewals, cancellation, refunds and failure recovery remain unaccepted. Complimentary entitlement/CTA checks are not billing. Native features/access remain unchanged; a future promise requires sandbox acceptance. |
-| Distribution | Project license, ownership/notice reconciliation and commercial terms are unresolved. Existing MIT metadata is not treated as a completed license decision. |
+| Distribution | The owner selected standard MIT; root LICENSE and package metadata match, with verified repository-account attribution and existing upstream references retained. MIT permits distribution/sale under its terms; no extra restriction is added. Functional release/marketplace readiness and optional service pricing are not established by that license grant. |
 
 ## Release decisions and constraints
 
@@ -61,7 +61,7 @@ evidence outside that first promise; both strict matrices remain visible and
 unchanged. Evaluate the exact [candidate matrix](../candidate-delivery.md#tested-profiles).
 Permissive installation-engine metadata is retained, not a support warranty.
 Portal repair/released-version validation,
-payment sandbox acceptance, broader accessibility, license resolution and
+payment sandbox acceptance before a future paid promise, broader accessibility and
 commercial/customer evidence remain separate gates.
 
 No custom CMS, identity/billing service, client-side private index, global fetch

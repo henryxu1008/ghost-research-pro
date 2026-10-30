@@ -58,7 +58,9 @@ The owner selected **Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11** as first-
 primary support/delivery. Ghost5 remains compatibility CI evidence, outside the
 first delivery promise. No all6.x claim, engine restriction, test removal or
 failure waiver accompanies this decision. Licensing, paid-commerce promises,
-merge and Release are not authorized by it.
+merge and Release are not authorized by it. The owner subsequently selected
+standard MIT and excluded the unexecuted paid lifecycle from the first promise;
+those recorded choices do not authorize merge or Release either.
 
 ## Historical support options before that decision
 
@@ -78,6 +80,6 @@ The applicable comment repair has been submitted upstream; the old API chain has
 
 The **Ghost Admin UI ZIP upload/activation regression** is now complete at runtime code `e53af9a678f3152d3183e7cc1822eeb16fa6459a`, [workflow 40809348925](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925): all four UI cases pass on both versions. [Installation evidence](admin-ui-acceptance.md) records real native writes, cancellation, invalid-ZIP safety, canonical frontend fixtures and the explicit offline system-font fallback. The remaining runtime results are 112/3 on Ghost 5 and 114/1 on Ghost 6, with only the existing Portal failures.
 
-The remaining release-path responsibility is a supported native Portal repair and candidate validation. The historical Admin batch did not itself create a fork or PR; the later contribution is recorded above. Project licensing, Stripe sandbox lifecycle and screen-reader acceptance still require their respective decisions/environments. No live service connection or legal choice is made here.
+The remaining release-path responsibility is a supported native Portal repair and candidate validation. The historical Admin batch did not itself create a fork or PR; the later contribution is recorded above. MIT is now selected/included. A future paid-lifecycle promise still needs sandbox acceptance; screen-reader coverage needs its appropriate environment. No live service is connected or release action authorized here.
 
 Release remains blocked until the native Portal failures and the remaining [QA gates](qa-checklist.md) are resolved. [HTTP scope](account-http-acceptance.md), [comment scope](comment-preference-acceptance.md), [payment preparation](payment-acceptance.md) and [licensing inventory](release-licensing-inventory.md) distinguish completed evidence from outstanding work. The full development audit still has 0 critical and 3 known high nodes; no clean-audit claim is made.

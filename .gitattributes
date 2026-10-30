@@ -3,3 +3,5 @@
 *.css text eol=lf
 *.js text eol=lf
 /package.json text eol=lf
+/LICENSE text eol=lf
+/NOTICE text eol=lf
