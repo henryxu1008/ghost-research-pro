@@ -79,7 +79,7 @@ test('long brand and six navigation links keep actions and navigation labels who
 });
 
 test('archive cards follow H1 with H2 while homepage cards remain under their H2 section', async t => {
-    for (const file of ['index.hbs', 'tag.hbs', 'author.hbs']) {
+    for (const file of ['index.hbs', 'tag.hbs', 'author.hbs', 'library.hbs']) {
         const page = await pageFor(t, `<main>${render(file)}</main>`);
         const levels = await page.locator('h1,h2,h3').evaluateAll(nodes => nodes.map(el => Number(el.tagName.slice(1))));
         assert.equal(levels[0], 1);
@@ -92,4 +92,20 @@ test('archive cards follow H1 with H2 while homepage cards remain under their H2
         assert.equal(await title.locator('a').getAttribute('href'), '/report/');
         assert.equal(await title.evaluate(el => getComputedStyle(el).fontSize), '24px');
     }
+});
+
+test('configured native heading font applies consistently to home and archive card headings', async t => {
+    const actual = {}, expected = {};
+    for (const file of ['index.hbs', 'tag.hbs', 'author.hbs', 'library.hbs']) {
+        const page = await pageFor(t, `<main>${render(file)}</main>`);
+        await page.addStyleTag({content: ':root{--gh-font-heading:Arial,sans-serif}'});
+        const heading = page.locator('.card h2,.card h3');
+        assert.equal(await heading.count(), 1, `${file} must render an actual card heading`);
+        actual[file] = await heading.evaluate(el => {
+            const style = getComputedStyle(el);
+            return {tag: el.tagName, family: style.fontFamily, size: style.fontSize, weight: style.fontWeight, lineHeight: style.lineHeight};
+        });
+        expected[file] = {tag: file === 'index.hbs' ? 'H3' : 'H2', family: 'Arial, sans-serif', size: '24px', weight: '700', lineHeight: '30px'};
+    }
+    assert.deepEqual(actual, expected);
 });

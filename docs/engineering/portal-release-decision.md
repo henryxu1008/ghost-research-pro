@@ -1,8 +1,12 @@
 # Portal blockers and release route
 
-Updated 2026-10-30. The [candidate handoff](../candidate-delivery.md) is the current delivery/status summary. This changes no engine range, pinned runtime profile or strict assertion; the theme PRs remain Draft. No merge, production deployment, payment connection or license choice is authorized here.
+Updated 2026-10-30. The [candidate handoff](../candidate-delivery.md) is the current delivery/status summary. This changes no engine range, pinned runtime profile or strict assertion. Unified [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) targets main and is ready for review; older PR10–16 remain open/Draft. No merge, production deployment, payment connection or license choice is authorized here.
 
-## Current candidate status
+## Pinned Portal diagnostic baseline
+
+The font-fix candidate has a separate identity in the handoff above. The results
+in this section belong to the earlier PR16 payload and are not transferred as
+new-ZIP passes; use the latest exact-head PR17 checks for the current build.
 
 Payload `993b4e25bd3d9aa227041b74f3e44bc3875c8054`, [CI41011050241](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41011050241): Ghost5 **135 pass /3 fail**, Ghost6 **137 pass /1 fail**, with zero runtime skips. Validate passed; runtime and overall CI remain failed. The failure identities below are unchanged. Local Ghost6 buyer-copy installation/configuration acceptance has completed; its official API steps are distinguished from actual Admin UI upload/activation in the candidate guide.
 

@@ -86,6 +86,24 @@ test('required payload omissions fail instead of producing a misleading theme', 
     assert.throws(() => buildArchive(src), /Missing required theme file: post.hbs/);
 });
 
+test('provided root LICENSE and NOTICE are preserved without inventing missing terms', async t => {
+    const root = sandbox(t), src = path.join(root, 'source'); fixture(src);
+    const original = buildArchive(src);
+    const notices = {LICENSE: 'Fixture license text only; not a project grant.\n', NOTICE: 'Fixture attribution notice.\n'};
+    for (const [name, text] of Object.entries(notices)) fs.writeFileSync(path.join(src, name), text);
+    const included = buildArchive(src);
+    assert.notEqual(sha(included), sha(original), 'Existing legal notices must not silently disappear');
+    const {dir, entries} = await unpack(root, included, 'with-notices');
+    for (const [name, text] of Object.entries(notices)) {
+        assert(entries.some(entry => entry.fileName === name));
+        assert.equal(fs.readFileSync(path.join(dir, name), 'utf8'), text);
+        fs.unlinkSync(path.join(src, name));
+    }
+    assert.deepEqual(buildArchive(src), original, 'No notice is generated when the owner has not supplied one');
+    fs.mkdirSync(path.join(src, 'LICENSE'));
+    assert.throws(() => buildArchive(src), /Expected a regular theme file or directory: LICENSE/);
+});
+
 test('symlinks cannot import files outside the allowed payload tree', {
     skip: process.platform === 'win32' && 'Windows sandbox denies link fixtures; this negative case must pass on Linux CI'
 }, t => {
@@ -102,7 +120,7 @@ test('actual theme CLI rebuild is stable and all extracted files match the sourc
     execFileSync(process.execPath, [script]); assert.deepEqual(fs.readFileSync(output), first);
     const {dir, entries} = await unpack(root, first, 'actual');
     for (const entry of entries) {
-        assert.match(entry.fileName, /^(?:[^/]+\.hbs|package\.json|(?:assets|partials)\/)/);
+        assert.match(entry.fileName, /^(?:[^/]+\.hbs$|package\.json$|LICENSE$|NOTICE$|(?:assets|partials)\/)/);
         assert(!entry.fileName.endsWith('.map'));
         assert.deepEqual(fs.readFileSync(path.join(dir, entry.fileName)), fs.readFileSync(path.join(source, entry.fileName)));
     }

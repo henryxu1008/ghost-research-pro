@@ -1,7 +1,8 @@
 # Ghost Research Pro product requirements
 
-Candidate scope, 2026-10-30. Runtime payload baseline:
-`993b4e25bd3d9aa227041b74f3e44bc3875c8054` (PR16).
+Candidate scope, 2026-10-30. PR16 runtime baseline:
+`993b4e25bd3d9aa227041b74f3e44bc3875c8054`; PR17's font/notice follow-up now has
+the separate build identity and evidence in the candidate handoff below.
 This updates the earlier [PR14 contract](https://github.com/henryxu1008/ghost-research-pro/blob/5fcec3162be2fff50383d3541b55d511250567d8/docs/product/prd.md)
 to the owner's subsequent research-publishing direction. It is an unmerged
 candidate for evaluation. See the [delivery guide](../candidate-delivery.md)
@@ -45,7 +46,7 @@ already authorized HTML and never retrieves protected bodies.
 | Complete browsing | Exact-payload CI passes all nine new research checks in both pinned Ghost profiles, including old work beyond page one, UTC year bounds, access labels and protected Featured metadata. Local Ghost6 installation acceptance traversed all 20 publications across two Library pages and checked separate year/tag/format views. |
 | Reading and keyboard | Actual-template Chromium and stock-Portal focus fixtures pass on the payload baseline. Independent visual review reported no P0/P1/P2 in its 21 captured screens. This is sampled visual/interaction evidence, not full screen-reader or WCAG certification. |
 | Install and recover | Pinned CI includes real Admin UI upload/cancel/repeat/invalid-ZIP and backup/upgrade/rollback probes. The additional local Ghost6 buyer-copy run uploaded and activated the exact ZIP through Admin UI; tags/Pages/routes/menus used official Admin APIs. Their graphical editor click paths were not individually tested. |
-| Repeatable package | PR13's packager is in the PR16 ancestor chain. Exact payload builds on Linux/Windows match; six Linux packaging tests pass without skips. The ZIP has 15 runtime files and no docs, routes, Portal bundle or demo data. |
+| Repeatable package | PR13's packager is in the PR16 ancestor chain. Current packaging checks also preserve optional supplied LICENSE/NOTICE; none exists in this 15-file candidate. Inspect exact-head CI for the seven current packaging cases. Docs, routes, Portal bundles and demo data are excluded. |
 | Account recovery | **Known fail:** Ghost5 newsletter HTTP503/429 client recovery; both pinned Portals' premature success on aborted comment-preference saves. Successful ordinary saves do not clear those failures. |
 | Compatibility | Static Ghost5/6 scans pass; exact-runtime results remain Ghost5 135 pass/3 fail and Ghost6 137 pass/1 fail at the payload baseline. No full-runtime green or every-minor support claim. |
 | Toolchain | Audit gate remains enabled: 0 critical / 3 known high dependency nodes in development ZIP tooling. This is not a clean audit; the dependencies are excluded from the theme ZIP. |

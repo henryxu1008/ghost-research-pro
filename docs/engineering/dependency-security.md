@@ -14,7 +14,7 @@ Do not use `npm audit fix --force`: the suggested GScan downgrade would abandon 
 
 All npm dependencies are development dependencies and `node_modules` is excluded from the installable theme ZIP. This fixes the project's validation compiler; it does not patch Ghost's independently installed dependencies.
 
-GScan's locked `@tryghost/zip` wrapper rejects symlink entries before calling extract-zip's write path, but extract-zip remains vulnerable and audit does not become clean. Validate archives built from this repository in disposable CI runners. Do not treat this toolchain as a safe service for arbitrary uploaded archives or run it with production credentials. Reassess the override and ZIP dependency when upstream fixes become available. The Draft PR and other release gates remain in place.
+GScan's locked `@tryghost/zip` wrapper rejects symlink entries before calling extract-zip's write path, but extract-zip remains vulnerable and audit does not become clean. Validate archives built from this repository in disposable CI runners. Do not treat this toolchain as a safe service for arbitrary uploaded archives or run it with production credentials. Reassess the override and ZIP dependency when upstream fixes become available. The unified candidate remains unmerged and the release gates remain in place.
 
 ## Continuing CI gate
 

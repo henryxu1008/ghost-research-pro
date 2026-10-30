@@ -1,6 +1,9 @@
 # Research publishing component and responsive specification
 
-Source-derived candidate specification, 2026-10-30, payload `993b4e25`.
+Source-derived candidate specification, 2026-10-30, PR16 baseline `993b4e25` plus
+PR17's native heading-font fix. Both `.card h2` and `.card h3` now explicitly use
+Ghost's heading-font variable; actual-template fixtures verify the same family,
+24px size, 700 weight and 30px line height across home/tag/author/library.
 This updates [PR14's earlier snapshot](https://github.com/henryxu1008/ghost-research-pro/blob/5fcec3162be2fff50383d3541b55d511250567d8/docs/product/design-spec.md).
 It describes the existing implementation; it is not a new Figma file, complete
 assistive-technology audit or commercial approval.

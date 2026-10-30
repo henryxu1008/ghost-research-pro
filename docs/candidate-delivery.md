@@ -8,15 +8,20 @@ release gates remain. It is not cleared for production, sale or redistribution.
 
 | Item | Exact value |
 | --- | --- |
-| Runtime source | PR16 `993b4e25bd3d9aa227041b74f3e44bc3875c8054` |
+| Runtime source | Unified PR17, native heading-font follow-up; exact source HEAD is recorded in its PR and the handoff manifest |
 | Package name / version | `ghost-research-pro` / `0.1.0` |
 | Installable filename | `ghost-research-pro.zip` |
-| Size / payload | 38,856 bytes / 15 regular files |
-| SHA-256 | `e515558fdb7eb35cb27f9f85b28d5a5bbe8e2b9e24d8fe6bb31413de3a73cb5f` |
-| Exact-payload source CI | [Run 41011050241](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41011050241), completed / failure |
+| Size / payload | 38,865 bytes / 15 regular files |
+| SHA-256 | `cd6dd6b32ab384b96bc7eb0b888b27369cd2ba98878cc3d02c200e6ce5a2d706` |
+| Current candidate checks | [PR17 checks](https://github.com/henryxu1008/ghost-research-pro/pull/17/checks); record the exact head/run before relying on their results |
 
-This documentation integration does not change runtime files, lockfile, tests,
-workflow or ZIP bytes. Keep the full commit/hash: several development builds
+This follow-up fixes archive H2 cards ignoring Ghost's configured heading font;
+homepage H3 and archive H2 cards now use the same native font variable, retaining
+their semantics, 24px size and 30px line height. Actual-template Chromium probes
+reproduced the three archive mismatches before repair and pass afterward. The
+packager also preserves provided root `LICENSE`/`NOTICE` files; neither exists
+in this candidate and no license is generated. The ZIP now has a new identity.
+Keep the full commit/hash: several development builds
 share version 0.1.0. An outer handoff/artifact ZIP is not the installable inner
 ZIP. Verify the inner file with `Get-FileHash .\ghost-research-pro.zip -Algorithm SHA256`
 on PowerShell or `sha256sum ghost-research-pro.zip` on a Unix shell.
@@ -103,6 +108,14 @@ verified-support or production-readiness warranty. A release-scope change still
 requires an owner decision; Ghost5 results have not been hidden.
 
 ## Acceptance evidence and method
+
+The profile counts, local buyer-copy run and 21-screen independent visual review
+below are **historical PR16 evidence**, payload `993b4e25` / ZIP `e515558f…cb5f`.
+They do not validate this new font-fix ZIP. Its focused layout/publishing browser
+checks pass 8/8; current source/ZIP and complete runtime results must be read from
+the exact latest PR17 checks. No new local administrator, buyer installation,
+independent visual review or real payment is claimed for this follow-up. Existing
+2369/2380 previews have not been updated by this batch.
 
 The exact-payload CI's validate job passed source/ZIP GScan, six Linux
 reproducibility checks, independent unzip CRCs and the bounded audit. Both
@@ -195,3 +208,7 @@ strict red checks. If merge is later authorized, one PR17 merge can include the
 whole candidate; do not reapply PR14's obsolete README/checklist replacements.
 Recheck the final merged commit and payload hash before any release; a GitHub
 test-merge SHA is not the evaluated source commit.
+
+For the exact user-only handoff boundary and the remaining owner choices, see
+the [delivery readiness and decisions](delivery-readiness.md). No local artifact
+upload or license decision is authorized by the presence of that document.

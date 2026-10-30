@@ -1,10 +1,10 @@
 # Release licensing inventory
 
-Updated 2026-10-30 for the PR16 candidate payload. This records files and unresolved decisions; it does not select a project license, grant buyer rights or clear commercial distribution.
+Updated 2026-10-30 for the PR17 font-fix candidate payload. This records files and unresolved decisions; it does not select a project license, grant buyer rights or clear commercial distribution.
 
 ## Actual theme ZIP
 
-Inspected the exact [PR16](https://github.com/henryxu1008/ghost-research-pro/pull/16) payload `993b4e25bd3d9aa227041b74f3e44bc3875c8054`, also built by [CI41011050241](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41011050241). The inner `ghost-research-pro.zip` is 38,856 bytes; SHA-256 `e515558fdb7eb35cb27f9f85b28d5a5bbe8e2b9e24d8fe6bb31413de3a73cb5f`. Its 15 regular files match source byte for byte. The older 12-file inventory is historical; the table below covers all current files.
+The current [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) font-fix ZIP is 38,865 bytes; SHA-256 `cd6dd6b32ab384b96bc7eb0b888b27369cd2ba98878cc3d02c200e6ce5a2d706`. Its 15 regular files match the source checkout byte for byte; the exact candidate head/run is recorded in its PR and handoff manifest. PR16's 38,856-byte `e515558f…cb5f` ZIP and the older 12-file inventory are historical. The current file list below is unchanged; the font fix changes only `screen.css` in the runtime payload.
 
 | Included files | Source / license evidence | Notice status |
 | --- | --- | --- |
@@ -19,7 +19,7 @@ There are **no font, image, icon, video or audio files** in the archive. Templat
 
 Read the official [TryGhost/Starter LICENSE at `99df4c9466d54fe23191109a0019572819ed3481`](https://github.com/TryGhost/Starter/blob/99df4c9466d54fe23191109a0019572819ed3481/LICENSE): MIT text, copyright `(c) 2013-2026 Ghost Foundation`. Its notice condition requires preserving the copyright and permission notice in copies or substantial portions. The repository's existing attribution is retained and pinned in [UPSTREAM.md](UPSTREAM.md).
 
-No copied Starter file or other third-party payload requiring a newly inserted notice was identified in this inspection. This does not settle derivation or project ownership. If upstream code/assets are later copied, retain the exact applicable notices and include them in the distribution. The current explicit packaging allowlist does **not** include a future root `LICENSE` or `NOTICE` automatically; packaging must be reconciled with the eventual decision before release.
+No copied Starter file or other third-party payload requiring a newly inserted notice was identified in this inspection. This does not settle derivation or project ownership. If upstream code/assets are later copied, retain the exact applicable notices and include them in the distribution. The packager now includes existing regular root `LICENSE` and `NOTICE` files byte for byte; missing files are not generated. A fixture proves inclusion changes the ZIP and removal restores the baseline, and rejects a directory in place of a notice. The owner must still provide/approve the actual terms and applicable notices before distribution. Adding them requires a new manifest/hash and package validation.
 
 ## Development / CI material excluded from the ZIP
 
@@ -42,4 +42,4 @@ Inspected the locked installed package metadata and available license files. Thi
 - Confirm authorship/derivation and the intended project license, then supply its actual text and reconcile package metadata, documentation and archive inclusion.
 - Inventory any later demo/customer media, fonts, logos or vendored code separately, with exact source/version and applicable notices. The current absence of bundled third-party media does not approve future assets.
 
-This documentation integration leaves all 15 payload files and the packager unchanged. Product/research documents, route examples, tests, screenshots, synthetic data and local receipts are outside the installable ZIP. Runtime evidence remains tied to the exact payload commit above; newer documentation CI is identified separately in its PR.
+This follow-up changes the CSS font selector and optional-notice packaging support. No actual license/notice file or new grant is added. Product/research documents, route examples, tests, screenshots, synthetic data and local receipts remain outside the installable ZIP. Use exact-head CI for this new payload, rather than transferring the previous ZIP's runtime/visual passes.

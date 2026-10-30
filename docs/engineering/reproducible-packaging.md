@@ -10,7 +10,7 @@ The supplied comparison was PR11 [run 40856407954](https://github.com/henryxu100
 
 | Input or metadata | Canonical output |
 | --- | --- |
-| Input allowlist | Root `*.hbs` and `package.json`, regular files recursively under `assets/` and `partials/`, excluding `.map` files |
+| Input allowlist | Root `*.hbs`, `package.json`, existing regular `LICENSE`/`NOTICE`, and regular files recursively under `assets/` and `partials/`, excluding `.map` files. Missing notices are not generated. |
 | Entry order and names | UTF-8 byte order, forward-slash relative paths, UTF-8 flag; no parent folder or directory records |
 | File contents | Exact input bytes, including binary and empty files |
 | Timestamp | DOS `1980-01-01 00:00:00` in local and central records; no UT extra fields |
@@ -23,7 +23,7 @@ Git attributes keep checked-out `.hbs`, `.css`, `.js` and root `package.json` te
 
 ## Verification and limits
 
-Run `node --test tests/package.test.cjs`, `npm run test:ci`, `npm run zip` and `npm run test:zip` after installing the locked development dependencies. The six focused regression cases cover different directory creation orders, mtimes, file modes and timezones; excluded docs/build/dependency/map files; changed and removed payloads; missing required files; symlinks; Unicode/binary/empty files through an independent existing ZIP reader; and actual CLI output replacement. The Windows sandbox rejected link-fixture creation with `EPERM`; that one case is explicitly skipped on Windows, not claimed as a local pass. It remains a required real-filesystem assertion on Linux CI. CI includes the packaging cases on Node 22 and 24, source/ZIP GScan and the existing Ghost upload/activation/runtime matrix.
+Run `node --test tests/package.test.cjs`, `npm run test:ci`, `npm run zip` and `npm run test:zip` after installing the locked development dependencies. The seven focused regression cases cover different directory creation orders, mtimes, file modes and timezones; excluded docs/build/dependency/map files; changed and removed payloads; missing required files; symlinks; Unicode/binary/empty files through an independent existing ZIP reader; optional root notices preserved byte for byte without invented terms; and actual CLI output replacement. The Windows sandbox rejected link-fixture creation with `EPERM`; that one case is explicitly skipped on Windows, not claimed as a local pass. It remains a required real-filesystem assertion on Linux CI. CI includes the packaging cases on Node 22 and 24, source/ZIP GScan and the existing Ghost upload/activation/runtime matrix.
 
 Linux CI also runs `unzip -t` on the actual output to independently verify ZIP CRCs. The Git-bundled native `unzip.exe` did not initialize in the Windows sandbox (exit `0xC0000142`, no archive diagnostic); it was not counted as a local integrity pass. Independent JavaScript extraction and source/ZIP GScan did run locally.
 

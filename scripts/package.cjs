@@ -23,6 +23,9 @@ function buildArchive(root) {
     }
     for (const template of fs.readdirSync(root).filter(name => name.endsWith('.hbs'))) visit(template, false);
     visit('package.json', false);
+    for (const notice of ['LICENSE', 'NOTICE']) {
+        if (fs.lstatSync(path.join(root, notice), {throwIfNoEntry: false})) visit(notice, false);
+    }
     for (const directory of ['assets', 'partials']) visit(directory);
     files.sort((a, b) => Buffer.compare(Buffer.from(a), Buffer.from(b)));
     if (files.length >= 0xffff) throw new Error('Theme exceeds ZIP32 entry limit');
