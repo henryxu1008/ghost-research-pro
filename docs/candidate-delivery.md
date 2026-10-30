@@ -93,9 +93,13 @@ members or tags to undo a layout. Theme rollback does not downgrade Ghost.
 
 ## Tested profiles
 
-The intended Ghost5/6 lines and `engines.ghost >=5.0.0` metadata are unchanged.
-The primary local evaluation target is Ghost6.73.0 with stock Portal2.72.11.
-For candidate evaluation only these exact profiles have runtime evidence:
+The owner selected **Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11** as the
+first-version primary support/delivery target. No all6.x promise is made.
+Ghost5 remains compatibility CI evidence, outside the first delivery commitment.
+Both test profiles and all strict failures remain enabled. The permissive
+`engines.ghost >=5.0.0` installation metadata is retained to avoid blocking
+existing installations; it is not the promised support range.
+Only these exact profiles have runtime evidence:
 
 | Runtime / stock Portal | Exact-payload evidence | Limits |
 | --- | --- | --- |
@@ -103,9 +107,10 @@ For candidate evaluation only these exact profiles have runtime evidence:
 | Ghost6.73.0 / Node24.22.1 / Portal2.72.11 | Same static/CI installation/research coverage; runtime 137 pass / 1 fail / 0 skip. Additional isolated local buyer-copy acceptance described below. | Comment feedback remains red; billing and complete accessibility unexecuted. |
 
 No other minor versions, Node versions or browsers become supported by this
-table. The broader engine declaration is a compatibility declaration, not a
-verified-support or production-readiness warranty. A release-scope change still
-requires an owner decision; Ghost5 results have not been hidden.
+table. Ghost5's row records compatibility results, not first-version support.
+The broader engine declaration is not a verified-support or production-readiness
+warranty. The Ghost6-first decision does not turn any failed check green,
+authorize a license/payment promise or approve a merge/release.
 
 ## Acceptance evidence and method
 

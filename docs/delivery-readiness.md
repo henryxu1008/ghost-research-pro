@@ -25,19 +25,19 @@ An allowlisted file/typed-secret/path scan and hash/CRC checks are evidence of
 the inspected contents, not a guarantee that arbitrary future attachments are
 safe. Keep the user handoff local until attachment permission is coordinated.
 
-## Three concrete owner choices
+## Recorded support choice and two remaining owner choices
 
-| Choice | Available directions; nothing selected here | Work after the choice |
+| Choice | Status / available directions | Work after the choice |
 | --- | --- | --- |
 | Project license | Confirm the intended MIT direction represented by existing metadata, or request a different reviewed license/terms proposal. The current metadata/missing-text mismatch is unresolved. | Owner approves actual license/copyright/notice text and provenance; reconcile metadata, include provided root LICENSE/NOTICE, rebuild and validate. No price, permission grant or legal conclusion is supplied here. |
-| Initial formal Portal/Ghost scope | Keep Ghost5+6, or explicitly choose a Ghost6-first release scope. Ghost6-first has one known Portal responsibility; Ghost5 adds the legacy newsletter503/429 recovery responsibility. | Validate supported stock upstream repair(s) and rerun all relevant strict cases for the chosen exact versions. A scope decision alone does not turn red checks green; do not silently remove Ghost5 or ship an experimental Portal. |
+| Initial formal Portal/Ghost scope | **Decided by the owner: Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11 is the first primary support/delivery target.** Ghost5 is retained as compatibility evidence, outside the first delivery commitment; no all6.x promise. | Preserve both CI profiles and red assertions; validate the supported stock Ghost6 comment repair and rerun exact-candidate checks. Engine metadata remains permissive; no experimental Portal is shipped. |
 | Paid-commerce promise | Include native paid checkout/lifecycle in the first release promise, or restrict that first promise to the demonstrated reading/free-member scope and explicitly leave commerce unverified. Native paid UI is not automatically removed by this choice. | If included, separately authorize/provide an isolated Stripe sandbox and run the prepared lifecycle matrix. If excluded, reconcile product/support claims before release. No new account, credential or payment is created now. |
 
-The shortest technical sequencing recommendation is to evaluate Ghost6 first
-and avoid promising unexecuted billing behavior. That is a recommendation for
-the owner, not a support-range or product-contract change. Licensing remains
-the owner's choice, and an official validated comment-feedback repair is still
-needed even for Ghost6/free-member scope.
+The Ghost6-first choice is recorded and does not need to be asked again.
+Licensing and the paid-commerce promise remain the two owner choices.
+Avoiding unexecuted billing promises is still a recommendation, not a decision
+made here. An official validated comment-feedback repair is still needed even
+for the chosen Ghost6/free-member scope.
 
 ## Technical gates that decisions do not waive
 

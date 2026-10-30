@@ -1,6 +1,6 @@
 # Install, configure, update and restore Ghost Research Pro
 
-This is a development preview, not a production release. The tested runtime profiles are Ghost 5.130.6 and Ghost 6.73.0; the wider engine declaration is not a test of every Ghost version. Native Portal recovery, payments, accessibility and project licensing still have [open release gates](engineering/qa-checklist.md#remaining-release-gates).
+This is a development preview, not a production release. The owner's first-version primary support/delivery target is **Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11**, not every6.x version. Ghost5.130.6 remains compatibility CI evidence, outside that first delivery promise. Its tests and failures stay enabled; the wider installation-engine declaration is unchanged and is not a verified-support warranty. Native Portal recovery, payments, accessibility and project licensing still have [open release gates](engineering/qa-checklist.md#remaining-release-gates).
 
 For the current payload's version/hash, scoped installation results and complete handoff contents, read the [candidate delivery guide](candidate-delivery.md). Its API configuration evidence is distinguished from graphical editor walkthroughs.
 

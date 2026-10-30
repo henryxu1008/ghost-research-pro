@@ -52,19 +52,27 @@ The complete installed map entries for the legacy API and actions were also comp
 
 Ghost 5.130.6's [official default config](https://github.com/TryGhost/Ghost/blob/v5.130.6/ghost/core/core/shared/config/defaults.json) chooses the `~2.51` Portal line. The official registry checked on 2026-10-29 lists stable 2.51.0 through 2.51.5, with no later patch in that line. No verified compatible fix has been found. This does not prove every newer line incompatible, nor that no future/backported fix can exist. The exact pinned profiles establish neither all Ghost 5/6 minors nor every browser or Portal release.
 
-## Support options
+## Recorded initial support decision
+
+The owner selected **Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11** as first-version
+primary support/delivery. Ghost5 remains compatibility CI evidence, outside the
+first delivery promise. No all6.x claim, engine restriction, test removal or
+failure waiver accompanies this decision. Licensing, paid-commerce promises,
+merge and Release are not authorized by it.
+
+## Historical support options before that decision
 
 | Route | What it resolves | What remains / decision required |
 | --- | --- | --- |
-| Keep current Ghost 5 + 6 scope | Preserves the existing product promise and evidence. | Obtain and validate both upstream repairs on supported stock Portal lines, then require all existing assertions to pass in both profiles. This remains the default until a scope decision. |
-| Conditional Ghost 6 first release | Removes the legacy null-member problem from the proposed initial release scope. | The comment feedback defect still blocks Ghost 6. Owner approval is required before changing engine metadata, documentation or the supported matrix. Ghost 5 stays explicitly blocked/unsupported for that release; it cannot silently disappear from evidence. |
+| Keep Ghost 5 + 6 scope | The previous dual-line proposal. | Would require supported repairs for both lines. The owner has instead chosen the exact Ghost6 primary target above; Ghost5 evidence is retained. |
+| Ghost 6 first release | Chosen exact-version primary scope; the legacy null-member issue is outside that initial promise. | The comment feedback defect still blocks Ghost6. Keep Ghost5 compatibility tests/results visible; engine metadata is unchanged. |
 | Force a newer/custom Portal into Ghost 5 | Could change the failing implementation. | Compatibility and distribution responsibilities are unproven. This is not equivalent to passing stock Ghost 5 acceptance and is not recommended as a shortcut. |
 
 Disabling comments or removing account controls would change product behavior and would not fix the underlying account lifecycle. It is not proposed as a passing substitute. No route converts current failed cases into skipped or expected-success cases.
 
 ## Recommended shortest delivery path
 
-Concentrate the first release candidate on **stock Ghost 6 plus a verified upstream comment-feedback repair**; retain the current dual-version scope and red evidence until the owner explicitly approves a narrower initial support range. Ghost 6 already passes the controlled newsletter HTTP cases, so this candidate has one upstream responsibility rather than the legacy line's two. This is a sequencing recommendation, not a support-range change or a promise of an available fixed version.
+Implement the owner's exact Ghost6-first support decision above while retaining both compatibility matrices and every red assertion. Ghost6 still needs a supported stock comment-feedback repair; the choice does not make that fix available or convert CI to green. Ghost5's additional newsletter503/429 failures remain recorded as compatibility limitations rather than a first-version support promise.
 
 The applicable comment repair has been submitted upstream; the old API chain has an existing main-line fix. Preserve the strict reproductions and seek a supported released repair/backport. Pin it and rerun the unchanged relevant matrix on the exact candidate. A local patched demonstration alone cannot close the stock-runtime release gate.
 

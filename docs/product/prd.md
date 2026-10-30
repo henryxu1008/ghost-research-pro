@@ -55,10 +55,12 @@ already authorized HTML and never retrieves protected bodies.
 
 ## Release decisions and constraints
 
-Keep the intended Ghost5/6 lines and strict tests visible. Evaluate only the exact
-versions in the [candidate matrix](../candidate-delivery.md#tested-profiles).
-A narrower release scope needs an explicit owner decision; a wider engine range
-is not compatibility evidence. Portal repair/released-version validation,
+The owner selected Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11 as first-version
+primary support/delivery, without promising all6.x. Ghost5 is compatibility CI
+evidence outside that first promise; both strict matrices remain visible and
+unchanged. Evaluate the exact [candidate matrix](../candidate-delivery.md#tested-profiles).
+Permissive installation-engine metadata is retained, not a support warranty.
+Portal repair/released-version validation,
 payment sandbox acceptance, broader accessibility, license resolution and
 commercial/customer evidence remain separate gates.
 
