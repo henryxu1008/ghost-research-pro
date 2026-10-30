@@ -47,7 +47,15 @@
     const background = new Map();
     const inaccessibleFrames = new WeakSet();
     const focusable = doc => [...doc.querySelectorAll('a[href],button,input,select,textarea,[tabindex]')]
-        .filter(el => el.tabIndex >= 0 && !el.disabled && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden');
+        .filter(el => el.tabIndex >= 0 && !el.disabled && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden')
+        // Positive tabindex controls precede the ordinary DOM-order controls.
+        // Keep ties stable, matching the browser's sequential focus order.
+        .sort((a, b) => {
+            if (a.tabIndex === b.tabIndex) return 0;
+            if (a.tabIndex === 0) return 1;
+            if (b.tabIndex === 0) return -1;
+            return a.tabIndex - b.tabIndex;
+        });
 
     document.addEventListener('click', event => {
         const link = event.target.closest?.('[data-portal],a[href*="#/portal/"]');

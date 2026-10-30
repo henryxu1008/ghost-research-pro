@@ -30,3 +30,28 @@ Ghost installation, screen-reader audit, or a replacement for visual review.
 A local preview's Portal resource URL is deployment configuration, separate from
 these theme changes. No Portal bundle or upstream experimental patch is added to
 the installable theme ZIP.
+
+## Portal sequential focus boundary
+
+An independent follow-up check found that the existing iframe focus adapter used
+DOM order for its first/last controls. Portal 2.72.11's signup fields have positive
+tabindex values, so native reverse Tab from the initially focused Name field could
+leave the iframe. This observation does not establish which earlier change
+introduced the problem.
+
+The adapter now follows native sequential order: positive tabindex values first,
+ascending, then ordinary controls in DOM order. Equal values preserve DOM order.
+It does not change Portal's own markup, tabindex values, or bundle bytes.
+
+```sh
+node --test tests/runtime/portal-focus.test.cjs
+```
+
+These real Chromium checks load the two pinned, unmodified Portal bundles with
+fictional read-only API responses. They cover signup and signin at 360/1280px,
+native autofocus, complete forward/backward cycles without skipped controls,
+Escape immediately after reverse Tab, trigger focus restoration, repeated opens,
+and keyboard close. They reject non-GET requests and never submit a form.
+The disposable Ghost runtime also exercises the signup sequence against its real
+Portal UI while preserving the existing signin checks. This does not replace the
+independent local-preview visual recheck or test authenticated behavior.
