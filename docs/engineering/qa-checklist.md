@@ -52,4 +52,4 @@ See the [Portal repair boundary and release route](portal-release-decision.md) f
 - [ ] Resolve project licensing using the [release inventory](release-licensing-inventory.md), including the existing MIT metadata / missing LICENSE mismatch, and complete design/commercial review.
 
 ## Release gate
-PR #10 stays Draft. A passing disposable-instance acceptance run does not authorize merging, deploying or real payments, and is not a claim of production readiness.
+[PR #17](https://github.com/henryxu1008/ghost-research-pro/pull/17) is the unified candidate targeting main and ready for review. Older PR10–16 remain open; no merge, approval, auto-merge or old-PR closure accompanies that status change. A passing disposable-instance acceptance run does not authorize merging, deploying or real payments, and is not a claim of production readiness. Preserve the strict Portal failures and inspect the exact final-head checks before any merge decision.

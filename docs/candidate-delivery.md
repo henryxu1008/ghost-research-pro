@@ -174,9 +174,24 @@ do not substitute for the unexecuted checks below.
 | 15 | PR13 → `fix/audit-focus-header-headings` at `8f408a8` | Ancestor; focus/header/headings and signup keyboard boundaries. |
 | 16 | PR15 → `feat/research-publishing-experience` at `993b4e2` | Runtime payload anchor. |
 
-The candidate-doc branch is based on PR16 and adds no runtime change. Existing
-PR10–16 heads and main are untouched. No merge or auto-merge is performed.
-If later authorized, review/integrate the code chain in order and include this
-documentation reconciliation without reapplying the older PR14 README/checklist
-changes. Recheck the final merged commit and payload hash before any release;
-a GitHub test-merge SHA is not the evaluated source commit.
+Following the owner's confirmation, [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17)
+is the single unified delivery candidate, targeting `main` and ready for review.
+Its `docs/candidate-delivery` branch contains the PR16 code chain and this
+documentation reconciliation; no runtime file changes accompany the retarget.
+The base changed from `feat/research-publishing-experience@993b4e25` to
+`main@68acc0029dedd70b81b656f7bc292133411252ed`. At that snapshot main is the
+merge base, with no divergent main commits. This is source ancestry evidence,
+not a passing-check or merge-approval claim.
+
+PR10–16 remain open with their heads unchanged; no old PR is closed or separately
+merged by this consolidation. Review PR17 as a whole rather than merging the
+old chain individually. Its [current checks](https://github.com/henryxu1008/ghost-research-pro/pull/17/checks)
+must establish the final head against the main baseline. The older runs above
+remain exact-payload evidence, not a substitute for that final-base run.
+
+Actual merge, auto-merge, old-PR closure and release remain separate, unperformed
+actions requiring their respective authorization. Known Portal failures remain
+strict red checks. If merge is later authorized, one PR17 merge can include the
+whole candidate; do not reapply PR14's obsolete README/checklist replacements.
+Recheck the final merged commit and payload hash before any release; a GitHub
+test-merge SHA is not the evaluated source commit.
