@@ -182,6 +182,15 @@ async function main() {
         assert.equal(response.status(), 200, route);
         const html = await response.text();
         assert(html.includes('class="site-header wrap"') && html.includes('id="main"'), `${route} not rendered by our theme`);
+        if (route === '/' || route.startsWith('/tag/') || route.startsWith('/author/')) {
+            const cards = [...html.matchAll(/<article class="card">([\s\S]*?)<\/article>/g)];
+            assert(cards.length > 0, `${route} must render actual Ghost cards`);
+            const level = route === '/' ? 3 : 2;
+            for (const [, card] of cards) {
+                assert(card.includes(`<h${level}>`), `${route} card heading must be H${level}`);
+                assert(!card.includes(`<h${level === 2 ? 3 : 2}>`), `${route} card contains an unexpected heading level`);
+            }
+        }
         record(`Page renders: ${route}`);
     }
     assert.equal((await anon.get('/qa-does-not-exist/')).status(), 404);

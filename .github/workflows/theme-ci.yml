@@ -71,6 +71,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Test report table of contents
         run: npm run test:toc
+      - name: Test keyboard focus, header reflow and card headings
+        run: node --test tests/runtime/theme-layout.test.cjs
       - name: Install isolated Ghost ${{ matrix.ghost }}
         shell: bash
         run: |
