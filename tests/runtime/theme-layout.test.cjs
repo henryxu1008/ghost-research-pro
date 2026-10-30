@@ -12,10 +12,11 @@ const css = read('assets/css/screen.css');
 const hbs = Handlebars.create();
 const site = {title: 'Ghost Research Pro — Fictional demo', url: '/', allow_self_signup: true, members_signup_access: 'all'};
 const posts = [{title: 'Fictional report', url: '/report/', custom_excerpt: 'Illustrative content only.'}];
-hbs.registerPartial('card', read('partials/card.hbs'));
+for (const file of fs.readdirSync(path.join(root, 'partials')).filter(file => file.endsWith('.hbs'))) hbs.registerPartial(file.slice(0, -4), read('partials/' + file));
 hbs.registerHelper('navigation', () => new hbs.SafeString('<ul>' + ['Home', 'Research', 'Brief', 'Demo Logistics', 'About', 'Membership'].map(label => `<li><a href="#">${label}</a></li>`).join('') + '</ul>'));
 hbs.registerHelper('match', function (left, right, options) { return left === right ? options.fn(this) : options.inverse(this); });
-hbs.registerHelper('foreach', function (items, options) { return items.map(item => options.fn(item)).join(''); });
+hbs.registerHelper('foreach', function (items, options) { return items.length ? items.map(item => options.fn(item)).join('') : options.inverse(this); });
+hbs.registerHelper('get', function (resource, options) { return options.fn({[resource]: []}); });
 hbs.registerHelper('date', () => '2026-10-30');
 hbs.registerHelper('reading_time', () => '1 min read');
 hbs.registerHelper('pagination', () => '');
@@ -81,7 +82,12 @@ test('archive cards follow H1 with H2 while homepage cards remain under their H2
     for (const file of ['index.hbs', 'tag.hbs', 'author.hbs']) {
         const page = await pageFor(t, `<main>${render(file)}</main>`);
         const levels = await page.locator('h1,h2,h3').evaluateAll(nodes => nodes.map(el => Number(el.tagName.slice(1))));
-        assert.deepEqual(levels, file === 'index.hbs' ? [1, 2, 3] : [1, 2], file);
+        assert.equal(levels[0], 1);
+        for (let i = 1; i < levels.length; i++) assert(levels[i] <= levels[i - 1] + 1, `${file} skips a heading level`);
+        if (file === 'index.hbs') {
+            assert.equal(await page.locator('#research-library > header h2').textContent(), 'Latest research');
+            assert.equal(await page.locator('#research-library .card h3').count(), 1);
+        } else assert.equal(await page.locator('.card h2').count(), 1);
         const title = page.locator('.card h2,.card h3');
         assert.equal(await title.locator('a').getAttribute('href'), '/report/');
         assert.equal(await title.evaluate(el => getComputedStyle(el).fontSize), '24px');
