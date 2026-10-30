@@ -30,7 +30,7 @@ No new outreach, pricing decision or customer claim accompanies this candidate.
 | Reading | Shared Research/Brief post template, visible-content H2/H3 TOC, native editor cards, constrained tables/code and a single reading column. No PDF/chart-generation or market-data service. |
 | Collections | Native tag/author archives plus optional Library and dated channels. Full server pagination; separate topic/format/year links, without combined facets or keyword search. |
 | Publisher setup | Research/Brief public-tag conventions; three metadata Pages; merge/upload one route file; primary/secondary navigation. Fixed example years require a new Page, dated route and menu link annually. |
-| Membership | Ghost enforces body access and owns signup/plans/account/payment. Theme CTAs respect public, paid-only and invitation-only signup. Stock Portal is retained; its known failure paths remain release blockers. |
+| Membership | Ghost enforces body access and owns signup/plans/account/payment. Theme CTAs respect public, paid-only and invitation-only signup. Native membership/paid features and access rules are retained, while the owner excludes the unexecuted paid lifecycle from the first promise. Stock Portal's known failure paths remain blockers. |
 | Presentation | Light presentation, English theme-owned labels, native title/description/logo/fonts, fixed theme blue accent. No dark mode, arbitrary palette control or custom Admin theme fields. |
 | Delivery | Deterministic installable ZIP, installation/upgrade/rollback and setup guides, fictional demo recipe, explicit evidence and licensing inventory. No hosted deployment or automatic content import. |
 
@@ -50,7 +50,7 @@ already authorized HTML and never retrieves protected bodies.
 | Account recovery | **Known fail:** Ghost5 newsletter HTTP503/429 client recovery; both pinned Portals' premature success on aborted comment-preference saves. Successful ordinary saves do not clear those failures. |
 | Compatibility | Static Ghost5/6 scans pass; exact-runtime results remain Ghost5 135 pass/3 fail and Ghost6 137 pass/1 fail at the payload baseline. No full-runtime green or every-minor support claim. |
 | Toolchain | Audit gate remains enabled: 0 critical / 3 known high dependency nodes in development ZIP tooling. This is not a clean audit; the dependencies are excluded from the theme ZIP. |
-| Paid lifecycle | Complimentary entitlement/CTA checks are not billing. Real Stripe sandbox checkout, renewals, cancellation and failure recovery remain unexecuted. |
+| Paid lifecycle | **Owner decision: no first-version promise of the unexecuted paid lifecycle or end-to-end commercial readiness.** Subscription creation/checkout, renewals, cancellation, refunds and failure recovery remain unaccepted. Complimentary entitlement/CTA checks are not billing. Native features/access remain unchanged; a future promise requires sandbox acceptance. |
 | Distribution | Project license, ownership/notice reconciliation and commercial terms are unresolved. Existing MIT metadata is not treated as a completed license decision. |
 
 ## Release decisions and constraints

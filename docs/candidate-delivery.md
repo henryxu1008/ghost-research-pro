@@ -154,6 +154,13 @@ do not substitute for the unexecuted checks below.
 
 ## Known problems and release gates
 
+The owner's first-version promise excludes the unexecuted paid-subscription
+lifecycle (creation/checkout, renewal, cancellation, refunds and related
+recovery). Native Ghost membership/paid features and access rules stay intact;
+no end-to-end commercial readiness is claimed. Those scenarios remain explicitly
+unaccepted and required before adding a paid-lifecycle promise. This choice
+does not resolve licensing, Portal recovery or the other technical gates.
+
 1. **Stock Portal recovery:** Ghost5 newsletter HTTP503/429 can lose the client
    draft/account display/error feedback while the server member/session stays
    intact. Both pinned Portals can announce a comment-preference save before

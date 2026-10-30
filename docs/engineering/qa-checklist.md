@@ -42,8 +42,8 @@ The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296b
 
 See the [Portal repair boundary and release route](portal-release-decision.md) for repair responsibilities and the owner's exact Ghost6.73.0 / stock Portal2.72.11 primary-delivery decision. Ghost5 is compatibility CI evidence outside the first promise; both strict matrices and failures stay enabled. No scope choice converts red checks into passing results.
 
-- [ ] Verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used.
-- [ ] Execute the [payment lifecycle matrix](payment-acceptance.md) in a sandbox; complimentary entitlements do not prove billing works.
+- [ ] Before adding a paid-commerce promise, verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used; the first delivery excludes this unexecuted promise and retains native features/access unchanged.
+- [ ] Before adding that promise, execute the [payment lifecycle matrix](payment-acceptance.md), including creation, renewal, cancellation/refunds and recovery. These cases remain unexecuted; complimentary entitlements do not prove billing works or end-to-end commercial readiness.
 - [ ] Full accessibility audit, screen readers, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
 - [ ] Require controlled HTTP503/429 recovery for the primary release profile. Ghost5's failing compatibility cases remain visible and strict; see [HTTP acceptance](account-http-acceptance.md).
 - [ ] Resolve the strict [comment notification feedback failure](comment-preference-acceptance.md) for the selected Ghost6 primary target; Ghost5's same failure remains compatibility evidence. Real save/reload/keyboard restoration passes; aborted saves still announce success before reporting failure. Repository CI remains red until its unchanged assertions pass; no gate is waived here.

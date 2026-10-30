@@ -25,19 +25,19 @@ An allowlisted file/typed-secret/path scan and hash/CRC checks are evidence of
 the inspected contents, not a guarantee that arbitrary future attachments are
 safe. Keep the user handoff local until attachment permission is coordinated.
 
-## Recorded support choice and two remaining owner choices
+## Recorded support/payment choices and the remaining license choice
 
 | Choice | Status / available directions | Work after the choice |
 | --- | --- | --- |
 | Project license | Confirm the intended MIT direction represented by existing metadata, or request a different reviewed license/terms proposal. The current metadata/missing-text mismatch is unresolved. | Owner approves actual license/copyright/notice text and provenance; reconcile metadata, include provided root LICENSE/NOTICE, rebuild and validate. No price, permission grant or legal conclusion is supplied here. |
 | Initial formal Portal/Ghost scope | **Decided by the owner: Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11 is the first primary support/delivery target.** Ghost5 is retained as compatibility evidence, outside the first delivery commitment; no all6.x promise. | Preserve both CI profiles and red assertions; validate the supported stock Ghost6 comment repair and rerun exact-candidate checks. Engine metadata remains permissive; no experimental Portal is shipped. |
-| Paid-commerce promise | Include native paid checkout/lifecycle in the first release promise, or restrict that first promise to the demonstrated reading/free-member scope and explicitly leave commerce unverified. Native paid UI is not automatically removed by this choice. | If included, separately authorize/provide an isolated Stripe sandbox and run the prepared lifecycle matrix. If excluded, reconcile product/support claims before release. No new account, credential or payment is created now. |
+| Paid-commerce promise | **Decided by the owner: the first delivery does not promise the unexecuted paid-subscription lifecycle**: subscription creation/checkout, renewals, cancellation, refunds and related recovery. Native membership/paid features and access rules remain unchanged. No end-to-end commercial-readiness claim. | Keep the unexecuted matrix explicit. Any future paid-lifecycle promise requires separate authorized sandbox acceptance; no new account, credential, charge or feature disabling is part of this decision. |
 
-The Ghost6-first choice is recorded and does not need to be asked again.
-Licensing and the paid-commerce promise remain the two owner choices.
-Avoiding unexecuted billing promises is still a recommendation, not a decision
-made here. An official validated comment-feedback repair is still needed even
-for the chosen Ghost6/free-member scope.
+The Ghost6-first and first-version paid-promise choices are recorded and do not
+need to be asked again. **Project-license direction and approved text are the
+only remaining owner product-boundary choice.** This is not a license selection,
+merge or Release authorization. An official validated comment-feedback repair
+is still needed even for the chosen Ghost6/free-member scope.
 
 ## Technical gates that decisions do not waive
 

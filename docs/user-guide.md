@@ -4,6 +4,8 @@ This is a development preview, not a production release. The owner's first-versi
 
 For the current payload's version/hash, scoped installation results and complete handoff contents, read the [candidate delivery guide](candidate-delivery.md). Its API configuration evidence is distinguished from graphical editor walkthroughs.
 
+The owner selected a first delivery **without a promise of the unexecuted paid-subscription lifecycle**: subscription creation/checkout, renewals, cancellation, refunds and related recovery remain unaccepted. Native Ghost membership/paid features and content-access rules are retained unchanged. This is not an end-to-end commercial-readiness claim; a future paid-lifecycle promise needs its own authorized sandbox acceptance.
+
 ## Get the theme ZIP
 
 Use the built `ghost-research-pro.zip` from the exact commit you are evaluating. In the repository's Actions tab, open its Theme CI run and download the `ghost-research-pro-theme` artifact. Unpack the artifact download and select the **inner** `ghost-research-pro.zip` for installation. GitHub's **Code → Download ZIP** is a source checkout, not the installable theme package.

@@ -58,6 +58,11 @@ every Ghost6 minor. Ghost5 remains compatibility CI evidence, outside the first
 delivery commitment. Its strict tests and failures are retained; the permissive
 `engines.ghost >=5.0.0` installation metadata is unchanged and is not a support warranty.
 
+The first delivery does not promise the unexecuted paid-subscription lifecycle
+(creation/checkout, renewal, cancellation/refunds and recovery). Native Ghost
+membership/paid features and access rules are unchanged; this is not an
+end-to-end commercial-readiness claim. Licensing remains undecided.
+
 Theme CI exercises stock Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.11 on separate loopback-only runners. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. Both environments use disposable complimentary membership fixtures and an in-memory local SMTP sink. The matching official Portal bundle exercises free signup/signin/signout and fixture name/newsletter saves, reload persistence, cancellation, aborted-request recovery and signed-out data isolation. See [account acceptance](docs/engineering/account-acceptance.md) for the exact coverage and limits. All external browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost5` and `ghost-runtime-ghost6` (14-day retention).
 
 See [runtime acceptance and host-error diagnosis](docs/engineering/runtime-acceptance.md). To run outside CI, prepare a fresh unpacked installation of one pinned version with its supported Node version and dependencies, install Chromium with `npx playwright install chromium`, build the ZIP, and set `GHOST_RUNTIME_DIR` plus `GHOST_RUNTIME_VERSION` before `npm run test:runtime`. The default version is 6.73.0; the runner verifies the package's Node engines and refuses an existing database. Never point it at a live site.
