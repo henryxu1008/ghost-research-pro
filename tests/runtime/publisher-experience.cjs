@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {probe} = require('./accessibility.cjs');
 const {rgb, contrast} = require('./contrast.cjs');
+const {expect} = require('playwright/test');
 
 async function checkPublisherExperience({browser, base, admin, api, out, record, portalPackage}) {
     const report = {searchVersion: require('@tryghost/sodo-search/package.json').version,
@@ -86,24 +87,53 @@ async function checkPublisherExperience({browser, base, admin, api, out, record,
             // picker. Address the same native controls by accessible labels.
             const tab = name => ui.getByTestId('design-setting-tabs').getByRole('tab', {name, exact: true})
                 .or(ui.getByTestId('design-setting-tabs').getByRole('button', {name, exact: true}));
-            const selection = () => ui.getByRole('switch', {name: 'Show editor selection', exact: true});
+            // Ghost 5 includes the field's hint in its label's accessible name.
+            const selection = () => ui.getByRole('switch', {name: /^Show editor selection(?:\s|$)/});
+            const previewText = (selector, text) => ui.waitForFunction(({selector, text}) => [...document.querySelectorAll('iframe')].some(frame => {
+                try {return frame.contentDocument?.querySelector(selector)?.textContent === text;} catch {return false;}
+            }), {selector, text});
             try {
                 await ui.goto(`${base}/ghost/#/settings/design/edit`, {waitUntil: 'domcontentloaded'});
                 await tab('Theme').click();
-                await ui.getByRole('textbox', {name: 'Hero title', exact: true}).fill('Admin saved research desk');
-                await ui.getByRole('textbox', {name: 'Hero description', exact: true}).fill('Saved from native Ghost Admin.');
-                await ui.getByRole('textbox', {name: 'Hero signup label', exact: true}).fill('Read with us');
+                for (const [name, value, selector] of [
+                    ['Hero title', 'Admin saved research desk', '.publication-intro h1'],
+                    ['Hero description', 'Saved from native Ghost Admin.', '.publication-intro .lead'],
+                    ['Hero signup label', 'Read with us', '.hero-actions .button'],
+                ]) {
+                    check.stage = `edit and observe native preview: ${name}`;
+                    const input = ui.getByRole('textbox', {name, exact: true});
+                    await input.fill(value); await input.press('Tab');
+                    // Native text controls commit on blur. Observe the actual
+                    // Ghost-rendered preview before editing the next control.
+                    await previewText(selector, value);
+                }
+                check.stage = 'toggle native editor selection';
+                await expect(selection()).toHaveAttribute('aria-checked', 'true');
+                check.selectionControl = await selection().evaluate(el => ({role: el.getAttribute('role'),
+                    labels: [...document.querySelectorAll('label')].filter(label => label.htmlFor === el.id).map(label => label.textContent.trim()),
+                    before: el.getAttribute('aria-checked')}));
                 await selection().click();
+                await expect(selection()).toHaveAttribute('aria-checked', 'false');
+                check.selectionControl.after = await selection().getAttribute('aria-checked');
                 check.stage = 'save homepage controls';
                 const [saved] = await Promise.all([
                     ui.waitForResponse(r => new URL(r.url()).pathname === '/ghost/api/admin/custom_theme_settings/' && r.request().method() === 'PUT'),
                     ui.getByRole('button', {name: 'Save', exact: true}).click(),
                 ]);
                 assert(saved.ok(), 'Native custom setting save failed');
+                const savedValues = (await saved.json()).custom_theme_settings;
+                check.savedHomepage = Object.fromEntries(savedValues.map(({key, value}) => [key, value]));
+                assert.equal(check.savedHomepage.hero_title, 'Admin saved research desk');
+                assert.equal(check.savedHomepage.hero_description, 'Saved from native Ghost Admin.');
+                assert.equal(check.savedHomepage.hero_signup_label, 'Read with us');
+                assert.equal(check.savedHomepage.show_editor_selection, false);
+                check.stage = 'reload and observe native homepage controls';
                 await ui.reload();
                 await tab('Theme').click();
-                assert.equal(await ui.getByRole('textbox', {name: 'Hero title', exact: true}).inputValue(), 'Admin saved research desk');
-                assert.equal(await selection().getAttribute('aria-checked'), 'false');
+                // Refresh refetches native settings; assert the eventual rendered
+                // value rather than sampling the initial empty hydration state.
+                await expect(ui.getByRole('textbox', {name: 'Hero title', exact: true})).toHaveValue('Admin saved research desk');
+                await expect(selection()).toHaveAttribute('aria-checked', 'false');
                 await page.goto(base);
                 assert.equal(await page.locator('.publication-intro h1').textContent(), 'Admin saved research desk');
                 assert.equal(await page.locator('.hero-actions .button').textContent(), 'Read with us');

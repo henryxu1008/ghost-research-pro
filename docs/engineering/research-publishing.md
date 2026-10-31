@@ -95,6 +95,15 @@ Local evidence on 2026-10-31:
   This includes existing full collection/year boundaries, real API save/reload,
   native Admin homepage/brand save/reload, real native-card/Portal contrast and
   native search. Original services, databases and browser sessions were not used.
+- A separate local **Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5** publisher-only
+  run also passed **15 checks**, with fresh SQLite data and ports **2478/2636**.
+  Actual Ghost 5 DOM evidence confirms that its switch's accessible label includes
+  the hint. The UI test records the actual control's label and checked state
+  (true before the click, false after), waits for Ghost's rendered preview after
+  native text-field blur, verifies all four values in the UI-originated PUT
+  response, then asserts the refreshed native controls after asynchronous loading.
+  This preserves and strengthens the save/reload assertions without replacing
+  UI writes with API writes or increasing timeouts.
 - Native search was keyboard-opened/Escape-closed with focus return three times;
   it found a Chinese-titled 2020 article absent from the homepage's 12 cards,
   handled a long Chinese no-match query, and found a protected title. Actual API
@@ -125,8 +134,8 @@ acceptance, prepare a **fresh** pinned Ghost runtime and ZIP as described in the
 README, then run `node tests/runtime/acceptance.cjs --publisher-only`; optional
 `GHOST_TEST_PORT` and `GHOST_TEST_SMTP_PORT` choose independent loopback ports.
 The default CI command still runs the complete strict suite, including previously
-red Portal checks. Local selected acceptance is not a full matrix pass. Ghost 5
-and both complete Linux profiles must be read from the exact PR HEAD's CI result.
+red Portal checks. Local selected acceptance is not a full matrix pass. Both
+complete Linux profiles must be read from the exact PR HEAD's CI result.
 The accepted baseline is [main run 41185102703](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41185102703):
 validate passes, Ghost 6 has 137 PASS / 1 FAIL, Ghost 5 has 135 PASS / 3 FAIL;
 comment-notification false-success feedback affects both, with additional Ghost 5
