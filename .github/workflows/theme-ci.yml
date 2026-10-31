@@ -77,6 +77,8 @@ jobs:
         run: node --test tests/runtime/portal-focus.test.cjs
       - name: Test research publishing templates and responsive layout
         run: node --test tests/runtime/publishing.test.cjs
+      - name: Test bounded publisher settings, native search entry and readable brand palette
+        run: npm run test:publisher
       - name: Install isolated Ghost ${{ matrix.ghost }}
         shell: bash
         run: |

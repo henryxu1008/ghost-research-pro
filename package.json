@@ -1,7 +1,7 @@
 {
   "name": "ghost-research-pro",
   "description": "Research publishing theme for Ghost",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "license": "MIT",
   "engines": {
@@ -16,10 +16,12 @@
     "test:runtime": "node tests/runtime/acceptance.cjs",
     "test:security": "node --test tests/security/audit.test.cjs",
     "test:contrast": "node --test tests/runtime/contrast.test.cjs",
+    "test:publisher": "node --test tests/runtime/publisher-settings.test.cjs",
     "audit:ci": "node scripts/audit.cjs"
   },
   "devDependencies": {
     "@tryghost/portal": "2.72.11",
+    "@tryghost/sodo-search": "1.9.6",
     "axe-core": "4.14.0",
     "gscan": "6.6.1",
     "mailparser": "3.12.4",
@@ -33,7 +35,30 @@
   },
   "config": {
     "posts_per_page": 12,
-    "card_assets": true
+    "card_assets": true,
+    "custom": {
+      "hero_title": {
+        "type": "text",
+        "group": "homepage",
+        "description": "Homepage heading. Leave empty to use the publication title."
+      },
+      "hero_description": {
+        "type": "text",
+        "group": "homepage",
+        "description": "Homepage introduction. Leave empty to use the publication description."
+      },
+      "hero_signup_label": {
+        "type": "text",
+        "group": "homepage",
+        "description": "Open signup CTA only. Empty uses Get research updates; account/sign-in/plans stay unchanged."
+      },
+      "show_editor_selection": {
+        "type": "boolean",
+        "default": true,
+        "group": "homepage",
+        "description": "Show the featured publication, or the reading guide when no post is featured."
+      }
+    }
   },
   "gpm": {
     "type": "theme",

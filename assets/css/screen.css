@@ -38,6 +38,9 @@ button:focus-visible,[data-theme-scroll]:focus-visible{outline:3px solid var(--a
 /* A research desk: editorial hierarchy, public metadata and native collections. */
 .publication-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start;gap:54px;padding:65px 0 55px;border-bottom:1px solid var(--border);margin-bottom:44px}
 .publication-intro h1{font:700 clamp(2.4rem,4.7vw,4.2rem)/1.08 var(--gh-font-heading,Georgia,serif);letter-spacing:-.035em;margin:.2em 0}
+.publication-hero.publication-hero--intro-only{grid-template-columns:minmax(0,1fr)}
+.publication-hero--intro-only .publication-intro{max-width:760px}
+@media(max-width:600px){.publication-hero.publication-hero--intro-only{padding-block:28px 24px;margin-bottom:28px}}
 .publication-intro .lead{max-width:38rem}.hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin-top:28px}
 .text-link{font-weight:650}.spotlight,.reading-guide{border-top:4px solid var(--accent);padding:26px;background:var(--panel)}
 .spotlight h2,.reading-guide h2{font:700 clamp(1.65rem,2.6vw,2.3rem)/1.18 var(--gh-font-heading,Georgia,serif);margin:.65em 0}.spotlight h2 a{color:var(--ink);text-decoration:none}

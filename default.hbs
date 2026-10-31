@@ -1,16 +1,18 @@
 <!doctype html>
-<html lang="{{@site.locale}}">
+<html lang="{{@site.locale}}" data-accent-color="{{@site.accent_color}}">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{meta_title}}</title>
 <link rel="stylesheet" href="{{asset "css/screen.css"}}">
 {{ghost_head}}
+<script src="{{asset "js/brand.js"}}"></script>
 </head>
 <body class="{{body_class}}">
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header wrap"><a class="brand" href="{{@site.url}}">{{#if @site.logo}}<img src="{{@site.logo}}" alt="{{@site.title}}">{{else}}{{@site.title}}{{/if}}</a>
 <nav aria-label="Main navigation">{{navigation}}</nav>
 <div class="member-actions">
+<a href="#/search" data-ghost-search>Search</a>
 {{#if @member}}<a href="#/portal/account">Account</a>
 {{else}}
 <a href="#/portal/signin">Sign in</a>

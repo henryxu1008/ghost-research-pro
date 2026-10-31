@@ -17,8 +17,10 @@ const {seedEditorBoundaries, checkEditorBoundaries} = require('./editor-boundari
 const {checkAdminUI} = require('./admin-ui.cjs');
 const {checkMembershipSettings} = require('./membership-settings.cjs');
 const {checkPublishingExperience} = require('./publishing-experience.cjs');
+const {checkPublisherExperience} = require('./publisher-experience.cjs');
 
 const root = path.resolve(__dirname, '../..');
+const publisherOnly = process.argv.includes('--publisher-only');
 const runtime = process.env.GHOST_RUNTIME_DIR;
 const expectedVersion = process.env.GHOST_RUNTIME_VERSION || '6.73.0';
 const profiles = {
@@ -29,10 +31,14 @@ const profile = profiles[expectedVersion];
 assert(profile, 'Unsupported disposable Ghost version');
 assert(runtime && path.isAbsolute(runtime), 'Set GHOST_RUNTIME_DIR to the disposable unpacked Ghost directory');
 assert(!runtime.startsWith(root), 'Ghost test data must live outside the theme repository');
-const base = 'http://127.0.0.1:2368';
+const port = Number(process.env.GHOST_TEST_PORT || 2368);
+const smtpPort = Number(process.env.GHOST_TEST_SMTP_PORT || 2525);
+assert([port, smtpPort].every(value => Number.isInteger(value) && value >= 1024 && value <= 65535) && port !== smtpPort);
+const base = `http://127.0.0.1:${port}`;
 const out = path.join(root, 'artifacts/runtime');
 fs.mkdirSync(out, {recursive: true});
 const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account writes update disposable fixture names/newsletter/comment preferences. HTTP 503/429 and network aborts are injected only for local failure probes; successful recovery must reach real Ghost. See account-http.json and comment-preferences.json for strict outcomes. Email-address/custom-field/announcement changes are not covered. No real email or checkout.'};
+results.scope = publisherOnly ? 'publisher-only: publishing collections, publisher settings, branding and native search; existing full acceptance not run' : 'full';
 const record = (name, error) => {
     results.checks.push({name, status: error ? 'failed' : 'passed', ...(error ? {error} : {})});
     console.log(`${error ? 'FAIL' : 'PASS'} ${name}${error ? ': ' + error : ''}`);
@@ -86,7 +92,7 @@ async function memberLink(email, since = 0) {
     assert(mail, 'Local SMTP sink did not receive sign-in email');
     const parsed = await simpleParser(mail.message);
     const decoded = `${parsed.text || ''}\n${parsed.html || ''}`.replace(/&amp;/g, '&');
-    const link = decoded.match(/http:\/\/127\.0\.0\.1:2368\/(?:members\/)?\?token=[^\s<>"']+/)?.[0];
+    const link = decoded.match(/http:\/\/127\.0\.0\.1:\d+\/(?:members\/)?\?token=[^\s<>"']+/g)?.find(url => new URL(url).origin === base);
     assert(link, 'No local magic link found');
     return link;
 }
@@ -111,15 +117,16 @@ async function main() {
     assert(!fs.existsSync(path.join(runtime, 'content/data/ghost-dev.db')), 'Refuse to reuse a database');
     fs.mkdirSync(path.join(runtime, 'content/settings'), {recursive: true});
     fs.copyFileSync(path.join(root, 'examples/research-routes.yaml'), path.join(runtime, 'content/settings/routes.yaml'));
-    await new Promise(resolve => smtp.listen(2525, '127.0.0.1', resolve));
+    await new Promise(resolve => smtp.listen(smtpPort, '127.0.0.1', resolve));
     fs.writeFileSync(path.join(runtime, 'config.development.json'), JSON.stringify({
-        url: base, server: {host: '127.0.0.1', port: 2368},
+        url: base, server: {host: '127.0.0.1', port},
         database: {client: profile.database, connection: {filename: path.join(runtime, 'content/data/ghost-dev.db')}},
         paths: {contentPath: path.join(runtime, 'content')},
-        mail: {transport: 'SMTP', from: 'qa@example.test', options: {host: '127.0.0.1', port: 2525, secure: false, ignoreTLS: true, auth: null}},
+        mail: {transport: 'SMTP', from: 'qa@example.test', options: {host: '127.0.0.1', port: smtpPort, secure: false, ignoreTLS: true, auth: null}},
         security: {staffDeviceVerification: false}, logging: {transports: ['stdout']},
         privacy: {useUpdateCheck: false, useGravatar: false},
         portal: {url: `${base}/__qa__/portal.min.js`, version: results.portal},
+        sodoSearch: {url: `${base}/__qa__/sodo-search.min.js`, styles: `${base}/__qa__/sodo-search.css`, version: '1.9.6'},
     }, null, 2));
     // Runtime logs can contain authentication URLs; keep them temporary, outside uploaded artifacts.
     const logPath = path.join(runtime, 'runtime.log');
@@ -169,7 +176,7 @@ async function main() {
     const users = await api(admin, 'get', 'users/me/');
     const authorSlug = users.users[0].slug;
     browser = await chromium.launch({headless: true});
-    await checkAdminUI({browser, admin, base, out, root, archive, record, portalPackage: profile.portalPackage, fixturePagePath});
+    if (!publisherOnly) await checkAdminUI({browser, admin, base, out, root, archive, record, portalPackage: profile.portalPackage, fixturePagePath});
     // Keep the original independent API installation baseline after the UI
     // workflow. It also restores the real theme before all existing checks if
     // an Admin UI case fails. It is never counted as UI installation evidence.
@@ -180,6 +187,13 @@ async function main() {
     assert.equal(active.themes[0].active, true);
     record('Built ZIP uploads and activates through Ghost Admin API');
     const anon = await context();
+    if (publisherOnly) {
+        await checkPublishingExperience({browser, base, admin, anon, api, out, record});
+        await checkPublisherExperience({browser, base, admin, api, out, record, portalPackage: profile.portalPackage});
+        assert(!results.checks.some(check => check.status === 'failed'), 'Publisher acceptance failed; see results.json');
+        results.status = 'passed';
+        return;
+    }
     for (const route of ['/', '/public-report/', '/tag/research/', `/author/${authorSlug}/`, '/about/', '/membership/']) {
         const response = await anon.get(route);
         assert.equal(response.status(), 200, route);
@@ -311,6 +325,7 @@ async function main() {
         record(`Browser layout and keyboard smoke at ${width}px`);
     }
     await checkPublishingExperience({browser, base, admin, anon, api, out, record});
+    await checkPublisherExperience({browser, base, admin, api, out, record, portalPackage: profile.portalPackage});
     assert(!results.checks.some(check => check.status === 'failed'), 'Acceptance checks failed; see results.json and accessibility.json');
     results.status = 'passed';
 }

@@ -46,3 +46,104 @@ configuration steps; the base [demo recipe](../demo-content.md) is reused rather
 than replaced. Final independent desktop/narrow screenshot and interaction
 acceptance must identify its exact candidate commit. Automated fixtures and HTTP
 responses do not substitute for that review.
+
+## Publisher settings, brand color and native search (0.2.0)
+
+Version 0.2.0 adds four `config.custom` homepage fields only: `hero_title`,
+`hero_description`, `hero_signup_label` and `show_editor_selection` (default on).
+Missing/empty text falls back to the previous content. Plain Handlebars escaping
+keeps text out of HTML; the signup label is used only for anonymous open signup.
+Account, sign-in and paid-only plan labels retain the existing membership rules.
+Selection off removes its whole grid column, including the reading-guide fallback;
+selection on without a Featured post still uses that existing guide.
+
+`brand.js` reads Ghost's escaped hex accent attribute before the body renders.
+It preserves readable colors and darkens other RGB colors in 0.005 scale steps
+until the unrounded WCAG ratio is at least 4.5:1 against both `#fff` and `#f5f8fc`.
+This same dark tone supplies links, white-label buttons and focus outlines.
+Invalid/missing values and unavailable JavaScript retain the original safe theme
+blue. Existing native button/upgrade-card rules and the accessible Portal adapter
+consume that tone. Portal's button color transition is disabled: a real Ghost
+probe found that interpolation from its bright original inline background briefly
+left white labels unreadable. Native hover/focus opacity reductions are also
+suppressed on these themed actions so they cannot dilute the safe contrast.
+Portal source, version and iframe permission
+boundaries are unchanged. Author-selected card colors and arbitrary custom CSS
+are outside this default-palette guarantee.
+
+The header's named Search link uses `data-ghost-search` and `#/search`, with the
+existing `ghost_head` intact. Native search was already reachable by a manually
+configured Navigation URL in v0.1.0; this change supplies its default visible entry.
+There is no theme global shortcut or search index. Tests serve unmodified official
+Sodo Search **1.9.6** JS/CSS from the locked development package and connect it to
+actual disposable Ghost search-index APIs. This exact search version is used in
+both matrix profiles (Ghost 5's default CDN line is 1.8); it is test configuration,
+not a production Ghost/Portal upgrade. No search/Portal bundle, private index,
+fixture, screenshot or development dependency directory enters the theme ZIP.
+
+Local evidence on 2026-10-31:
+
+- Focused tests copied into an untouched `b8253801ccf0864d856c1b8368bca4d32ef5a03c`
+  export give **0 PASS / 8 FAIL / 0 SKIP** before implementation; the final
+  `test:publisher` suite gives **8 PASS / 0 FAIL / 0 SKIP**.
+  These cover defaults, escaped text, all CTA policy branches, selection off/empty,
+  native entry, light/dark/invalid colors, native action contrast and the Portal
+  transition regression. Template/browser fixtures are distinguished from the
+  genuine Ghost acceptance below.
+- A fresh Ghost **6.73.0 / Node 24.22.1 / Portal 2.72.11**, with ports **2468/2626**
+  and an independent SQLite database, passed **15 publisher-only runtime checks**.
+  This includes existing full collection/year boundaries, real API save/reload,
+  native Admin homepage/brand save/reload, real native-card/Portal contrast and
+  native search. Original services, databases and browser sessions were not used.
+- A separate local **Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5** publisher-only
+  run also passed **15 checks**, with fresh SQLite data and ports **2478/2636**.
+  Actual Ghost 5 DOM evidence confirms that its switch's accessible label includes
+  the hint. The UI test records the actual control's label and checked state
+  (true before the click, false after), waits for Ghost's rendered preview after
+  native text-field blur, verifies all four values in the UI-originated PUT
+  response, then asserts the refreshed native controls after asynchronous loading.
+  This preserves and strengthens the save/reload assertions without replacing
+  UI writes with API writes or increasing timeouts.
+- Native search was keyboard-opened/Escape-closed with focus return three times;
+  it found a Chinese-titled 2020 article absent from the homepage's 12 cards,
+  handled a long Chinese no-match query, and found a protected title. Actual API
+  response checks exclude restricted body markers, protected search excerpts,
+  draft titles and private fields. API/UI successes are not mocked. Unrelated
+  outbound browser resources are blocked; Admin's Bunny font stylesheet receives
+  the same local empty-CSS fallback as existing Admin acceptance, so remote font
+  appearance is not verified.
+- Genuine desktop, 390×844 and 320px enlarged-text screenshots were captured;
+  desktop, 390px and native search images were visually inspected. In the 390×844,
+  16px-text fixture with an intentionally long escaped heading and selection off,
+  the first card starts at **1036.28px**. This is a measurement of that fixture,
+  not a before/after comparison with the separate audit's unconfirmed viewport,
+  nor a promise that every first card is above the fold. Sidebar density remains
+  part of the existing layout; no full mobile redesign is included.
+- The combined local focused/publishing/layout/contrast/TOC/Portal-focus/security/
+  packaging run gives **54 PASS / 0 FAIL / 1 SKIP**. The sole skip is the existing
+  Windows symlink-fixture restriction; Linux CI must execute that negative case.
+  Source and ZIP GScan each have **0 errors / 0 warnings** for Ghost 5 and 6.
+  The audit gate passes with **0 critical / 3 known high / 3 moderate** nodes;
+  this is not a clean-audit claim. Two builds have identical bytes. The historical
+  43,482-byte preview ZIP's SHA-256 is
+  `f590bd502fa69c1e4a364c7a3ec1aad8d0c2c48a50962dffaed5a2e90c6ac808`;
+  it is separate from the immutable published v0.1.0 asset.
+
+Those implementation results and the version-0.1.0 development preview are
+historical evidence for PR18 head `c18e72e45700c03a1b7986a8e397d2ce64447325`.
+The 0.2.0 version-metadata package has a new SHA and is identified in the
+[0.2.0 release notes](../release-notes-0.2.0.md); its final exact-head and merge-main
+CI outcomes are recorded on the Release.
+
+Run the focused browser suite with `npm run test:publisher`. For genuine selected
+acceptance, prepare a **fresh** pinned Ghost runtime and ZIP as described in the
+README, then run `node tests/runtime/acceptance.cjs --publisher-only`; optional
+`GHOST_TEST_PORT` and `GHOST_TEST_SMTP_PORT` choose independent loopback ports.
+The default CI command still runs the complete strict suite, including previously
+red Portal checks. Local selected acceptance is not a full matrix pass. Both
+complete Linux profiles must be read from the exact PR HEAD's CI result.
+The accepted baseline is [main run 41185102703](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41185102703):
+validate passes, Ghost 6 has 137 PASS / 1 FAIL, Ghost 5 has 135 PASS / 3 FAIL;
+comment-notification false-success feedback affects both, with additional Ghost 5
+newsletter HTTP 503/429 recovery failures. New failures remain strict and must
+be investigated separately.
