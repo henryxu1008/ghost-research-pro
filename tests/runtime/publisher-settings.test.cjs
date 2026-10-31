@@ -107,9 +107,13 @@ test('reachable Portal adapter applies its safe button tone immediately without 
     const page = await browser.newPage();
     await page.setContent('<html><head><style>:root{--accent:#767600}</style></head><body><a href="#/portal/signin">Sign in</a><div id="ghost-portal-root"><iframe title="portal-popup"></iframe></div></body></html>');
     const frame = page.frameLocator('iframe');
-    await frame.locator('body').evaluate(el => {el.innerHTML = '<style>.gh-portal-btn-main{background:#ff1a75;color:#fff;transition:background-color 10s}</style><button class="gh-portal-btn-main">Continue</button>';});
+    await frame.locator('body').evaluate(el => {el.innerHTML = '<style>.gh-portal-btn-main{background:#ff1a75;color:#fff;transition:background-color 10s}.gh-portal-btn-primary:hover,.gh-portal-btn-primary:focus{opacity:.9}.gh-portal-btn-link:hover{opacity:.85}</style><button class="gh-portal-btn-main gh-portal-btn-primary">Continue</button><a href="#" class="gh-portal-btn-link">Native link</a>';});
     await page.addScriptTag({content: read('assets/js/accessibility.js')});
     const sample = await frame.locator('button').evaluate(el => {const s = getComputedStyle(el); return [s.color, s.backgroundColor];});
     const rgb = css => css.match(/\d+/g).slice(0, 3).map(Number);
     assert(contrast(rgb(sample[0]), rgb(sample[1])) >= 4.5, `Unsafe transitional Portal colors: ${sample}`);
+    for (const control of await frame.locator('button,a').all()) {
+        await control.hover(); await control.focus();
+        assert.equal(await control.evaluate(el => getComputedStyle(el).opacity), '1', 'Native hover opacity must not reduce the safe palette contrast');
+    }
 });

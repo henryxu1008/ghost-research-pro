@@ -152,6 +152,9 @@ async function checkPublisherExperience({browser, base, admin, api, out, record,
                 const portalStyles = await portal.locator('.gh-portal-btn-main').first().evaluate(el => {const s = getComputedStyle(el); return {fg: s.color, bg: s.backgroundColor};});
                 check.palettes.at(-1).portal = portalStyles;
                 assert(contrast(rgb(portalStyles.fg), rgb(portalStyles.bg)) >= 4.5, `Portal ${color}: ${JSON.stringify(portalStyles)}`);
+                const portalButton = portal.locator('.gh-portal-btn-main').first();
+                await portalButton.hover(); await portalButton.focus();
+                assert.equal(await portalButton.evaluate(el => getComputedStyle(el).opacity), '1', 'Portal hover/focus must retain safe contrast');
                 await portal.locator('input').first().focus(); await page.keyboard.press('Escape');
                 await page.locator('iframe[title="portal-popup"]').waitFor({state: 'detached'});
             }

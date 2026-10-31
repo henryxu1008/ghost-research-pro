@@ -65,7 +65,9 @@ Invalid/missing values and unavailable JavaScript retain the original safe theme
 blue. Existing native button/upgrade-card rules and the accessible Portal adapter
 consume that tone. Portal's button color transition is disabled: a real Ghost
 probe found that interpolation from its bright original inline background briefly
-left white labels unreadable. Portal source, version and iframe permission
+  left white labels unreadable. Native hover/focus opacity reductions are also
+  suppressed on these themed actions so they cannot dilute the safe contrast.
+  Portal source, version and iframe permission
 boundaries are unchanged. Author-selected card colors and arbitrary custom CSS
 are outside this default-palette guarantee.
 
@@ -114,8 +116,8 @@ Local evidence on 2026-10-31:
   Source and ZIP GScan each have **0 errors / 0 warnings** for Ghost 5 and 6.
   The audit gate passes with **0 critical / 3 known high / 3 moderate** nodes;
   this is not a clean-audit claim. Two builds have identical bytes. The new
-  43,292-byte preview ZIP's SHA-256 is
-  `0550c85e6dc85c1ed58bfc677e95a015bb840ae866e573de3eb77f18049de418`;
+  43,482-byte preview ZIP's SHA-256 is
+  `f590bd502fa69c1e4a364c7a3ec1aad8d0c2c48a50962dffaed5a2e90c6ac808`;
   it is separate from the immutable published v0.1.0 asset.
 
 Run the focused browser suite with `npm run test:publisher`. For genuine selected

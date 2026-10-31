@@ -176,7 +176,7 @@
                 const style = doc.createElement('style');
                 style.id = 'theme-portal-accessibility';
                 // Keep stock Portal's form hints readable independently of labels.
-                style.textContent = '.gh-portal-input::placeholder{color:#6b6b6b!important;opacity:1!important}.gh-portal-btn-main{background-color:var(--brandcolor)!important;color:#fff!important;transition:none!important}.gh-portal-btn-link,.gh-portal-btn-branded,.gh-portal-btn-back{color:var(--brandcolor)!important}.gh-portal-list-detail p{color:var(--theme-muted)!important}button:focus-visible,a:focus-visible,input:focus-visible,[role="switch"]:focus-visible{outline:3px solid var(--brandcolor);outline-offset:3px}';
+                style.textContent = '.gh-portal-input::placeholder{color:#6b6b6b!important;opacity:1!important}.gh-portal-btn-main{background-color:var(--brandcolor)!important;color:#fff!important;transition:none!important}.gh-portal-btn-main:not(:disabled):is(:hover,:focus),.gh-portal-btn-link:is(:hover,:focus),.gh-portal-btn-branded:is(:hover,:focus),.gh-portal-btn-back:is(:hover,:focus){opacity:1!important}.gh-portal-btn-link,.gh-portal-btn-branded,.gh-portal-btn-back{color:var(--brandcolor)!important}.gh-portal-list-detail p{color:var(--theme-muted)!important}button:focus-visible,a:focus-visible,input:focus-visible,[role="switch"]:focus-visible{outline:3px solid var(--brandcolor);outline-offset:3px}';
                 doc.head.append(style);
             }
             const panel = doc.querySelector('.gh-portal-popup-container');
