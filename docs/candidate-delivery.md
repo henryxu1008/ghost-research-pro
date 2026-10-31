@@ -1,3 +1,5 @@
+> Historical 0.1.0 candidate handoff below is preserved for its original build evidence. The formal [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) superseded that preparation status. For the current 0.2.0 installation asset, checksum and delivery checklist use [release-notes-0.2.0.md](release-notes-0.2.0.md).
+
 # Candidate handoff — not a published release
 
 Prepared 2026-10-30; delivery decision updated 2026-10-31. This is the unpublished

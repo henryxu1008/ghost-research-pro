@@ -47,9 +47,9 @@ than replaced. Final independent desktop/narrow screenshot and interaction
 acceptance must identify its exact candidate commit. Automated fixtures and HTTP
 responses do not substitute for that review.
 
-## Unreleased publisher settings, brand color and native search
+## Publisher settings, brand color and native search (0.2.0)
 
-The next build adds four `config.custom` homepage fields only: `hero_title`,
+Version 0.2.0 adds four `config.custom` homepage fields only: `hero_title`,
 `hero_description`, `hero_signup_label` and `show_editor_selection` (default on).
 Missing/empty text falls back to the previous content. Plain Handlebars escaping
 keeps text out of HTML; the signup label is used only for anonymous open signup.
@@ -65,9 +65,9 @@ Invalid/missing values and unavailable JavaScript retain the original safe theme
 blue. Existing native button/upgrade-card rules and the accessible Portal adapter
 consume that tone. Portal's button color transition is disabled: a real Ghost
 probe found that interpolation from its bright original inline background briefly
-  left white labels unreadable. Native hover/focus opacity reductions are also
-  suppressed on these themed actions so they cannot dilute the safe contrast.
-  Portal source, version and iframe permission
+left white labels unreadable. Native hover/focus opacity reductions are also
+suppressed on these themed actions so they cannot dilute the safe contrast.
+Portal source, version and iframe permission
 boundaries are unchanged. Author-selected card colors and arbitrary custom CSS
 are outside this default-palette guarantee.
 
@@ -124,10 +124,16 @@ Local evidence on 2026-10-31:
   Windows symlink-fixture restriction; Linux CI must execute that negative case.
   Source and ZIP GScan each have **0 errors / 0 warnings** for Ghost 5 and 6.
   The audit gate passes with **0 critical / 3 known high / 3 moderate** nodes;
-  this is not a clean-audit claim. Two builds have identical bytes. The new
+  this is not a clean-audit claim. Two builds have identical bytes. The historical
   43,482-byte preview ZIP's SHA-256 is
   `f590bd502fa69c1e4a364c7a3ec1aad8d0c2c48a50962dffaed5a2e90c6ac808`;
   it is separate from the immutable published v0.1.0 asset.
+
+Those implementation results and the version-0.1.0 development preview are
+historical evidence for PR18 head `c18e72e45700c03a1b7986a8e397d2ce64447325`.
+The 0.2.0 version-metadata package has a new SHA and is identified in the
+[0.2.0 release notes](../release-notes-0.2.0.md); its final exact-head and merge-main
+CI outcomes are recorded on the Release.
 
 Run the focused browser suite with `npm run test:publisher`. For genuine selected
 acceptance, prepare a **fresh** pinned Ghost runtime and ZIP as described in the

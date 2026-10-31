@@ -1,3 +1,7 @@
+> Current delivery: version **0.2.0**, 17 files including MIT, SHA-256 `c9691d9a5c3d57224f3b899aae02e40dd3aafb77e48ff14341ede8a8b3426743`. See the [0.2.0 release notes and delivery checklist](release-notes-0.2.0.md) and [official Release record](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) for exact publication/CI/download evidence. The owner authorized ordinary PR18 merge, tag and GitHub Release on 2026-10-31, retaining old Portal failures and v0.1.0. Deployment and paid-store listing are outside that authorization.
+>
+> The 0.1.0 preparation/decision history below is retained as historical evidence; its earlier unpublished status and pending-publication question are not the current release state.
+
 # User handoff boundary and remaining release choices
 
 This is one unpublished 0.1.0 release-preparation candidate in unified PR17,

@@ -1,3 +1,5 @@
+> Historical preparation evidence below is retained as originally recorded. Version 0.1.0 was formally published on 2026-10-31 at [its Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0), tag/main `b8253801ccf0864d856c1b8368bca4d32ef5a03c`. Current package identity and installation guidance are in [the 0.2.0 notes](release-notes-0.2.0.md).
+
 # Ghost Research Pro 0.1.0 — release preparation
 
 Prepared 2026-10-31. **Not yet tagged, released or listed for sale.**
