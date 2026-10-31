@@ -10,6 +10,27 @@ The updated audit reports **0 critical + 3 high dependency nodes**: `gscan` -> `
 
 Do not use `npm audit fix --force`: the suggested GScan downgrade would abandon the current Ghost 6 validation tooling. Keep the compatible compiler override until GScan pins a fixed compiler itself.
 
+## 2026-10-31 audit refresh — unchanged lockfile
+
+The release-preparation check now reports **0 critical / 3 known high / 3 moderate
+nodes**, with no new high finding. The three moderate nodes represent one
+[reviewed minimatch advisory, GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249),
+not three distinct vulnerabilities. The installed path is
+`gscan@6.6.1 -> @tryghost/zip@3.5.18 -> archiver@8.0.0 -> readdir-glob@3.0.0 -> minimatch@10.2.6`.
+The advisory describes resource exhaustion from attacker-controlled glob-pattern
+amplification with `optimizationLevel >= 2`; it lists affected versions `<11.0.1`
+and fixed version `11.0.1`. A compatible dependency update has not been tested
+in this documentation-only change; do not assume a major-version override is safe.
+
+All these packages are development-only and absent from the 16-file runtime ZIP;
+the project's deterministic ZIP writer uses Node built-ins, not archiver. This
+is not evidence of a theme-reader runtime vulnerability or a clean development
+audit. Keep untrusted patterns/archives away from this toolchain and track a
+compatible dependency update separately. The existing gate passes because it
+blocks critical/new-high findings, not all moderate findings; its code, baseline
+and lockfile are unchanged. The Portal acceptance decision does not hide or
+reclassify this new observation. Older dated audit counts remain historical.
+
 ## Exposure and remaining work
 
 All npm dependencies are development dependencies and `node_modules` is excluded from the installable theme ZIP. This fixes the project's validation compiler; it does not patch Ghost's independently installed dependencies.
@@ -22,4 +43,4 @@ GScan's locked `@tryghost/zip` wrapper rejects symlink entries before calling ex
 
 The gate prints and saves `knownHigh`, `newHigh`, `critical` and `removedKnownHigh` classifications with the complete npm report in `artifacts/dependency-audit.json`. Removed means a previously known path is no longer reported as high; it does not by itself prove an upstream advisory was patched. Review the report before changing the explicit baseline in `scripts/audit.cjs`.
 
-`npm run test:security` uses fixed audit/lock fixtures to check the known chain, critical regression, new high, partial/full removal, new paths, exact versions, missing versions, severity escalation, advisory replacement with unchanged counts, command/service failure, malformed JSON/schema and unresolved dependency chains. CI runs those tests before the live audit gate and uploads the audit evidence separately. The current baseline remains 0 critical and 3 high dependency nodes, not a clean audit.
+`npm run test:security` uses fixed audit/lock fixtures to check the known chain, critical regression, new high, partial/full removal, new paths, exact versions, missing versions, severity escalation, advisory replacement with unchanged counts, command/service failure, malformed JSON/schema and unresolved dependency chains. CI runs those tests before the live audit gate and uploads the audit evidence separately. The reviewed high baseline remains 0 critical and 3 high nodes; the dated refresh above additionally reports moderate nodes. Neither result is a clean audit.

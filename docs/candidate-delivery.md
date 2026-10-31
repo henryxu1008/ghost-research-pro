@@ -1,8 +1,12 @@
 # Candidate handoff — not a published release
 
-Prepared 2026-10-30. This is a reviewable installation/evaluation candidate.
-The ZIP is operational on the tested paths; stock Portal failures and other
-technical release gates remain. Project files are under [MIT](../LICENSE),
+Prepared 2026-10-30; delivery decision updated 2026-10-31. This is the unpublished
+0.1.0 release-preparation candidate. Core publishing, protected-content and
+installation paths have passing evidence. The owner accepted the known stock
+Portal comment-save feedback issue as a disclosed limitation rather than
+blocking the whole theme's delivery. Strict failures remain real and visible;
+new defects are not covered by that decision. See the
+[release notes and package inventory](release-notes-0.1.0.md). Project files are under [MIT](../LICENSE),
 including its commercial-use/distribution/sale permissions and notice conditions.
 This is not a production-readiness claim or an additional license restriction.
 
@@ -129,14 +133,17 @@ authorize a license/payment promise or approve a merge/release.
 
 The profile counts, local buyer-copy run and 21-screen independent visual review
 below are **historical PR16 evidence**, payload `993b4e25` / ZIP `e515558f…cb5f`.
-They do not validate this new font-fix ZIP. Its focused layout/publishing browser
-checks pass 8/8; current source/ZIP and complete runtime results must be read from
-the exact latest PR17 checks. No new local administrator, buyer installation,
-independent visual review or real payment is claimed for this follow-up. Existing
-2369/2380 previews have not been updated by this batch.
+They do not by themselves validate the current ZIP. Current source/ZIP, focused
+layout/publishing/Portal fixtures and complete runtime results are separately
+recorded in [PR17 CI41073586729](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41073586729). No new local administrator, buyer installation,
+independent visual review or real payment is claimed for this follow-up. A later
+PR17 local filesystem overlay was reported for the final payload, with served
+asset-hash checks; that is not a new buyer-run Admin installation or independent
+visual review. The current ZIP's real Admin install/upgrade/rollback evidence is
+in exact-head CI, separately from these historical local receipts.
 
-The exact-payload CI's validate job passed source/ZIP GScan, six Linux
-reproducibility checks, independent unzip CRCs and the bounded audit. Both
+The exact-payload CI's validate job passed source/ZIP GScan, seven Linux
+packaging checks, independent unzip CRCs and the bounded audit. Both
 runtime jobs passed TOC10/10, layout3/3, stock-Portal focus4/4 and research
 template4/4 fixtures. The runtime jobs and whole run remain failed as above.
 
@@ -165,16 +172,19 @@ the public repository or candidate ZIP. Independent visual review separately
 reported no P0/P1/P2 in 21 captured screens; those screenshots remain local and
 do not substitute for the unexecuted checks below.
 
-## Known problems and release gates
+## Known limitations and publication requirements
 
 The owner's first-version promise excludes the unexecuted paid-subscription
 lifecycle (creation/checkout, renewal, cancellation, refunds and related
 recovery). Native Ghost membership/paid features and access rules stay intact;
 no end-to-end commercial readiness is claimed. Those scenarios remain explicitly
 unaccepted and required before adding a paid-lifecycle promise. This choice
-does not resolve licensing, Portal recovery or the other technical gates.
+does not claim Portal recovery is fixed or broader acceptance completed. MIT is
+already selected/included. The owner's 2026-10-31 decision accepts the specific
+comment-feedback limitation for first delivery while keeping core checks and
+all strict test results intact.
 
-1. **Stock Portal recovery:** Ghost5 newsletter HTTP503/429 can lose the client
+1. **Accepted stock Portal limitation:** Ghost5 newsletter HTTP503/429 can lose the client
    draft/account display/error feedback while the server member/session stays
    intact. Both pinned Portals can announce a comment-preference save before
    an aborted request subsequently fails. The intended change may not persist;
@@ -182,13 +192,16 @@ does not resolve licensing, Portal recovery or the other technical gates.
    notifications off may leave them enabled, so the reader could continue to
    receive notifications. Reopen/reload and check
    the actual saved preference before relying on it. This is diagnostic advice,
-   not a fix or passing substitute. [Repair ownership](engineering/portal-release-decision.md)
+   not a fix or passing substitute. This known comment-feedback issue no longer
+   blocks the entire theme's delivery under the owner's decision. Ghost5 remains
+   outside initial support. [Repair ownership](engineering/portal-release-decision.md)
    and the strict tests remain unchanged; no patched Portal/global fetch hack
    is shipped. [Upstream PR32314](https://github.com/TryGhost/Ghost/pull/32314)
    is open, not a released installed repair. These probes did not show protected
    body leakage, server-session revocation or a real charge.
-2. **Development tooling:** 0 critical / 3 known high dependency nodes remain
-   in GScan's ZIP chain. [Exact advisories and limits](engineering/dependency-security.md)
+2. **Development tooling:** the 2026-10-31 local audit refresh reports 0 critical /
+   3 known high / 3 moderate nodes (one additional minimatch advisory) in the
+   development ZIP chain; the earlier CI audit counts are dated evidence. [Exact advisories and limits](engineering/dependency-security.md)
    remain visible. Dependencies are excluded from the theme ZIP; avoid scanning
    untrusted third-party archives with this toolchain.
 3. **Unexecuted:** actual Stripe sandbox lifecycle, full screen-reader and
@@ -226,7 +239,9 @@ not a passing-check or merge-approval claim.
 PR10–16 remain open with their heads unchanged; no old PR is closed or separately
 merged by this consolidation. Review PR17 as a whole rather than merging the
 old chain individually. Its [current checks](https://github.com/henryxu1008/ghost-research-pro/pull/17/checks)
-must establish the final head against the main baseline. The older runs above
+must verify the final head against the main baseline, preserving and disclosing
+the accepted Portal failure identities rather than requiring their disappearance
+before bounded delivery. The older runs above
 remain exact-payload evidence, not a substitute for that final-base run.
 
 Actual merge, auto-merge, old-PR closure and release remain separate, unperformed
@@ -237,5 +252,5 @@ Recheck the final merged commit and payload hash before any release; a GitHub
 test-merge SHA is not the evaluated source commit.
 
 For the exact user-only handoff boundary and the remaining owner choices, see
-the [delivery readiness and decisions](delivery-readiness.md). No local artifact
-upload or license decision is authorized by the presence of that document.
+the [delivery readiness and decisions](delivery-readiness.md). No artifact upload,
+merge or public release is authorized by the presence of that document.

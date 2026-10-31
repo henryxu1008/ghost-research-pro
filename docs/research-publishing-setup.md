@@ -111,6 +111,6 @@ Download the previous routes and record both menus before changing them. To
 return to an older theme without the library template, restore its route/menu
 configuration as part of the [normal theme rollback](user-guide.md#restore-the-previous-theme).
 Do not delete reports, tags or members to undo a layout. Check existing post URLs
-afterward. The project's MIT text is included; native Portal recovery, any future
-paid-lifecycle promise and other [technical release gates](engineering/qa-checklist.md)
+afterward. The project's MIT text is included; the accepted native Portal
+limitation, future paid-lifecycle claims and [core publication requirements](engineering/qa-checklist.md#remaining-release-gates)
 remain separate from this setup. This recipe does not change content access or billing.

@@ -16,14 +16,14 @@ Screenshot review subsequently found redundant subscription CTA markup on restri
 - Negative checks: a missing ZIP fails validation; a temporary theme missing `author.email` fails validation. The new CI gate blocks nonfatal errors and warnings as well.
 - Lockfile pins the dependency tree; CI uses the same packaging and validation commands as local development.
 
-## Local runtime attempt — blocked before theme activation
+## Historical local runtime attempt — blocked before theme activation
 
 Ghost 6.73.0 was unpacked and dependencies installed in an isolated temporary directory with Node 24.22.1. Bootstrap failed during database fixture migration (`2-create-fixtures.js`): `uv_interface_addresses`, `ERR_SYSTEM_ERROR`, errno 1. The process exited before theme upload/activation. This is an environment-level blocker, not evidence of a theme runtime failure or a successful installation. The same stock Ghost version subsequently initialized successfully on the ephemeral CI runner. The original host restriction remains; no Node or Ghost monkey patch was applied.
 
 ## Automated real-instance acceptance
 - [x] Upload the built theme ZIP through Ghost Admin API and verify activation by reading back the active theme.
 - [x] Verify actual Ghost Admin UI upload/activation, cancellation, repeat upload and invalid-ZIP feedback in both pinned profiles: [runtime code e53af9a / workflow 40809348925](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925). All four UI cases pass per profile; [scope and offline font fallback](admin-ui-acceptance.md) remain explicit. This is browser UI automation with screenshot review, not login or remote-font acceptance.
-- [x] Verify native installed-theme backup download, a temporary higher-version overwrite and rollback using that downloaded ZIP. The fifth [Admin UI probe](admin-ui-acceptance.md#backup-version-upgrade-and-rollback) passes in focused local checks on both pinned profiles and is included in runtime CI. It verifies active version, served template/CSS, selected publication settings/content and anonymous restricted-body protection. See the [user guide](../user-guide.md) for the supported install/configuration/update/restore flow; exact full-runtime results remain tied to PR #10's code head.
+- [x] Verify native installed-theme backup download, a temporary higher-version overwrite and rollback using that downloaded ZIP. The fifth [Admin UI probe](admin-ui-acceptance.md#backup-version-upgrade-and-rollback) passes in focused local checks on both pinned profiles and is included in runtime CI. It verifies active version, served template/CSS, selected publication settings/content and anonymous restricted-body protection. See the [user guide](../user-guide.md) for the supported install/configuration/update/restore flow; the dated probe evidence remains historical, while the latest exact-payload results are linked in the handoff.
 - [x] Verify theme-owned signup/account prompts for public, paid-only and invitation-only signup across anonymous, free and complimentary-paid readers. Both pinned real instances reproduce the original failures and pass 11 focused probes after repair; [scope](membership-signup-acceptance.md) distinguishes real settings/sessions from render-only paid-enabled examples. No Stripe checkout is claimed.
 - [x] Verify home, post, tag, author, page, custom membership page and 404 routes, plus stylesheet delivery.
 - [x] Log in free and complimentary tier members through real Ghost magic links captured by local SMTP.
@@ -40,17 +40,68 @@ The first complete expanded matrix passed at `5cd0c2ba6ccf571fb7fd92668b471e296b
 
 ## Remaining release gates
 
-See the [Portal repair boundary and release route](portal-release-decision.md) for repair responsibilities and the owner's exact Ghost6.73.0 / stock Portal2.72.11 primary-delivery decision. Ghost5 is compatibility CI evidence outside the first promise; both strict matrices and failures stay enabled. No scope choice converts red checks into passing results.
+Updated 2026-10-31: the owner accepted proceeding with the known stock Portal
+comment-save feedback issue. This is a release-risk decision, not a test waiver.
+Both matrices, strict assertions and red CI outcomes stay unchanged. Initial
+support is only Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11; Ghost5 remains
+compatibility evidence outside that promise.
 
-- [ ] Before adding a paid-commerce promise, verify paid Portal plan cards and checkout with Stripe in an isolated sandbox. No live Stripe connection or charge was used; the first delivery excludes this unexecuted promise and retains native features/access unchanged.
-- [ ] Before adding that promise, execute the [payment lifecycle matrix](payment-acceptance.md), including creation, renewal, cancellation/refunds and recovery. These cases remain unexecuted; complimentary entitlements do not prove billing works or end-to-end commercial readiness.
-- [ ] Full accessibility audit, screen readers, custom palettes, and cards outside the documented automated fixture set (including media playback and external embeds).
-- [ ] Require controlled HTTP503/429 recovery for the primary release profile. Ghost5's failing compatibility cases remain visible and strict; see [HTTP acceptance](account-http-acceptance.md).
-- [ ] Resolve the strict [comment notification feedback failure](comment-preference-acceptance.md) for the selected Ghost6 primary target; Ghost5's same failure remains compatibility evidence. Real save/reload/keyboard restoration passes; aborted saves still announce success before reporting failure. Repository CI remains red until its unchanged assertions pass; no gate is waived here.
-- [ ] Account email-address changes, custom fields, announcement preference writes and HTTP failures outside the documented controlled probes.
-- [ ] Test runtime versions and browsers beyond the two exact pinned CI profiles; a broad engine range and static GScan result do not prove every minor version.
-- [x] Apply the owner's standard MIT selection, include actual root LICENSE in the ZIP and match package metadata; provenance/third-party boundaries are in the [release inventory](release-licensing-inventory.md). Exact-file packaging checks verify its bytes; this is not a functional release pass.
-- [ ] Complete remaining design/commercial-readiness review and separately inventory future third-party media/assets. MIT's redistribution/sale permissions are not restricted by these technical readiness checks.
+### Core-function requirements before publication
+
+- [x] Current payload's source/ZIP GScan reports 0 errors / 0 warnings; seven
+  packaging tests and independent ZIP CRC checks pass.
+- [x] Current Ghost6 CI passes actual Admin UI upload/activation, cancellation,
+  repeated upload, backup/upgrade/rollback and invalid-ZIP protection.
+- [x] Core research routes/pagination, report rendering, member body-access
+  isolation, free member flows and ordinary preference saves have passing
+  evidence. See [CI41073586729](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41073586729)
+  for payload `431990ef`; its overall result is still failure.
+- [x] Standard MIT is included and package metadata matches; the
+  [license inventory](release-licensing-inventory.md) records third-party boundaries.
+- [ ] At publication, confirm final merged source, version, exact ZIP/hash and
+  matching release notes. Investigate any new/different failure or lost core
+  pass; no silent assertion removal or branch-protection bypass is allowed.
+- [ ] Obtain the separately scoped merge/release/listing authorization and
+  final channel/terms in the [publication checklist](../delivery-readiness.md#smallest-remaining-publication-decision).
+
+### Accepted known limitations — still failing tests
+
+- Ghost6: [comment notification feedback](comment-preference-acceptance.md)
+  can report success before an interrupted save fails. An opt-out may remain
+  unsaved. Ordinary save/reload and explicit recovery pass; the failure remains
+  **red**, must be disclosed, and does not block the whole theme under the new
+  owner decision. A real supported repair is still tracked upstream.
+- Ghost5, outside initial support: the same comment issue plus newsletter
+  HTTP503/429 client draft/account feedback failures. Its strict probes stay
+  enabled; do not claim Ghost5 fully accepted.
+- The 2026-10-31 development-tool audit reports **0 critical / 3 known high /
+  3 moderate nodes**;
+  dependencies are not shipped in the runtime ZIP. See the
+  [bounded security policy](dependency-security.md); new audit findings are not
+  accepted by the Portal-risk decision.
+
+### Future-scope acceptance — no completion claim
+
+- [ ] Before promising a paid-subscription lifecycle, execute Stripe sandbox
+  plan/checkout, creation, renewal, cancellation/refund and recovery checks in
+  the [payment matrix](payment-acceptance.md). Complimentary access is not billing.
+- [ ] Before claiming full accessibility or broader compatibility, complete
+  screen-reader, alternate-browser, custom palette/font/content, media and
+  external-embed coverage for that claim.
+- [ ] Account email-address changes, custom fields, announcement writes and
+  HTTP failures beyond documented probes remain unaccepted. Ghost6's existing
+  controlled newsletter HTTP503/429 checks pass; do not conflate them with the
+  failing Ghost5 cases.
+- [ ] Verify any newly added third-party media/assets before distributing them.
+  Customer interviews and buying-intent research remain unverified; they are
+  not technical blockers for this bounded delivery and cannot be marketed as
+  completed customer validation.
 
 ## Release gate
-[PR #17](https://github.com/henryxu1008/ghost-research-pro/pull/17) is the unified candidate targeting main and ready for review. Older PR10–16 remain open; no merge, approval, auto-merge or old-PR closure accompanies that status change. A passing disposable-instance acceptance run does not authorize merging, deploying or real payments, and is not a claim of production readiness. Preserve the strict Portal failures and inspect the exact final-head checks before any merge decision.
+
+[PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) remains the single
+candidate targeting main. Inspect the exact final-head jobs and failure names;
+137/1 is not full green and the red aggregate is not proof that core theme
+functions failed. The accepted upstream limitation permits delivery preparation,
+not automatic merge, deployment, publication or real payments. Existing repository
+rules remain in force. See [0.1.0 release notes](../release-notes-0.1.0.md).

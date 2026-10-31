@@ -1,6 +1,23 @@
-# Portal blockers and release route
+# Known Portal limitations and release route
 
-Updated 2026-10-30. The [candidate handoff](../candidate-delivery.md) is the current delivery/status summary. This changes no engine range, pinned runtime profile or strict assertion. Unified [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) targets main and is ready for review; older PR10–16 remain open/Draft. No merge, production deployment, payment connection or license choice is authorized here.
+Updated 2026-10-31 after the owner explicitly chose to keep theme delivery moving despite the known upstream feedback issue. The [candidate handoff](../candidate-delivery.md) is the current delivery/status summary. This changes no engine range, pinned runtime profile or strict assertion. Unified [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) targets main and is ready for review; older PR10–16 remain open/Draft. Standard MIT was already selected. No merge, tag, Release, listing, production deployment or payment connection is performed or authorized by this document.
+
+## Current delivery decision
+
+The owner accepts the pinned Ghost6 comment-notification failure-feedback issue
+as a disclosed limitation of the first delivery, not a blocker for the whole
+theme. Core publishing, protected-content isolation, installation/recovery and
+package correctness must still pass their relevant checks. New or changed
+failures require investigation; this is not a blanket acceptance of defects.
+
+The strict runtime assertions, both profiles and CI conclusions are unchanged.
+There is no skip, expected-failure conversion, allow-failure workflow change,
+private Portal build, notification hiding or branch-rule bypass. Current evidence
+is **Ghost6 137 pass / 1 fail / 0 skip** and compatibility-only **Ghost5 135 pass /
+3 fail / 0 skip**, [CI41073586729](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41073586729),
+runtime payload `431990efde71e751c097d170c4314e28f301bb79`. The known failures
+remain genuine failures. See [0.1.0 notes and inventory](../release-notes-0.1.0.md)
+and [publication decisions](../delivery-readiness.md#smallest-remaining-publication-decision).
 
 ## Pinned Portal diagnostic baseline
 
@@ -10,13 +27,13 @@ new-ZIP passes; use the latest exact-head PR17 checks for the current build.
 
 Payload `993b4e25bd3d9aa227041b74f3e44bc3875c8054`, [CI41011050241](https://github.com/henryxu1008/ghost-research-pro/actions/runs/41011050241): Ghost5 **135 pass /3 fail**, Ghost6 **137 pass /1 fail**, with zero runtime skips. Validate passed; runtime and overall CI remain failed. The failure identities below are unchanged. Local Ghost6 buyer-copy installation/configuration acceptance has completed; its official API steps are distinguished from actual Admin UI upload/activation in the candidate guide.
 
-The comment fix is now submitted as [official Ghost PR32314](https://github.com/TryGhost/Ghost/pull/32314), open and unmerged when checked on 2026-10-30 (head `f9812bb38e1b891df3668738faf401664eb515c9`). The local upstream experiments and contribution do not replace the stock Portal packages in this theme or establish a released fix.
+The comment fix is submitted as [official Ghost PR32314](https://github.com/TryGhost/Ghost/pull/32314), open and unmerged when checked on 2026-10-31 at 07:57 UTC (head `cc9a0e4775f7e2ec2d6e0e520a2bdbf6470cd7b7`). Its exact-head CI awaits maintainer authorization; the TSX review finding was marked addressed. The local upstream experiments and contribution do not replace the stock Portal packages in this theme or establish a released fix.
 
 The legacy non-2xx-to-null API chain was already fixed on Ghost's main line by [6076cd0](https://github.com/TryGhost/Ghost/commit/6076cd0f0b924e2a2189521a494a706a420ad7d4). No duplicate main-line fix is proposed for it. A verified Ghost5-compatible 2.51 backport has not been established. A main-line change is not evidence that pinned 2.51.5 is repaired.
 
 For evaluation, use the exact stock Ghost6.73.0 profile as the primary local target; retain Ghost5's automated/static coverage and disclose that this handoff adds no local authenticated Ghost5 buyer run. Neither profile has full runtime acceptance. Notification false success can leave an intended opt-out unsaved and notifications enabled; the legacy errors can lose a local draft/client account display. These controlled probes did not demonstrate body leakage, server-session revocation or actual billing.
 
-The dated counts, observations and proposals below document the original diagnosis; they are not the current completion state. Release still requires a supported stock repair and exact-candidate rerun. No theme-level notification suppression, global fetch interception, feature removal or experimental Portal replacement is a substitute.
+The dated counts, observations and proposals below document the original diagnosis; they are not the current completion state. A supported stock repair and exact-candidate rerun are needed to close the defect, but the owner no longer requires that closure before this bounded theme delivery. No theme-level notification suppression, global fetch interception, feature removal or experimental Portal replacement is a substitute.
 
 ## Historical diagnosis — 2026-10-29
 
@@ -67,19 +84,19 @@ those recorded choices do not authorize merge or Release either.
 | Route | What it resolves | What remains / decision required |
 | --- | --- | --- |
 | Keep Ghost 5 + 6 scope | The previous dual-line proposal. | Would require supported repairs for both lines. The owner has instead chosen the exact Ghost6 primary target above; Ghost5 evidence is retained. |
-| Ghost 6 first release | Chosen exact-version primary scope; the legacy null-member issue is outside that initial promise. | The comment feedback defect still blocks Ghost6. Keep Ghost5 compatibility tests/results visible; engine metadata is unchanged. |
+| Ghost 6 first release | Chosen exact-version primary scope; the legacy null-member issue is outside that initial promise. | This was the earlier blocking policy, superseded by the 2026-10-31 accepted-limitation decision above. Keep Ghost5 compatibility tests/results visible; engine metadata is unchanged. |
 | Force a newer/custom Portal into Ghost 5 | Could change the failing implementation. | Compatibility and distribution responsibilities are unproven. This is not equivalent to passing stock Ghost 5 acceptance and is not recommended as a shortcut. |
 
 Disabling comments or removing account controls would change product behavior and would not fix the underlying account lifecycle. It is not proposed as a passing substitute. No route converts current failed cases into skipped or expected-success cases.
 
 ## Recommended shortest delivery path
 
-Implement the owner's exact Ghost6-first support decision above while retaining both compatibility matrices and every red assertion. Ghost6 still needs a supported stock comment-feedback repair; the choice does not make that fix available or convert CI to green. Ghost5's additional newsletter503/429 failures remain recorded as compatibility limitations rather than a first-version support promise.
+Proceed with the exact Ghost6.73.0 first delivery and prominently disclose the accepted comment-save limitation. Retain both compatibility matrices and every red assertion. Ghost5's additional newsletter503/429 failures remain compatibility evidence outside the first-version support promise. A new theme regression, body exposure, broken installation or package mismatch still stops publication pending diagnosis.
 
-The applicable comment repair has been submitted upstream; the old API chain has an existing main-line fix. Preserve the strict reproductions and seek a supported released repair/backport. Pin it and rerun the unchanged relevant matrix on the exact candidate. A local patched demonstration alone cannot close the stock-runtime release gate.
+The applicable comment repair has been submitted upstream; the old API chain has an existing main-line fix. Preserve the strict reproductions and seek a supported released repair/backport. Pin it and rerun the unchanged relevant matrix on the exact candidate. A local patched demonstration alone cannot close the stock-runtime defect; it is not shipped as a workaround or required to keep bounded theme delivery moving.
 
-The **Ghost Admin UI ZIP upload/activation regression** is now complete at runtime code `e53af9a678f3152d3183e7cc1822eeb16fa6459a`, [workflow 40809348925](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925): all four UI cases pass on both versions. [Installation evidence](admin-ui-acceptance.md) records real native writes, cancellation, invalid-ZIP safety, canonical frontend fixtures and the explicit offline system-font fallback. The remaining runtime results are 112/3 on Ghost 5 and 114/1 on Ghost 6, with only the existing Portal failures.
+Historical installation batch: the **Ghost Admin UI ZIP upload/activation regression** completed at runtime code `e53af9a678f3152d3183e7cc1822eeb16fa6459a`, [workflow 40809348925](https://github.com/qq550723504/ghost-research-pro/actions/runs/40809348925): all four UI cases pass on both versions. [Installation evidence](admin-ui-acceptance.md) records real native writes, cancellation, invalid-ZIP safety, canonical frontend fixtures and the explicit offline system-font fallback. That historical run reported 112/3 on Ghost5 and 114/1 on Ghost6, only the existing Portal failures; these are not current final-payload counts.
 
-The remaining release-path responsibility is a supported native Portal repair and candidate validation. The historical Admin batch did not itself create a fork or PR; the later contribution is recorded above. MIT is now selected/included. A future paid-lifecycle promise still needs sandbox acceptance; screen-reader coverage needs its appropriate environment. No live service is connected or release action authorized here.
+Continue the upstream repair independently while preparing the verified theme package and customer-facing disclosure. The historical Admin batch did not itself create a fork or PR; the later contribution is recorded above. MIT is selected/included. A future paid-lifecycle or full-accessibility promise still requires the corresponding acceptance. No live service is connected or release action performed here.
 
-Release remains blocked until the native Portal failures and the remaining [QA gates](qa-checklist.md) are resolved. [HTTP scope](account-http-acceptance.md), [comment scope](comment-preference-acceptance.md), [payment preparation](payment-acceptance.md) and [licensing inventory](release-licensing-inventory.md) distinguish completed evidence from outstanding work. The full development audit still has 0 critical and 3 known high nodes; no clean-audit claim is made.
+The [QA checklist](qa-checklist.md#remaining-release-gates) separates core publication requirements from accepted limitations and future-scope work; the known Portal issue is no longer a whole-theme delivery blocker. [HTTP scope](account-http-acceptance.md), [comment scope](comment-preference-acceptance.md), [payment preparation](payment-acceptance.md) and [licensing inventory](release-licensing-inventory.md) distinguish completed evidence from outstanding work. The full development audit still has 0 critical and 3 known high nodes; no clean-audit claim is made.

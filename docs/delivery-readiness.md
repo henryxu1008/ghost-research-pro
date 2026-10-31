@@ -1,7 +1,7 @@
 # User handoff boundary and remaining release choices
 
-This is one unpublished evaluation candidate in unified PR17, not a new product
-branch. Project files are [MIT licensed](../LICENSE); no additional resale or
+This is one unpublished 0.1.0 release-preparation candidate in unified PR17,
+not a new product branch. Project files are [MIT licensed](../LICENSE); no additional resale or
 redistribution restriction is imposed by the candidate label. This work has not
 performed a sale, merge or Release. Build identity and evidence are in the
 [candidate handoff](candidate-delivery.md). Files are prepared locally; no local
@@ -33,27 +33,48 @@ coordinated; that operational boundary does not restrict MIT redistribution righ
 | Choice | Status / available directions | Work after the choice |
 | --- | --- | --- |
 | Project license | **Owner selected standard MIT.** Root `LICENSE` says `Copyright (c) 2026 henryxu1008`, based on the verified repository owner/original author account; package metadata matches. MIT includes commercial use, modification, redistribution, sublicensing and sale under its notice conditions. | Keep the actual copyright/permission notice with copies or substantial portions; retain applicable third-party notices. Current ZIP includes the exact text. No extra resale ban, price or warranty is added. |
-| Initial formal Portal/Ghost scope | **Decided by the owner: Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11 is the first primary support/delivery target.** Ghost5 is retained as compatibility evidence, outside the first delivery commitment; no all6.x promise. | Preserve both CI profiles and red assertions; validate the supported stock Ghost6 comment repair and rerun exact-candidate checks. Engine metadata remains permissive; no experimental Portal is shipped. |
+| Initial formal Portal/Ghost scope | **Decided by the owner: Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11 is the first primary support/delivery target.** Ghost5 is retained as compatibility evidence, outside the first delivery commitment; no all6.x promise. | Preserve both CI profiles and red assertions. On 2026-10-31 the owner accepted the known comment-save feedback limitation for delivery rather than waiting for upstream. Validate any later supported stock repair separately; no experimental Portal is shipped. |
 | Paid-commerce promise | **Decided by the owner: the first delivery does not promise the unexecuted paid-subscription lifecycle**: subscription creation/checkout, renewals, cancellation, refunds and related recovery. Native membership/paid features and access rules remain unchanged. No end-to-end commercial-readiness claim. | Keep the unexecuted matrix explicit. Any future paid-lifecycle promise requires separate authorized sandbox acceptance; no new account, credential, charge or feature disabling is part of this decision. |
 
 The Ghost6-first, no-unverified-paid-lifecycle promise and standard MIT choices
 are recorded; **no product-boundary choice remains pending from that list**.
-They do not authorize a merge, Release or deployment. An official validated
-comment-feedback repair is still needed for the chosen Ghost6/free-member scope,
-and technical acceptance remains separate from the MIT permission grant.
+They do not authorize a merge, Release or deployment. The owner's 2026-10-31
+decision accepts the specific upstream failure-feedback risk for first delivery;
+it does not accept new theme defects, turn failed tests green or imply a released
+Portal repair. See the [0.1.0 release notes](release-notes-0.1.0.md).
 
-## Technical gates that decisions do not waive
+## Accepted limitation and unchanged core-function requirements
 
-Stock Portal can falsely confirm a comment-notification change before a failed
+The accepted limitation is that stock Portal can falsely confirm a comment-notification change before a failed
 write; an opt-out may remain unsaved. Ghost5's503/429 newsletter failures can
 lose the local draft/client account display. See [repair ownership](engineering/portal-release-decision.md)
 and [official PR32314](https://github.com/TryGhost/Ghost/pull/32314); it is not an
 installed/released fix. Preserve the red assertions. No theme toast suppression,
-global fetch replacement or upstream fork is a passing substitute.
+global fetch replacement or upstream fork is a passing substitute. The known
+failure no longer blocks the whole theme's delivery under the owner's decision.
+All strict tests and red CI conclusions remain visible; only the release-risk
+classification changes.
+
+Core reading/collections, protected-body isolation, installation/upgrade/rollback,
+package identity and license inclusion must remain verified. A new or materially
+different failure requires diagnosis before publication. Inspect each job and
+failure identity rather than interpreting the overall red status as either
+"everything broken" or "everything passed". Existing branch-protection rules
+are not changed or bypassed by this decision.
 
 Full screen-reader/alternate-browser coverage and the stated dependency-tool
-high findings remain explicit. Paid entitlements in complimentary fixtures are
-not real billing evidence. The latest CSS-font fixture is not a new independent
-visual audit or a buyer-run installation. Actual merge/auto-merge, closing older
-PRs, a Release, production deployment and distribution are separate actions and
-have not been authorized by the request to keep developing.
+high findings remain explicit limits, not claims of completed acceptance. Paid
+entitlements in complimentary fixtures are not real billing evidence. The latest
+ZIP has actual CI Admin UI install/upgrade/rollback evidence; its focused browser
+fixtures are not a new independent buyer-run or full visual/accessibility audit.
+
+## Smallest remaining publication decision
+
+Confirm the publication action batch and destination: merge PR17 through the
+repository's normal rules, tag/release version 0.1.0, and distribute the exact ZIP
+plus these limitations through the selected channel. If it is a paid listing,
+confirm the price and support/contact/refund terms appropriate to that channel.
+No new license, Ghost-version or paid-lifecycle choice is needed. Check the final
+merged source/payload hash before attachment; any changed payload needs fresh
+identity and relevant validation. No merge, tag, Release, listing, old-PR closure,
+deployment or real payment has been performed by this preparation.

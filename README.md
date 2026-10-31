@@ -2,11 +2,13 @@
 
 MIT-licensed Ghost theme candidate for research publishers, B2B intelligence and professional newsletters. See [LICENSE](LICENSE) for permissions and notice conditions; functional release readiness is tracked separately.
 
-> Status: unmerged evaluation candidate. Research publishing, installation and scoped Ghost 5/6 acceptance evidence are available; stock Portal failures and other release gates remain. No production-ready theme has been released.
+> Status: preparing version 0.1.0 for delivery on Ghost 6.73.0. On 2026-10-31 the owner accepted the known stock Portal comment-notification failure-feedback limitation rather than blocking the whole theme on it. Core publishing, access protection and installation have passing evidence; strict Portal tests remain failed and visible. PR17 is still unmerged and no Release or listing has been published.
 
 Review the [candidate handoff](docs/candidate-delivery.md) for the exact installable ZIP/hash, configuration cost, tested profiles, integration plan and known limits. The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included. The owner selected standard MIT; no paid-service pricing is set here.
 
-Installing a development preview? Start with the [installation, configuration, upgrade and rollback guide](docs/user-guide.md). It distinguishes the installable artifact from a source ZIP and documents the controls this theme actually exposes.
+The [0.1.0 release notes and package inventory](docs/release-notes-0.1.0.md), with the [unpublished bilingual listing draft](docs/product/listing-copy.md), separate verified core functionality, accepted upstream limitations and untested promises. A red check is not relabeled as passing; a new or different failure still needs investigation before publication.
+
+Preparing an installation? Start with the [installation, configuration, upgrade and rollback guide](docs/user-guide.md). It distinguishes the installable artifact from a source ZIP and documents the controls this theme actually exposes.
 
 Preparing a demonstration publication? Use the [demo content setup plan](docs/demo-content.md) for fictional reports, Briefs, a members-only post and a manual homepage/archive checklist.
 

@@ -39,4 +39,4 @@ Stripe documents that webhook delivery can be retried and event order is not gua
 
 Store only sanitized scenario names, version information, expected/actual statuses, timestamps, non-secret test fixture aliases and screenshots without tokens or payment details. Do not publish keys, webhook secrets/signatures, magic links, cookies, raw payloads or databases.
 
-Each scenario must have its own result and reproducible sandbox evidence. Leave unexecuted or unsupported rows explicitly pending. This matrix is a release gate; a passing free/complimentary suite does not close it. PR #10 remains Draft, with no merge, deployment or live payment authorized.
+Each scenario must have its own result and reproducible sandbox evidence. Leave unexecuted or unsupported rows explicitly pending. This matrix is required before adding a paid-subscription-lifecycle promise; the owner excluded that promise from the first theme delivery. Selling the theme is not evidence that Ghost billing was tested. A passing free/complimentary suite does not close this matrix. Unified PR17 remains unmerged, with no release, deployment or live payment performed by this preparation.
