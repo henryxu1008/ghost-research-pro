@@ -82,13 +82,18 @@ async function checkPublisherExperience({browser, base, admin, api, out, record,
             await owner.route('**/*', serve);
             const ui = await owner.newPage();
             ui.setDefaultTimeout(15000);
+            // Ghost 5's Admin uses generated field IDs and its previous color
+            // picker. Address the same native controls by accessible labels.
+            const tab = name => ui.getByTestId('design-setting-tabs').getByRole('tab', {name, exact: true})
+                .or(ui.getByTestId('design-setting-tabs').getByRole('button', {name, exact: true}));
+            const selection = () => ui.getByRole('switch', {name: 'Show editor selection', exact: true});
             try {
                 await ui.goto(`${base}/ghost/#/settings/design/edit`, {waitUntil: 'domcontentloaded'});
-                await ui.getByRole('tab', {name: 'Theme', exact: true}).click();
-                await ui.locator('#theme-setting-hero_title').fill('Admin saved research desk');
-                await ui.locator('#theme-setting-hero_description').fill('Saved from native Ghost Admin.');
-                await ui.locator('#theme-setting-hero_signup_label').fill('Read with us');
-                await ui.locator('#theme-setting-show_editor_selection').click();
+                await tab('Theme').click();
+                await ui.getByRole('textbox', {name: 'Hero title', exact: true}).fill('Admin saved research desk');
+                await ui.getByRole('textbox', {name: 'Hero description', exact: true}).fill('Saved from native Ghost Admin.');
+                await ui.getByRole('textbox', {name: 'Hero signup label', exact: true}).fill('Read with us');
+                await selection().click();
                 check.stage = 'save homepage controls';
                 const [saved] = await Promise.all([
                     ui.waitForResponse(r => new URL(r.url()).pathname === '/ghost/api/admin/custom_theme_settings/' && r.request().method() === 'PUT'),
@@ -96,21 +101,20 @@ async function checkPublisherExperience({browser, base, admin, api, out, record,
                 ]);
                 assert(saved.ok(), 'Native custom setting save failed');
                 await ui.reload();
-                await ui.getByRole('tab', {name: 'Theme', exact: true}).click();
-                assert.equal(await ui.locator('#theme-setting-hero_title').inputValue(), 'Admin saved research desk');
-                assert.equal(await ui.locator('#theme-setting-show_editor_selection').getAttribute('aria-checked'), 'false');
+                await tab('Theme').click();
+                assert.equal(await ui.getByRole('textbox', {name: 'Hero title', exact: true}).inputValue(), 'Admin saved research desk');
+                assert.equal(await selection().getAttribute('aria-checked'), 'false');
                 await page.goto(base);
                 assert.equal(await page.locator('.publication-intro h1').textContent(), 'Admin saved research desk');
                 assert.equal(await page.locator('.hero-actions .button').textContent(), 'Read with us');
-                await ui.getByRole('tab', {name: 'Brand', exact: true}).click();
+                await tab('Brand').click();
                 await ui.getByTestId('accent-color-picker').getByRole('button').click();
-                const picker = ui.getByRole('textbox', {name: 'Hex color', exact: true});
+                const picker = ui.getByRole('textbox', {name: /^(Hex color|Color value)$/});
                 await picker.fill('#ffff00'); await picker.press('Tab');
                 check.stage = 'wait for native debounced brand preview';
                 await ui.waitForFunction(() => [...document.querySelectorAll('iframe')].some(frame => {
                     try {return frame.contentDocument?.documentElement?.dataset.accentColor === '#ffff00';} catch {return false;}
                 }));
-                await ui.keyboard.press('Escape');
                 check.stage = 'save brand color';
                 const [brandSaved] = await Promise.all([
                     ui.waitForResponse(r => new URL(r.url()).pathname === '/ghost/api/admin/settings/' && r.request().method() === 'PUT'),
