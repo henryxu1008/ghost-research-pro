@@ -2,7 +2,7 @@
 
 MIT-licensed Ghost theme candidate for research publishers, B2B intelligence and professional newsletters. See [LICENSE](LICENSE) for permissions and notice conditions; functional release readiness is tracked separately.
 
-> Status: preparing version 0.1.0 for delivery on Ghost 6.73.0. On 2026-10-31 the owner accepted the known stock Portal comment-notification failure-feedback limitation rather than blocking the whole theme on it. Core publishing, access protection and installation have passing evidence; strict Portal tests remain failed and visible. PR17 is still unmerged and no Release or listing has been published.
+> Status: [v0.1.0 is released](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0); PR17 was merged at `b8253801ccf0864d856c1b8368bca4d32ef5a03c`. The owner accepted the disclosed stock Portal comment-notification failure-feedback limitation. Strict Portal failures remain visible. The publisher settings, readable brand-color mapping and default Search entry described below belong to this unreleased development build, not the v0.1.0 ZIP. No paid-store listing or deployment is implied.
 
 Review the [candidate handoff](docs/candidate-delivery.md) for the exact installable ZIP/hash, configuration cost, tested profiles, integration plan and known limits. The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included. The owner selected standard MIT; no paid-service pricing is set here.
 
@@ -74,3 +74,5 @@ The theme includes a small accessibility adapter for the native Portal iframe: i
 ## Research publishing experience
 
 The editorial homepage, public-safe access labels, report metadata and native Library/topic/format/year browsing are described in the [research desk setup](docs/research-publishing-setup.md). The optional Library requires metadata Pages and merged native routing; the ZIP does not create them. Browsing uses complete server-paginated views, not page-local filters or a downloaded content index. See the [implementation and acceptance boundaries](docs/engineering/research-publishing.md).
+
+This unreleased build adds four native homepage settings, derives a readable accent from Ghost's brand color and supplies a visible header link to Ghost's native search. Blank text preserves the original homepage copy; the custom signup label applies only to open registration. See the [configuration guide](docs/user-guide.md#configure-the-existing-layout) for membership semantics, light-color handling and the native search/data boundary. `npm run test:publisher` exercises the focused regressions; the full disposable runtime matrix retains all existing strict checks.

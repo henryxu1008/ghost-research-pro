@@ -11,6 +11,8 @@ first; use the [existing fictional demo recipe](demo-content.md) for the base co
 - The homepage's latest list uses the existing home collection and native
   pagination. A separate **Editor's selection** shows the newest Featured post.
   Without one, a reading introduction appears instead. This is not a carousel.
+  The unreleased next build adds an optional **Show editor selection** switch;
+  turning it off removes this column while retaining the latest collection.
 - Cards show the actual primary tag, public-safe summary, author, publication
   date and Ghost visibility. Public / Members / Paid members / Selected tiers
   describes the publication's access policy, not whether this reader has paid.
@@ -58,8 +60,10 @@ protected body. Neither cards nor the featured selection prints report HTML.
    follow its older/newer links and confirm the older work is still reachable.
 
 This is two format tags, three metadata Pages, one route-file merge and the two
-native navigation menus. No custom Admin theme fields, external account or API
-key is needed. Existing content remains ordinary Ghost content.
+native navigation menus. The optional next-build homepage fields are described
+in the [configuration guide](user-guide.md#configure-the-existing-layout); they
+are not required for this Library recipe. No external account or private API key
+is needed. Existing content remains ordinary Ghost content.
 
 ## What the browsing controls mean
 

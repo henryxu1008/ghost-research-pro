@@ -1,6 +1,6 @@
 # Install, configure, update and restore Ghost Research Pro
 
-This is the 0.1.0 release-preparation candidate, not an already published release. The first-version support/delivery target is **Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11**, not every6.x version. Ghost5.130.6 remains compatibility CI evidence, outside that first delivery promise. Its tests and failures stay enabled; the wider installation-engine declaration is not a verified-support warranty. Project code is [MIT licensed](../LICENSE). On 2026-10-31 the owner accepted proceeding with theme delivery despite the known Portal comment-preference feedback issue; read the [release notes](release-notes-0.1.0.md#known-limitations) before installing. This decision does not claim that the issue is fixed or that all checks pass.
+Version [0.1.0 is formally released](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0). This branch also documents the **unreleased next build**; its homepage controls, brand-color mapping and default Search entry are not in the published v0.1.0 ZIP. The first-version support/delivery target is **Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11**, not every6.x version. Ghost5.130.6 remains compatibility CI evidence, outside that first delivery promise. Its tests and failures stay enabled; the wider installation-engine declaration is not a verified-support warranty. Project code is [MIT licensed](../LICENSE). The owner accepted the known Portal comment-preference feedback issue; read the [release notes](release-notes-0.1.0.md#known-limitations) before installing. This decision does not claim that the issue is fixed or that all checks pass.
 
 For the current payload's version/hash, scoped installation results and complete handoff contents, read the [candidate delivery guide](candidate-delivery.md). Its API configuration evidence is distinguished from graphical editor walkthroughs.
 
@@ -8,7 +8,9 @@ The owner selected a first delivery **without a promise of the unexecuted paid-s
 
 ## Get the theme ZIP
 
-Use the built `ghost-research-pro.zip` from the exact commit you are evaluating. In the repository's Actions tab, open its Theme CI run and download the `ghost-research-pro-theme` artifact. Unpack the artifact download and select the **inner** `ghost-research-pro.zip` for installation. GitHub's **Code → Download ZIP** is a source checkout, not the installable theme package.
+For the published version, download **ghost-research-pro.zip** from the [official v0.1.0 Release assets](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0). Keep that released package separate from development previews. GitHub's **Code → Download ZIP** and the Release's automatic source archives are source checkouts, not the installable theme package.
+
+To evaluate this PR's unreleased features, use the exact commit's Theme CI `ghost-research-pro-theme` artifact. Unpack the artifact download and select the **inner** `ghost-research-pro.zip`. Installing/activating a theme ZIP and importing independent fictional demo content are separate operations: this ZIP does not import posts, Pages, members, routes or demo data.
 
 Record the commit, displayed package version and SHA-256, and retain this file. Version 0.1.0 is currently used by multiple development commits, so the version label alone does not identify a build. Installing a preview does not resolve a red runtime check; review the run's individual results and known Portal failures.
 
@@ -36,7 +38,18 @@ Cancelling the upload before selection or cancelling the overwrite confirmation 
 
 For the optional paginated Library and publication-year channels, follow the [research desk setup](research-publishing-setup.md). The normal home/tag/author pages work without installing that optional routing.
 
-The theme currently has no custom controls under theme design settings. Use Ghost's publication/editor settings:
+In the unreleased next build, open **Design & branding → Customize → Theme → Homepage** (labels vary by Ghost version). Four bounded settings are available:
+
+| Theme setting | Meaning |
+| --- | --- |
+| Hero title | Plain-text home heading; empty uses the publication title. |
+| Hero description | Plain-text introduction; empty uses the publication description. |
+| Hero signup label | Open-registration CTA only; empty uses **Get research updates**. It never relabels **Your account**, **Sign in** or paid-only **View plans**. |
+| Show editor selection | On by default. Shows the newest Featured post, or the reading guide if none exists. Off removes that whole column and gives the introduction a compact single-column layout, including on narrow screens. Latest research and pagination remain. |
+
+Text is escaped, with no HTML injection or page builder. Save and reload the public homepage to verify the result. Existing members always get their account; open registration may use the custom label; paid-only signup shows **View plans** only when Ghost reports paid memberships enabled; invitation-only/unavailable registration shows **Sign in**. The published v0.1.0 package has no custom theme controls.
+
+Use Ghost's publication/editor settings for the remaining content:
 
 | Setting/content | Result in this theme |
 | --- | --- |
@@ -44,7 +57,7 @@ The theme currently has no custom controls under theme design settings. Use Ghos
 | Publication logo | Logo in the header, constrained to the available header size. |
 | Primary navigation | Header menu. Add the actual published URLs of your pages; creating a page does not add a menu item automatically. Secondary navigation supplies the research sidebar's topic/year links. See [Ghost navigation](https://ghost.org/help/updating-navigation/). |
 | Heading/body fonts, where exposed by Ghost | Ghost's font variables are honored; unset values fall back to Georgia/system fonts. Remote-font appearance is outside the offline acceptance coverage. |
-| Publication accent color | This theme does not map Ghost's publication accent setting to its palette. Theme links/buttons and styled native card/upgrade buttons use the CSS `--accent` value (blue `#174e8b` by default). When the accessibility adapter can access the Portal iframe, it also sets Portal's `--brandcolor` to that theme value. Changing the publication accent alone therefore does not recolor these controls. Custom CSS palette edits require contrast review; there is no custom theme-color setting. |
+| Publication accent color | Next build: Ghost's native brand color drives links, buttons, accents, styled native button/upgrade cards and the accessible Portal adapter. Already-readable hex colors are preserved; light colors are darkened along their RGB hue until text/white button labels reach at least 4.5:1 on white and the theme panel. The same tone supplies keyboard focus. Missing/invalid color or unavailable JavaScript keeps the safe blue `#174e8b` theme fallback. Portal is adapted only when its iframe is already accessible; browser permissions and the Portal package are unchanged. Author-selected card colors/custom CSS still need their own review. Published v0.1.0 uses the fixed blue theme palette. |
 | Post title, publication date, primary tag, excerpt | Research cards show these with author and access-policy labels; reading time is shown with access. A custom excerpt overrides the generated excerpt. The default listing is 12 posts per page. |
 | Post feature image and alt text | Image on the full report page. Research cards currently use a text layout. |
 | Page title/feature-image visibility | The normal page header follows the editor's visibility control. The Membership template uses the title/excerpt visibility control for its own introduction. |
@@ -59,7 +72,15 @@ The Membership page follows Ghost's signup access setting. In public signup mode
 
 These rules apply to the theme's own prompts. Publication navigation, editor links, code injection and native Portal settings remain under your control. The [configuration acceptance scope](engineering/membership-signup-acceptance.md) separates real signup-setting/member checks from render-only paid-enabled examples. Actual Stripe checkout and paid lifecycle acceptance remain unexecuted.
 
-The page introduction and editor content are editable in Ghost. The homepage eyebrow, section labels, membership-option copy, theme palette and 12-post default are currently theme source values. They are not additional Admin controls.
+The page introduction and editor content are editable in Ghost. The homepage eyebrow, section labels, membership-option copy and 12-post default remain theme source values. They are not additional Admin controls.
+
+### Native search
+
+The next build includes a visible **Search** link in the header on every page. It uses Ghost's official `data-ghost-search` / `#/search` entry. Ghost already supplied native search through `ghost_head`: even the released v0.1.0 can enable it manually by adding a Navigation link to `#/search`. The new work supplies the default entry, not a new search engine or a claim that search was previously unavailable.
+
+Activate Search with the keyboard, type a query, and use Escape to close it; native search returns focus to the entry and supports repeated opening. The theme adds no global shortcut. Ghost's own shortcut belongs to the native app. The official script/styles and Ghost APIs must load; blocked resources are a search failure, not an empty-results success.
+
+Native search uses titles and permitted excerpts from up to the most recent 10,000 published posts, independently of the homepage's 12-item page. Protected excerpts are excluded by Ghost's search index. Protected titles/URLs and other public-safe metadata can still be found; keep secrets out of all public metadata. Restricted bodies, drafts and private member data must remain absent. This theme creates no private body index or external search service. See [Ghost's search documentation](https://docs.ghost.org/themes/search).
 
 To populate a disposable publication, follow the [research demo content recipe](demo-content.md). It supplies fictional Research, Brief and members-only examples, ordered tags, public summaries, pages and a manual homepage/archive walkthrough. The recipe does not create content or change membership settings automatically.
 
