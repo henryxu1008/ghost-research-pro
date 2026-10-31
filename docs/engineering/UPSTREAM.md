@@ -1,0 +1,5 @@
+# Upstream and license
+
+This is an original minimal Ghost theme scaffold informed by the public Ghost theme specification and [TryGhost/Starter](https://github.com/TryGhost/Starter), not a vendored copy of Starter. TryGhost/Starter is MIT-licensed (verified 2026-10-28). Any later copying of upstream files must retain the relevant copyright and license notices. The owner selected standard [MIT](../../LICENSE) for this project's own files on 2026-10-30; separately introduced assets and third-party code retain their own terms.
+
+Verified the official [Starter LICENSE at commit `99df4c9466d54fe23191109a0019572819ed3481`](https://github.com/TryGhost/Starter/blob/99df4c9466d54fe23191109a0019572819ed3481/LICENSE), copyright `(c) 2013-2026 Ghost Foundation`. Its attribution is retained here; it is not reassigned to the project owner. See the [release licensing inventory](release-licensing-inventory.md) for the actual 16-file ZIP, author-account evidence, included standard MIT text and excluded development fixtures.

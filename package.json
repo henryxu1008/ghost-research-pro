@@ -1,0 +1,53 @@
+{
+  "name": "ghost-research-pro",
+  "description": "Research publishing theme for Ghost",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "engines": {
+    "ghost": ">=5.0.0"
+  },
+  "scripts": {
+    "test": "node scripts/validate.cjs .",
+    "test:ci": "npm test",
+    "zip": "node scripts/package.cjs",
+    "test:zip": "node scripts/validate.cjs dist/ghost-research-pro.zip",
+    "test:toc": "node --test tests/runtime/toc-unit.test.cjs tests/runtime/toc.test.cjs",
+    "test:runtime": "node tests/runtime/acceptance.cjs",
+    "test:security": "node --test tests/security/audit.test.cjs",
+    "test:contrast": "node --test tests/runtime/contrast.test.cjs",
+    "audit:ci": "node scripts/audit.cjs"
+  },
+  "devDependencies": {
+    "@tryghost/portal": "2.72.11",
+    "axe-core": "4.14.0",
+    "gscan": "6.6.1",
+    "mailparser": "3.12.4",
+    "playwright": "1.64.1",
+    "portal-ghost5": "npm:@tryghost/portal@2.51.5"
+  },
+  "overrides": {
+    "gscan": {
+      "handlebars": "4.7.10"
+    }
+  },
+  "config": {
+    "posts_per_page": 12,
+    "card_assets": true
+  },
+  "gpm": {
+    "type": "theme",
+    "categories": [
+      "Magazine"
+    ]
+  },
+  "author": {
+    "name": "qq550723504",
+    "email": "6007227+qq550723504@users.noreply.github.com"
+  },
+  "keywords": [
+    "ghost-theme",
+    "research",
+    "publication"
+  ]
+}

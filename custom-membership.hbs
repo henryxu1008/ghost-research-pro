@@ -1,0 +1,31 @@
+{{!< default}}
+{{#post}}
+{{#if @page.show_title_and_feature_image}}
+<section class="hero"><p class="eyebrow">Membership</p><h1>{{title}}</h1>{{#if custom_excerpt}}<p>{{custom_excerpt}}</p>{{/if}}</section>
+{{/if}}
+<div class="gh-content">{{content}}</div>
+{{/post}}
+<section class="membership-grid" aria-label="Membership options">
+  {{#if @member}}
+  <article class="membership-plan"><h2>Your membership</h2><p>Manage your account and email preferences.</p><a class="button" href="#/portal/account">Manage membership</a></article>
+  {{else}}
+    {{#if @site.allow_self_signup}}
+      {{#match @site.members_signup_access "all"}}
+      <article class="membership-plan"><h2>Free updates</h2><p>Receive publicly available research and announcements.</p><a class="button" href="#/portal/signup">Join for free</a></article>
+      {{/match}}
+      {{#if @site.paid_members_enabled}}
+      <article class="membership-plan"><h2>Premium research</h2><p>Access paid reports and subscriber-only research, subject to the publication's subscription settings.</p><a class="button" href="#/portal/signup">View plans</a></article>
+      {{else}}
+        {{#match @site.members_signup_access "paid"}}
+        <article class="membership-plan"><h2>Paid membership</h2><p>New paid memberships are currently unavailable. Existing members can sign in.</p><a class="button" href="#/portal/signin">Sign in</a></article>
+        {{/match}}
+      {{/if}}
+    {{else}}
+      {{#if @site.members_invite_only}}
+      <article class="membership-plan"><h2>Membership by invitation</h2><p>New memberships are available by invitation. Existing members can sign in.</p><a class="button" href="#/portal/signin">Sign in</a></article>
+      {{else}}
+      <article class="membership-plan"><h2>Membership</h2><p>Membership registration is currently unavailable.</p><a class="button" href="#/portal/signin">Sign in</a></article>
+      {{/if}}
+    {{/if}}
+  {{/if}}
+</section>

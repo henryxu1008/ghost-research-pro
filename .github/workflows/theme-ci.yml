@@ -1,0 +1,102 @@
+name: Theme CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+      - name: Test security gate fixtures
+        run: npm run test:security
+      - name: Verify WCAG contrast calculation references
+        run: npm run test:contrast
+      - name: Audit all locked dependencies
+        run: npm run audit:ci
+      - name: Validate Ghost theme
+        run: npm run test:ci
+      - name: Verify reproducible theme packaging
+        run: node --test tests/package.test.cjs
+      - name: Package theme
+        run: npm run zip
+      - name: Validate installable archive
+        run: npm run test:zip
+      - name: Verify archive CRCs with independent unzip
+        run: unzip -t dist/ghost-research-pro.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ghost-research-pro-theme
+          path: dist/ghost-research-pro.zip
+          if-no-files-found: error
+      - name: Upload dependency audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit
+          path: artifacts/dependency-audit.json
+          if-no-files-found: warn
+          retention-days: 14
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: ghost5
+            ghost: '5.130.6'
+            node: '22.23.4'
+          - label: ghost6
+            ghost: '6.73.0'
+            node: '24.22.1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci --ignore-scripts
+      - name: Verify reproducible theme packaging
+        run: node --test tests/package.test.cjs
+      - run: npm run zip
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test report table of contents
+        run: npm run test:toc
+      - name: Test keyboard focus, header reflow and card headings
+        run: node --test tests/runtime/theme-layout.test.cjs
+      - name: Test anonymous stock Portal keyboard boundaries
+        run: node --test tests/runtime/portal-focus.test.cjs
+      - name: Test research publishing templates and responsive layout
+        run: node --test tests/runtime/publishing.test.cjs
+      - name: Install isolated Ghost ${{ matrix.ghost }}
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/ghost-runtime"
+          npm pack ghost@${{ matrix.ghost }} --pack-destination "$RUNNER_TEMP/ghost-runtime" --silent
+          tar --no-same-owner -xzf "$RUNNER_TEMP/ghost-runtime/ghost-${{ matrix.ghost }}.tgz" -C "$RUNNER_TEMP/ghost-runtime"
+          cd "$RUNNER_TEMP/ghost-runtime/package"
+          npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
+      - name: Activate theme and verify pages and member permissions
+        env:
+          GHOST_RUNTIME_DIR: ${{ runner.temp }}/ghost-runtime/package
+          GHOST_RUNTIME_VERSION: ${{ matrix.ghost }}
+          TZ: UTC
+          PORTAL_INTERRUPTION_REPEATS: ${{ matrix.label == 'ghost6' && '20' || '1' }}
+        run: npm run test:runtime
+      - name: Upload sanitized acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ghost-runtime-${{ matrix.label }}
+          path: artifacts/runtime/
+          if-no-files-found: warn
+          retention-days: 14

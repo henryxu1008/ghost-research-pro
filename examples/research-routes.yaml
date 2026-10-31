@@ -1,0 +1,25 @@
+# Optional starting point. Back up and merge with existing routing; never replace
+# a publication's custom routes blindly. Create the three metadata Pages first.
+# Dates below are UTC publication-year boundaries, not manually assigned year tags.
+routes:
+  /library/:
+    controller: channel
+    template: library
+    data: page.library-intro
+  /library/2025/:
+    controller: channel
+    template: library
+    filter: "published_at:>='2025-01-01'+published_at:<'2026-01-01'"
+    data: page.research-2025
+  /library/2026/:
+    controller: channel
+    template: library
+    filter: "published_at:>='2026-01-01'+published_at:<'2027-01-01'"
+    data: page.research-2026
+collections:
+  /:
+    permalink: /{slug}/
+    template: index
+taxonomies:
+  tag: /tag/{slug}/
+  author: /author/{slug}/

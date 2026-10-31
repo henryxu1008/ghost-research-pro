@@ -1,0 +1,12 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "gscan": {"severity":"high","nodes":["node_modules/gscan"],"via":["@tryghost/zip"]},
+    "@tryghost/zip": {"severity":"high","nodes":["node_modules/@tryghost/zip"],"via":["extract-zip"]},
+    "extract-zip": {"severity":"high","nodes":["node_modules/extract-zip"],"via":[
+      {"severity":"high","url":"https://github.com/advisories/GHSA-jmr9-qjv8-65gv"},
+      {"severity":"high","url":"https://github.com/advisories/GHSA-7pqw-9j4j-h8q3"}
+    ]}
+  },
+  "metadata":{"vulnerabilities":{"info":0,"low":0,"moderate":0,"high":3,"critical":0,"total":3}}
+}

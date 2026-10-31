@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="{{@site.locale}}">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{meta_title}}</title>
+<link rel="stylesheet" href="{{asset "css/screen.css"}}">
+{{ghost_head}}
+</head>
+<body class="{{body_class}}">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header wrap"><a class="brand" href="{{@site.url}}">{{#if @site.logo}}<img src="{{@site.logo}}" alt="{{@site.title}}">{{else}}{{@site.title}}{{/if}}</a>
+<nav aria-label="Main navigation">{{navigation}}</nav>
+<div class="member-actions">
+{{#if @member}}<a href="#/portal/account">Account</a>
+{{else}}
+<a href="#/portal/signin">Sign in</a>
+{{#if @site.allow_self_signup}}
+  {{#match @site.members_signup_access "all"}}<a class="button" href="#/portal/signup">Subscribe</a>
+  {{else}}{{#if @site.paid_members_enabled}}<a class="button" href="#/portal/signup">View plans</a>{{/if}}{{/match}}
+{{/if}}
+{{/if}}
+</div></header>
+<main id="main" class="wrap" tabindex="-1">{{{body}}}</main>
+<footer class="wrap footer"><span>&copy; {{date format="YYYY"}} {{@site.title}}</span><a href="{{@site.url}}/rss/">RSS</a></footer>
+{{ghost_foot}}
+<script defer src="{{asset "js/accessibility.js"}}"></script>
+</body></html>
