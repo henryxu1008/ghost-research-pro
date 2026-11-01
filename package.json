@@ -20,7 +20,7 @@
     "audit:ci": "node scripts/audit.cjs"
   },
   "devDependencies": {
-    "@tryghost/portal": "2.72.11",
+    "@tryghost/portal": "2.72.12",
     "@tryghost/sodo-search": "1.9.6",
     "axe-core": "4.14.0",
     "gscan": "6.6.1",
