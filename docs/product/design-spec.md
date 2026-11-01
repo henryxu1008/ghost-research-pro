@@ -1,6 +1,6 @@
 # Research publishing component and responsive specification
 
-Source-derived candidate specification, 2026-10-30, PR16 baseline `993b4e25` plus
+Historical v0.1.0 source-derived specification, 2026-10-30, PR16 baseline `993b4e25` plus
 PR17's native heading-font fix. Both `.card h2` and `.card h3` now explicitly use
 Ghost's heading-font variable; actual-template fixtures verify the same family,
 24px size, 700 weight and 30px line height across home/tag/author/library.
@@ -23,9 +23,13 @@ assistive-technology audit or commercial approval.
 | Body | Ghost body-font variable; system fallback; 16px / 1.7 |
 | Headings | Ghost heading-font variable; Georgia fallback |
 
-The accent focus color has 8.40:1 contrast on white and 7.89:1 on the panel.
-The earlier amber focus ring is no longer used. Ghost's publication accent is
-not mapped to this palette; changing it alone does not recolor the theme.
+In this **v0.1.0 historical palette**, the accent focus color has 8.40:1 contrast
+on white and 7.89:1 on the panel; the earlier amber focus ring is no longer used.
+Ghost's publication accent was not mapped to that fixed-blue palette.
+**v0.2.0 maps the Ghost brand color to readable theme and reachable Portal actions**;
+see the [current configuration and brand-color rules](../user-guide.md#configure-the-existing-layout).
+The fixed-palette figures and earlier screenshots remain historical evidence,
+not new acceptance of the configurable brand colors.
 Configured remote fonts are outside offline font-appearance acceptance.
 
 ## Layout and responsive behavior
