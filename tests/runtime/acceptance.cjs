@@ -25,7 +25,7 @@ const runtime = process.env.GHOST_RUNTIME_DIR;
 const expectedVersion = process.env.GHOST_RUNTIME_VERSION || '6.73.0';
 const profiles = {
     '5.130.6': {database: 'sqlite3', portal: '2.51.5', portalPackage: 'portal-ghost5'},
-    '6.73.0': {database: 'better-sqlite3', portal: '2.72.11', portalPackage: '@tryghost/portal'},
+    '6.73.0': {database: 'better-sqlite3', portal: '2.72.12', portalPackage: '@tryghost/portal'},
 };
 const profile = profiles[expectedVersion];
 assert(profile, 'Unsupported disposable Ghost version');

@@ -2,7 +2,7 @@
 
 MIT-licensed Ghost theme for research publishers, B2B intelligence and professional newsletters. See [LICENSE](LICENSE) for permissions and notice conditions.
 
-> Version 0.2.0 adds bounded homepage settings, readable Ghost brand colors and a default native Search entry. Use the [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) for the official installation asset and publication record. The [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) remains available. The accepted stock Portal failures stay strict and visible; this is not an all-tests-passed, verified-billing or deployment claim.
+> Version 0.2.0 adds bounded homepage settings, readable Ghost brand colors and a default native Search entry. Use the [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) for the official installation asset and publication record. The [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) remains available. Historical Portal failures stay visible in those release records; the [current product contract](docs/product/prd.md#acceptance-evidence-and-current-portal-follow-up) separates the Portal 2.72.12 rerun from the old evidence. Billing and deployment are not verified by a theme test.
 
 Review the [0.2.0 release notes and delivery checklist](docs/release-notes-0.2.0.md) for the exact ZIP/hash, inventory, tested profiles and known limits. The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included. The owner selected standard MIT; no paid-service pricing is set here.
 
@@ -54,10 +54,11 @@ GScan's Handlebars compiler is overridden to the security fix 4.7.10. The audit 
 
 ## Runtime acceptance
 
-The owner selected **Ghost6.73.0 / Node24.22.1 / stock Portal2.72.11** as the
-first-version primary support and delivery target. This is not a promise for
-every Ghost6 minor. Ghost5 remains compatibility CI evidence, outside the first
-delivery commitment. Its strict tests and failures are retained; the permissive
+The formal support target remains **Ghost6.73.0 / Node24.22.1**. Current development
+tests pin stock **Portal2.72.12**; the published 0.2.0 evidence used **2.72.11** and
+is not rewritten. See the [current exact-version results](docs/product/prd.md#acceptance-evidence-and-current-portal-follow-up).
+This is not a promise for every Ghost6 minor. Ghost5 remains compatibility CI
+evidence, outside the delivery commitment. Its strict tests and failures are retained; the permissive
 `engines.ghost >=5.0.0` installation metadata is unchanged and is not a support warranty.
 
 The first delivery does not promise the unexecuted paid-subscription lifecycle
@@ -65,7 +66,7 @@ The first delivery does not promise the unexecuted paid-subscription lifecycle
 membership/paid features and access rules are unchanged; this is not an
 end-to-end commercial-readiness claim. The project license is MIT.
 
-Theme CI exercises stock Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.11 on separate loopback-only runners. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. Both environments use disposable complimentary membership fixtures and an in-memory local SMTP sink. The matching official Portal bundle exercises free signup/signin/signout and fixture name/newsletter saves, reload persistence, cancellation, aborted-request recovery and signed-out data isolation. See [account acceptance](docs/engineering/account-acceptance.md) for the exact coverage and limits. All external browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost5` and `ghost-runtime-ghost6` (14-day retention).
+Theme CI exercises stock Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.12 on separate loopback-only runners. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. Both environments use disposable complimentary membership fixtures and an in-memory local SMTP sink. The matching official Portal bundle exercises free signup/signin/signout and fixture name/newsletter saves, reload persistence, cancellation, aborted-request recovery and signed-out data isolation. See [account acceptance](docs/engineering/account-acceptance.md) for the exact coverage and limits. All external browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost5` and `ghost-runtime-ghost6` (14-day retention). Updating this development fixture does not replace a released theme asset or update an existing site's Portal.
 
 See [runtime acceptance and host-error diagnosis](docs/engineering/runtime-acceptance.md). To run outside CI, prepare a fresh unpacked installation of one pinned version with its supported Node version and dependencies, install Chromium with `npx playwright install chromium`, build the ZIP, and set `GHOST_RUNTIME_DIR` plus `GHOST_RUNTIME_VERSION` before `npm run test:runtime`. The default version is 6.73.0; the runner verifies the package's Node engines and refuses an existing database. Never point it at a live site.
 

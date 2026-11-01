@@ -10,7 +10,7 @@ The ten-theme inventory preserves its dated desk-research snapshot. The publicat
 
 ## Decision summary
 
-Focus the first-release evaluation on **small, expert-led research publications with long-form reports, topic archives, and free/paid editions**, not all newsrooms or corporate content sites. This is the selected first-version scope in the [PRD](prd.md#implemented-first-version-contract), but remains a positioning hypothesis, not a validated customer segment. The Diff, ByteTree and Notes on the Crises provide concrete examples of that publishing pattern. The journalism and culture publications below are adjacent references, not an expansion of the initial implementation target.
+Focus the first-release evaluation on **small, expert-led research publications with long-form reports, topic archives, and free/paid editions**, not all newsrooms or corporate content sites. This is the selected first-version scope in the [PRD](prd.md#implemented-product-contract), but remains a positioning hypothesis, not a validated customer segment. The Diff, ByteTree and Notes on the Crises provide concrete examples of that publishing pattern. The journalism and culture publications below are adjacent references, not an expansion of the initial implementation target.
 
 1. Keep the existing native Ghost membership approach. Verify anonymous/free/paid access states and clear upgrade copy rather than adding a new billing/account system.
 2. Keep the existing TOC, report reading layout and topic pages, but evaluate the coherent research reading experience and installation clarity, **not TOC or memberships as unique features**. At least Curie, Rinne, Thesis and Scope already advertise those features.
