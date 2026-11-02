@@ -19,8 +19,17 @@ function render(file, override = {}) {
     const hbs = Handlebars.create();
     for (const name of fs.readdirSync(path.join(root, 'partials')).filter(name => name.endsWith('.hbs'))) hbs.registerPartial(name.slice(0, -4), read('partials/' + name));
     hbs.registerHelper('match', function (a, b, options) { return a === b ? options.fn(this) : options.inverse(this); });
+    hbs.registerHelper('has', function (options) {
+        const matches = (this.tags || []).some(tag => tag.name.toLowerCase() === options.hash.tag.toLowerCase());
+        return matches ? options.fn(this) : options.inverse(this);
+    });
     hbs.registerHelper('foreach', function (items, options) { return items?.length ? items.map(item => options.fn(item)).join('') : options.inverse(this); });
     hbs.registerHelper('get', function (resource, options) {
+        if (options.hash.filter?.includes('+tag:research+')) {
+            override.relatedQueries?.push(options.hash);
+            const items = override.relatedPosts || [];
+            return options.fn({posts: items}, {blockParams: [items]});
+        }
         const items = resource === 'posts' ? (override.featured === false ? [] : [post]) : [{name: 'Research', url: '/tag/research/', count: {posts: 5}}];
         return options.fn({[resource]: items}, {blockParams: [items]});
     });
@@ -59,6 +68,58 @@ test('homepage distinguishes a real featured selection from the paginated latest
     await page.setContent(render('index.hbs', {featured: false}));
     assert.equal(await page.locator('.spotlight').count(), 0, 'No invented featured selection');
     assert.equal(await page.locator('a[href="#research-library"]').count() > 0, true);
+});
+
+test('related research uses a bounded native AND query and public metadata only', async t => {
+    const relatedQueries = [];
+    const source = {id: 'current', tags: [{name: 'Demo Logistics'}, {name: 'Research'}], primary_tag: {name: 'Demo Logistics', slug: 'demo-logistics'}};
+    const relatedPosts = ['public', 'members', 'paid'].map((visibility, index) => ({...post, id: 'related-' + index,
+        title: 'Related ' + visibility, url: '/related-' + index + '/', visibility,
+        custom_excerpt: index === 0 ? 'Public-safe summary' : null, excerpt: 'PRIVATE_GENERATED_EXCERPT', html: 'PRIVATE_BODY_SENTINEL'}));
+    const page = await fixture(t, render('post.hbs', {...source, relatedPosts, relatedQueries}));
+    assert.equal(await page.locator('.related-research .card').count(), 3);
+    assert.equal(await page.locator('.related-research h2').textContent(), 'More research in this topic');
+    assert.equal(await page.locator('.related-research h3').count(), 3);
+    assert.deepEqual(await page.locator('.related-research .access-badge').allTextContents(), ['Public', 'Members', 'Paid members']);
+    assert.equal(await page.locator('.related-research .card > p').count(), 1, 'No generated excerpt fallback');
+    assert.equal(await page.locator('.related-research .reading-time').count(), 0, 'No body-derived reading time');
+    assert.equal(await page.locator('.gh-content .related-research').count(), 0, 'Recommendations are outside the report body/TOC');
+    const html = await page.content();
+    assert(!html.includes('PRIVATE_GENERATED_EXCERPT') && !html.includes('PRIVATE_BODY_SENTINEL'));
+    assert.equal(relatedQueries.length, 1);
+    assert.equal(relatedQueries[0].filter, 'id:-{{id}}+tag:research+tag:-brief+primary_tag:{{primary_tag.slug}}');
+    assert.equal(relatedQueries[0].limit, '3');
+    assert.equal(relatedQueries[0].order, 'published_at desc');
+    assert.equal(relatedQueries[0].include, undefined, 'No unnecessary tag/author/body relations');
+    assert(read('partials/related-research.hbs').includes('{{#foreach related visibility="all"}}'), 'Metadata-only objects still include restricted policies');
+    assert(read('partials/related-research.hbs').includes('href="{{this.url}}"'), 'Use serializer URL without a body-dependent helper');
+    assert.deepEqual(relatedQueries[0].fields.split(',').sort(), ['id', 'title', 'slug', 'url', 'published_at', 'custom_excerpt', 'visibility'].sort());
+});
+
+test('related research has no empty or unrelated fallback and reflows with native keyboard links', async t => {
+    const topic = {name: 'Demo Logistics', slug: 'demo-logistics'};
+    const research = {name: 'Research', slug: 'research'};
+    for (const state of [
+        {tags: [research], primary_tag: research},
+        {tags: [research], primary_tag: null},
+        {tags: [topic, {name: 'Brief'}], primary_tag: topic},
+        {tags: [topic, research, {name: 'Brief'}], primary_tag: topic},
+        {tags: [topic, research], primary_tag: topic, relatedPosts: []}
+    ]) {
+        const page = await fixture(t, render('post.hbs', state));
+        assert.equal(await page.locator('.related-research').count(), 0, 'No empty section or generic/latest recommendations');
+    }
+    for (const width of [320, 390, 768, 1440]) {
+        const page = await fixture(t, render('post.hbs', {tags: [topic, research], primary_tag: topic,
+            relatedPosts: [1, 2, 3].map(index => ({...post, title: 'A longer fictional research title for narrow-screen reading ' + index, url: '/related-' + index + '/'}))}), width);
+        assert.equal(await page.locator('.related-research .card').count(), 3);
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+        const first = page.locator('.related-research h3 a').first();
+        await first.focus();
+        assert.equal(await first.evaluate(el => el === document.activeElement && getComputedStyle(el).outlineStyle !== 'none'), true);
+        await first.press('Tab');
+        assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('href')), '/related-2/');
+    }
 });
 test('library exposes server pagination and real taxonomy/editor navigation without a local filter', async t => {
     const page = await fixture(t, render('library.hbs'));

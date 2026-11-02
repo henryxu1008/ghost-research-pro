@@ -1,5 +1,10 @@
 # Install, configure, update and restore Ghost Research Pro
 
+For the separate **unreleased local buyer trial** (mobile/Page improvements,
+related research and editable fictional membership content), use the
+[candidate-specific guide](private-buyer-trial.md). Its theme hash and content
+import are distinct from the published package described below.
+
 This guide describes **version 0.2.0**: bounded homepage controls, readable brand-color mapping and a default native Search entry. Its official delivery channel is the [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0). The previous [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) remains available and does not include these three additions. Formal support remains exact **Ghost6.73.0 / Node24.22.1**, not every6.x version. Ghost5.130.6 remains compatibility CI with its strict failures, outside that promise. The wider installation-engine declaration is not a verified-support warranty. Project code is [MIT licensed](../LICENSE).
 
 The [0.2.0 release evidence](release-notes-0.2.0.md#known-limitations) used stock
