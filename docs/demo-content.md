@@ -1,6 +1,6 @@
 # Set up a research publication demo
 
-Use this manual recipe after [installing the theme](user-guide.md) in a disposable Ghost publication. This document itself is not an importer or an account setup script. The separately delivered private buyer-trial pack contains native import JSON; see the [local candidate guide](private-buyer-trial.md) for its identity and differences from the published v0.2.0 theme. All names, copy and numbers below are fictional demonstration material, not research findings. Keep that label in any screenshots or shared demo.
+Use this manual recipe after [installing the theme](user-guide.md) in a disposable Ghost publication. This document itself is not an importer or an account setup script. The separately delivered private buyer-trial pack contains native import JSON; see the [private sample guide](private-buyer-trial.md) for its archived identity and use with the 0.3.0 theme. All names, copy and numbers below are fictional demonstration material, not research findings. Keep that label in any screenshots or shared demo.
 
 These steps target supported Ghost 6 and use ordinary posts, public tags and existing authors. They do not require changing routing, membership signup settings, staff permissions or billing. Use the publication's existing authorized demo author; do not invite staff or modify an account just to follow this recipe. Menu labels can differ by Ghost 6 minor version. Ghost 5 is EOL; see the [support policy](support-policy.md).
 
@@ -28,7 +28,7 @@ In Ghost Admin, open **Tags** and create or reuse the following public tags. Che
 | Brief | `brief` | Fictional short updates for this demo. |
 | Demo Logistics | `demo-logistics` | A made-up topic used to demonstrate a shared archive. |
 
-For the unreleased related-research candidate, put **Demo Logistics first**, then **Research** or **Brief**. The first public tag becomes the card label and report eyebrow; both tags still contribute archive membership. Research must retain name `Research` and slug `research`; Brief uses `Brief` / `brief`. Research-tagged posts with the same primary topic can recommend each other. Briefs, mixed Research+Brief posts, posts without a topic, and posts with Research/Brief as primary do not show a recommendation block. Existing v0.2.0 content does not need migration for its existing features; reordering is required only to enable this candidate addition. Do not prefix public category names with `#`. See [Ghost's tag guide](https://ghost.org/help/tags/) for the native controls.
+For 0.3.0 related research, put **Demo Logistics first**, then **Research** or **Brief**. The first public tag becomes the card label and report eyebrow; both tags still contribute archive membership. Research must retain name `Research` and slug `research`; Brief uses `Brief` / `brief`. Research-tagged posts with the same primary topic can recommend each other. Briefs, mixed Research+Brief posts, posts without a topic, and posts with Research/Brief as primary do not show a recommendation block. Existing v0.2.0 content does not need migration for its existing features; reordering is required only to opt into the 0.3.0 recommendation feature. Do not prefix public category names with `#`. See [Ghost's tag guide](https://ghost.org/help/tags/) for the native controls.
 
 ## 2. Draft the three posts
 

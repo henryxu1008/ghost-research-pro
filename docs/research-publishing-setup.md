@@ -29,7 +29,7 @@ protected body. Neither cards nor the featured selection prints report HTML.
 ## Configure the library once
 
 1. Use public tags **Research** (`research`) and **Brief** (`brief`) for publication
-   formats. For this unreleased candidate, put the topic first, then the format.
+   formats. For 0.3.0 recommendations, put the topic first, then the format.
    The first public tag becomes the visible card/eyebrow label. Older format-first
    ordering still works for Library/archives, but does not enable recommendations.
    The sidebar lists these two format tags only when they have published posts.
@@ -69,9 +69,9 @@ is needed. Existing content remains ordinary Ghost content.
 
 ## What the browsing controls mean
 
-### Local candidate: more research in this topic
+### More research in this topic (0.3.0)
 
-This addition is not in the published v0.2.0 ZIP. A report must carry **Research**
+This addition ships in0.3.0; the retained v0.2.0 ZIP does not contain it. A report must carry **Research**
 (`research`), have a primary public topic other than Research/Brief, and not carry
 Brief. At its end, native Ghost `get` fetches at most three other Research posts
 with that same primary topic, excluding Brief and the current ID, newest first.

@@ -1,6 +1,6 @@
 # Supported Ghost versions
 
-Effective for the **unreleased PR20 candidate**, 2026-11-02. The owner approved
+Effective for **version0.3.0**, 2026-11-02, following merged PR20. The owner approved
 supporting Ghost 6 and retaining Ghost 5 only as historical compatibility
 evidence. This is an EOL support-policy change, **not a repair or passing rerun
 of the three Ghost 5 failures**.
@@ -14,7 +14,7 @@ Ghost, migrate a site or change an existing preview.
 
 | Version | Current policy | Acceptance |
 | --- | --- | --- |
-| Ghost 6 | Supported major; candidate installation range `>=6.0.0 <7.0.0` | Exact runtime target **6.73.0 / Node24.22.1 / official Portal2.72.12 / Search1.9.6**. Other 6.x minors are not individually verified by this result. |
+| Ghost 6 | Supported major; installation range `>=6.0.0 <7.0.0` | Exact runtime target **6.73.0 / Node24.22.1 / official Portal2.72.12 / Search1.9.6**. Other 6.x minors are not individually verified by this result. |
 | Ghost 5 | EOL; unsupported, historical evidence only | Last stock run remains **139 PASS / 3 FAIL / 0 SKIP**. Neither those failures nor the unsuccessful newer-Portal experiments are relabeled as passes. |
 | Ghost 7 | Unverified, unsupported and excluded by installation metadata | No runtime or GScan support claim. |
 
@@ -49,9 +49,10 @@ read-only browser fixtures do not start an EOL Ghost server or imply support.
 The existing v0.1.0/v0.2.0 tags, Releases, notes, assets and their original engine
 declarations/results are unchanged. Published v0.2.0 still has its historical
 permissive engine declaration; that is not a current Ghost 5 support promise.
-The PR20 candidate has new engine metadata and a new ZIP hash, while its package
-version remains 0.2.0 until a separately authorized release. Identify it by full
-commit and SHA, and never substitute it silently for the published download.
+Version 0.3.0 carries the Ghost-6-only metadata and a distinct ZIP/hash. The
+earlier PR20/private 0.2.0 candidates retain their original identities; never
+substitute them for 0.3.0. The [release record](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0)
+records the exact tag target, CI and assets.
 
 The new private buyer pack targets Ghost 6 and distinguishes current candidate
 metadata from historical screenshots and validation records. Content import is

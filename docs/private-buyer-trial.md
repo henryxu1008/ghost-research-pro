@@ -1,39 +1,40 @@
-# Private buyer trial: local candidate, not a Release
+# Private sample content and historical buyer-trial snapshots
 
-This unreleased candidate includes the mobile collection/title and ordinary Page /
-scrollbar fixes, plus a bounded **More research in this topic** section. Source
-review in a Draft PR does not publish the private sample/screenshot pack, change
-the official Release asset or deploy an existing preview. Package version remains
-0.2.0; identify each candidate by its full commit and SHA-256, never by version
-alone. The separately delivered private manifest records its original snapshot;
-use the PR's exact head and CI for subsequent source revisions. The private pack
-itself is not stored in this public repository.
+Version 0.3.0 includes the mobile/Page/scrollbar fixes and **More research in this
+topic**. The earlier private v3/v4 packs retain their 0.2.0 candidate ZIPs,
+manifests and screenshots as dated snapshots; they are not the 0.3.0 package.
+Their fictional import JSON can be used separately with the current theme.
+No private pack, account, screenshot or sample JSON is published in this repository
+or included in the theme Release. Keep the original private files unchanged.
 
-Current candidates and the new private buyer pack support **Ghost 6 only**;
-exact acceptance targets 6.73.0 / Node24.22.1 / official Portal2.72.12. Candidate
+Version 0.3.0 and the private trial target **Ghost 6 only**;
+exact acceptance targets 6.73.0 / Node24.22.1 / official Portal2.72.12. Installation
 engine metadata is `>=6.0.0 <7.0.0`. Ghost 5 is EOL historical evidence and Ghost
 7 is unverified. See [the support policy](support-policy.md). The original v3
 pack, its screenshots and the published Releases retain their historical bytes;
 the policy-aligned pack is a distinct revision with its own manifest/hash.
 
-The currently published installation package is the
-[v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0)
-([theme ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.2.0/ghost-research-pro.zip)):
-43,482 bytes, SHA-256
-`c9691d9a5c3d57224f3b899aae02e40dd3aafb77e48ff14341ede8a8b3426743`.
-It has homepage fields, readable brand accent and native Search, but does not
-contain these local improvements or any sample content. GitHub source archives,
-historical CI artifacts and outer handoff ZIPs are not installation packages.
+The intended0.3.0 installation asset is identified by the
+[versioned Release record](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0)
+([theme ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.3.0/ghost-research-pro.zip)):
+47,127 bytes /18 files, SHA-256
+`1b25334abc707c12d31d6beb1659a24dec5e1c36f8bdfed2126dcc0dce28ab82`.
+Confirm the Release is published and exposes the matching asset before download.
+The older [v0.2.0 asset](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0)
+remains separate. Neither theme ZIP contains sample content. GitHub source
+archives, historical CI artifacts and outer handoff ZIPs are not installation packages.
 
 ## What to install for this trial
 
-Use a disposable authorized Ghost **6.73.0 / Node24.22.1** publication. The private
-delivery contains two separate inputs:
+Use a disposable authorized Ghost **6.73.0 / Node24.22.1** publication and two
+separate inputs: obtain the current theme from its published Release and take
+the import JSON from the separately delivered private pack. Old v3/v4 packs
+still contain their recorded0.2.0 candidate theme, not0.3.0:
 
-1. `theme/ghost-research-pro-candidate-unreleased.zip`: upload under Design →
-   Change theme → Upload, then activate. Check its manifest hash first. To
-   evaluate only the published product instead, install the official ZIP above;
-   do not expect the candidate-only recommendation/mobile changes there.
+1. Current `ghost-research-pro.zip` from the 0.3.0 Release: upload under Design →
+   Change theme → Upload, then activate. Check the 0.3.0 Release checksum first. To
+   evaluate an old snapshot, use its recorded candidate ZIP and hash instead;
+   do not identify an old candidate as 0.3.0.
    Keep the normal uploaded installation name `ghost-research-pro.zip` when
    upgrading an existing installation: Ghost associates custom theme settings
    with the installed theme identity. A renamed upload can create another theme
@@ -73,7 +74,7 @@ support SLA or paid subscription is created by the sample.
   member, staff credential, payment integration or consent is imported. Do not
   send samples as newsletters. Check the custom Membership template after import.
 - **Topics:** primary tag is Demo Logistics, Research/Brief second. See
-  [the exact association rule](research-publishing-setup.md#local-candidate-more-research-in-this-topic).
+  [the exact association rule](research-publishing-setup.md#more-research-in-this-topic-030).
 
 ## Buyer walkthrough
 

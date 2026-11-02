@@ -1,11 +1,11 @@
 # Install, configure, update and restore Ghost Research Pro
 
-For the separate **unreleased local buyer trial** (mobile/Page improvements,
-related research and editable fictional membership content), use the
-[candidate-specific guide](private-buyer-trial.md). Its theme hash and content
-import are distinct from the published package described below.
+For separately delivered **private fictional sample content**, use the
+[sample-trial guide](private-buyer-trial.md). Old private candidate ZIPs keep
+their recorded versions/hashes; use the 0.3.0 theme below with the separate import
+JSON when trying the current theme. The public theme ZIP contains no sample content.
 
-This guide describes **version 0.2.0**: bounded homepage controls, readable brand-color mapping and a default native Search entry. Its official delivery channel is the [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0). The previous [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) remains available and does not include these three additions. Current support is **Ghost 6**, with exact acceptance on **6.73.0 / Node24.22.1 / Portal2.72.12**; other6.x minors are not individually verified. [Ghost 5 is EOL and historical only; Ghost 7 is unverified](support-policy.md). The PR20 candidate declares `>=6.0.0 <7.0.0`; published v0.2.0 retains its older permissive metadata and original evidence. Do not interpret that old declaration as Ghost 5 support or edit the downloaded ZIP to bypass compatibility. Project code is [MIT licensed](../LICENSE).
+This guide describes **version 0.3.0**: compact mobile collections, stable ordinary Page/About layout and same-topic research recommendations, retaining homepage controls, readable brand colors and native Search. Its versioned delivery channel is the [v0.3.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0). The [v0.2.0](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) and [v0.1.0](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) assets remain separate. Current support is **Ghost 6**, with exact acceptance on **6.73.0 / Node24.22.1 / Portal2.72.12**; other6.x minors are not individually verified. [Ghost 5 is EOL and historical only; Ghost 7 is unverified](support-policy.md). Version 0.3.0 declares `>=6.0.0 <7.0.0`; older assets retain their original metadata/evidence. Do not edit ZIP metadata to bypass compatibility. Project code is [MIT licensed](../LICENSE).
 
 The [0.2.0 release evidence](release-notes-0.2.0.md#known-limitations) used stock
 Portal **2.72.11** and retains its known failures. The current development follow-up
@@ -13,17 +13,17 @@ tests official Portal **2.72.12**; see the [actual new-version results](product/
 It does not replace that Release asset or update a publication's loaded Portal.
 Check the actual bundle version before applying a result to an existing site.
 
-For the current payload's version/hash, file inventory and delivery checklist, read the [0.2.0 release notes](release-notes-0.2.0.md). The [candidate delivery guide](candidate-delivery.md) is historical 0.1.0 evidence. Real Admin UI save/reload checks are distinguished from API-only configuration checks.
+For the current payload's version/hash, file inventory and delivery boundary, read the [0.3.0 release notes](release-notes-0.3.0.md). The [candidate delivery guide](candidate-delivery.md) is historical 0.1.0 evidence. Real Admin UI save/reload checks are distinguished from API-only configuration checks.
 
 The owner selected a first delivery **without a promise of the unexecuted paid-subscription lifecycle**: subscription creation/checkout, renewals, cancellation, refunds and related recovery remain unaccepted. Native Ghost membership/paid features and content-access rules are retained unchanged. This is not an end-to-end commercial-readiness claim; a future paid-lifecycle promise needs its own authorized sandbox acceptance.
 
 ## Get the theme ZIP
 
-Download **ghost-research-pro.zip** from the [official v0.2.0 Release assets](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0). Keep the previous v0.1.0 ZIP as a separate rollback copy. GitHub's **Code → Download ZIP** and the Release's automatic source archives are source checkouts, not the installable theme package.
+Download **ghost-research-pro.zip** from the [v0.3.0 Release assets](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0). Keep your previous release ZIP separately. GitHub's **Code → Download ZIP** and automatic source archives are source checkouts, not the installable theme package.
 
 CI `ghost-research-pro-theme` artifacts are for evaluating an exact development commit. If using one, unpack the artifact download and select the **inner** `ghost-research-pro.zip`, recording its commit and hash. Installing/activating a theme ZIP and importing independent fictional demo content are separate operations: this ZIP does not import posts, Pages, members, routes or demo data.
 
-Record the tag/commit, displayed package version and SHA-256, and retain this file. The 0.2.0 asset must contain `package.json` version `0.2.0` and match its release hash. Earlier development previews used version 0.1.0, including a 43,482-byte preview with a different hash; neither byte size nor version label alone identifies a build. Installation does not resolve an existing Portal failure; review the individual results.
+Record the tag/commit, displayed package version and SHA-256. The 0.3.0 asset must contain `package.json` version `0.3.0` and match its release hash. Old private candidates used version0.2.0 with other hashes; neither byte size nor a filename alone identifies a build. Theme installation does not update the Ghost/Portal service; inspect the actual versions separately.
 
 Use a disposable/staging publication for the first installation and retain a recoverable backup before any authorized live-site change. You need access to Ghost's theme settings. No Node.js, npm or local build tools are required when installing a built ZIP. Building from source uses the separate [development commands](../README.md#local-checks-and-packaging). This guide does not itself authorize deployment.
 
@@ -126,4 +126,4 @@ or replace Portal, and the old defects remain unresolved.
 - **A page is missing from the menu:** add its published URL to primary navigation and save. The footer shows copyright and RSS; secondary navigation appears in the research sidebar.
 - **Upload/version confusion:** confirm you selected the inner package, retained its filename and checked the intended active row. Cancelling or receiving a validation error is not a successful update.
 - **Comment-notification feedback depends on the actual Portal version:** the published 0.2.0 run with Portal 2.72.11 recorded premature success on an interrupted write. An intended opt-out could remain unsaved. Reopen/reload and verify the value, explicitly retrying if needed; a success message alone is insufficient. The [historical comment evidence](engineering/comment-preference-acceptance.md) remains unchanged. Official Portal 2.72.12 follows the [upstream repair](https://github.com/TryGhost/Ghost/pull/32314); its [current full rerun](product/prd.md#acceptance-evidence-and-current-portal-follow-up) is separate evidence, not proof an existing site has upgraded or that notification delivery was tested. Ghost5/Portal 2.51.5 retains comment feedback and [newsletter HTTP limitations](engineering/account-http-acceptance.md). The theme does not replace Portal.
-- **Choosing a build for delivery:** use the [release notes](release-notes-0.2.0.md), [core-function checklist](engineering/qa-checklist.md#remaining-release-gates), [license inventory](engineering/release-licensing-inventory.md) and [dependency findings](engineering/dependency-security.md). Known upstream failures are disclosed exceptions, not green tests. Investigate any new failure, protected-content exposure, broken installation or package/hash mismatch before publication.
+- **Choosing a build for delivery:** use the [release notes](release-notes-0.3.0.md), [support policy](support-policy.md), [license inventory](engineering/release-licensing-inventory.md) and [dependency findings](engineering/dependency-security.md). Historical Ghost5 failures remain failures outside current support. Investigate any supported-profile failure, protected-content exposure, broken installation or package/hash mismatch.
