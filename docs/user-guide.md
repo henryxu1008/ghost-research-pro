@@ -5,7 +5,7 @@ related research and editable fictional membership content), use the
 [candidate-specific guide](private-buyer-trial.md). Its theme hash and content
 import are distinct from the published package described below.
 
-This guide describes **version 0.2.0**: bounded homepage controls, readable brand-color mapping and a default native Search entry. Its official delivery channel is the [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0). The previous [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) remains available and does not include these three additions. Formal support remains exact **Ghost6.73.0 / Node24.22.1**, not every6.x version. Ghost5.130.6 remains compatibility CI with its strict failures, outside that promise. The wider installation-engine declaration is not a verified-support warranty. Project code is [MIT licensed](../LICENSE).
+This guide describes **version 0.2.0**: bounded homepage controls, readable brand-color mapping and a default native Search entry. Its official delivery channel is the [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0). The previous [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) remains available and does not include these three additions. Current support is **Ghost 6**, with exact acceptance on **6.73.0 / Node24.22.1 / Portal2.72.12**; other6.x minors are not individually verified. [Ghost 5 is EOL and historical only; Ghost 7 is unverified](support-policy.md). The PR20 candidate declares `>=6.0.0 <7.0.0`; published v0.2.0 retains its older permissive metadata and original evidence. Do not interpret that old declaration as Ghost 5 support or edit the downloaded ZIP to bypass compatibility. Project code is [MIT licensed](../LICENSE).
 
 The [0.2.0 release evidence](release-notes-0.2.0.md#known-limitations) used stock
 Portal **2.72.11** and retains its known failures. The current development follow-up
@@ -37,7 +37,7 @@ A theme ZIP contains templates and assets. It is not a backup of publication con
 
 ## Install and activate
 
-1. Open **Settings**, find the **Theme/Design** area and choose **Change theme**. The labels/grouping differ between Ghost 5 and 6; both lead to the theme-management screen. Ghost's [installation guide](https://ghost.org/help/installing-a-theme/) illustrates the current interface.
+1. In Ghost 6, open **Settings**, find the **Theme/Design** area and choose **Change theme**. Labels/grouping can differ by minor version. Ghost's [installation guide](https://ghost.org/help/installing-a-theme/) illustrates the current interface.
 2. Choose **Upload theme** and select the inner `ghost-research-pro.zip`.
 3. Read the validation result. If Ghost rejects the archive, close the error and obtain the correct built package. A missing `index.hbs` often means the wrong ZIP was selected. Do not edit the package metadata to silence compatibility errors.
 4. On a successful first upload, choose **Activate**. In **Installed**, verify the name `ghost-research-pro`, the intended version and the **Active** label.
@@ -116,10 +116,11 @@ If installation failed before activation, first inspect the existing active entr
 
 ## Troubleshooting and current limits
 
-Ghost 5 operators: the [failure investigation](engineering/ghost5-portal-compatibility.md)
-records an unsuccessful full experiment with official Portal 2.72.12. It is not
-an accepted upgrade recipe. The theme ZIP does not replace Portal; unchanged
-2.51.5 installations retain the defects below.
+Ghost 5 operators: Ghost 5 reached EOL in January 2026. Follow the [official
+upgrade process](https://docs.ghost.org/update/) or your provider's supported
+route before using the current candidate. The [historical failure investigation](engineering/ghost5-portal-compatibility.md)
+is not an accepted Portal upgrade recipe. The theme ZIP does not upgrade Ghost
+or replace Portal, and the old defects remain unresolved.
 
 - **No Membership template:** activate this theme, reload the editor and check the page's template selector. The package must include `custom-membership.hbs`; installing the theme does not create that page or a navigation item.
 - **A page is missing from the menu:** add its published URL to primary navigation and save. The footer shows copyright and RSS; secondary navigation appears in the research sidebar.

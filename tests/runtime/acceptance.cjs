@@ -23,21 +23,9 @@ const root = path.resolve(__dirname, '../..');
 const publisherOnly = process.argv.includes('--publisher-only');
 const runtime = process.env.GHOST_RUNTIME_DIR;
 const expectedVersion = process.env.GHOST_RUNTIME_VERSION || '6.73.0';
-// Ghost 5's default Portal line is retained for strict defect reproduction.
-// The explicit diagnostic mode uses an unmodified, pinned official release
-// through Ghost's supported portal.url configuration, never a theme patch.
-const ghost5PortalMode = process.env.GHOST5_PORTAL_MODE || 'stock';
-assert(['stock', 'official-2.72.12'].includes(ghost5PortalMode), 'Unknown Ghost 5 Portal mode');
-assert(expectedVersion === '5.130.6' || ghost5PortalMode === 'stock', 'Ghost 5 Portal override requires Ghost 5');
-const profiles = {
-    '5.130.6': {database: 'sqlite3', portal: '2.51.5', portalPackage: 'portal-ghost5'},
-    '6.73.0': {database: 'better-sqlite3', portal: '2.72.12', portalPackage: '@tryghost/portal'},
-};
-if (ghost5PortalMode === 'official-2.72.12') {
-    profiles['5.130.6'] = {database: 'sqlite3', portal: '2.72.12', portalPackage: '@tryghost/portal'};
-}
-const profile = profiles[expectedVersion];
-assert(profile, 'Unsupported disposable Ghost version');
+assert.equal(expectedVersion, '6.73.0', 'Current runtime acceptance supports only Ghost 6.73.0; Ghost 5 is EOL historical evidence and Ghost 7 is unverified');
+assert(!process.env.GHOST5_PORTAL_MODE, 'Ghost 5 diagnostic modes belong to historical commit dd82d44, not current acceptance');
+const profile = {database: 'better-sqlite3', portal: '2.72.12', portalPackage: '@tryghost/portal'};
 assert(runtime && path.isAbsolute(runtime), 'Set GHOST_RUNTIME_DIR to the disposable unpacked Ghost directory');
 assert(!runtime.startsWith(root), 'Ghost test data must live outside the theme repository');
 const port = Number(process.env.GHOST_TEST_PORT || 2368);
@@ -47,7 +35,7 @@ const base = `http://127.0.0.1:${port}`;
 const out = path.join(root, 'artifacts/runtime');
 fs.mkdirSync(out, {recursive: true});
 const results = {ghost: expectedVersion, portal: profile.portal, node: process.version, checks: [], limitation: 'Paid access uses complimentary tier fixtures, not Stripe billing. Portal uses a pinned official bundle with only loopback API access. Account writes update disposable fixture names/newsletter/comment preferences. HTTP 503/429 and network aborts are injected only for local failure probes; successful recovery must reach real Ghost. See account-http.json and comment-preferences.json for strict outcomes. Email-address/custom-field/announcement changes are not covered. No real email or checkout.'};
-results.portalMode = expectedVersion === '5.130.6' ? ghost5PortalMode : 'stock';
+results.portalMode = 'stock';
 assert.equal(require(`${profile.portalPackage}/package.json`).version, profile.portal, 'Portal package must match the reported profile');
 results.portalPackage = profile.portalPackage;
 results.portalBundleSha256 = createHash('sha256').update(fs.readFileSync(path.join(path.dirname(require.resolve(`${profile.portalPackage}/package.json`)), 'umd/portal.min.js'))).digest('hex');

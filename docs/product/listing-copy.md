@@ -52,12 +52,16 @@ Ghost 5 的[故障调查与新版 Portal 实验](../engineering/ghost5-portal-co
 未通过原有完整验收，不能当作已支持的升级方案。默认 2.51.5 的旧失败仍保留；
 主题 ZIP 不替换 Portal，也不扩大正式支持承诺。
 
+当前候选仅正式支持 **Ghost 6**，精确实测目标为6.73.0 / Node24.22.1。
+Ghost 5 已于2026年1月EOL，仅保留历史资料；建议按官方流程升级。
+候选安装范围为 `>=6.0.0 <7.0.0`，未验证或承诺Ghost 7。参见[支持政策](../support-policy.md)。
+
 正式支持精确 **Ghost 6.73.0 / Node 24.22.1**。当前开发测试将官方 Portal 固定为
 **2.72.12**，实际完整复验结果见 [当前产品要求](prd.md#acceptance-evidence-and-current-portal-follow-up)。
 2026-11-01 本地既有完整验收为 **142 PASS／0 FAIL／0 SKIP**，包括正常／键盘保存和
 失败无提前成功提示、显式重试；首次缺少 zip 工具的环境失败及修复后新数据库复验分别保留。
 它不替换已发布 ZIP，也不会更新用户站点实际加载的 Portal。
-Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 仅有兼容 CI，仍有已知失败，不属于扩大的正式支持。
+Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 仅有历史兼容 CI，仍有已知失败，不属于当前支持或发布门槛；CI范围调整不是修复三项旧失败。
 
 v0.2.0 的历史验收使用 Portal 2.72.11，记录过评论通知保存失败却提前提示成功的问题；
 该旧记录保持原样。本轮新版本结果不能倒写为旧版本已通过。Ghost 5 的评论反馈及 newsletter
@@ -132,6 +136,11 @@ did not pass the unchanged full acceptance contract and is not a supported
 upgrade recipe. The theme ZIP does not replace Portal. Default 2.51.5 defects
 remain disclosed, without expanding the formal support target.
 
+Current candidates support **Ghost 6**, tested exactly on6.73.0 / Node24.22.1.
+Ghost 5 reached EOL in January2026 and is historical evidence only; use the
+official upgrade process. Candidate engines are `>=6.0.0 <7.0.0`; Ghost 7 is
+unverified and unsupported. See the [support policy](../support-policy.md).
+
 Formal support remains exact **Ghost 6.73.0 / Node 24.22.1**. The current development
 fixture pins official **Portal 2.72.12**; see the [current product contract](prd.md#acceptance-evidence-and-current-portal-follow-up)
 for the actual full rerun. On 2026-11-01, the unchanged full local suite recorded
@@ -139,7 +148,8 @@ for the actual full rerun. On 2026-11-01, the unchanged full local suite recorde
 premature success and explicit retry. The first missing-zip environment failure
 and the successful fresh-database rerun are recorded separately. This neither replaces the released ZIP nor updates
 the Portal loaded by an existing site. Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5
-is compatibility evidence with known failures, not expanded formal support.
+is historical compatibility evidence with known failures, outside current support
+and release gates. Changing CI scope is not a repair of those failures.
 
 The historical v0.2.0 run used Portal 2.72.11 and recorded premature success on
 failed comment-notification saves. That record is retained; newer results do not

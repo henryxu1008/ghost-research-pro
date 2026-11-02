@@ -2,7 +2,7 @@
 
 Use this manual recipe after [installing the theme](user-guide.md) in a disposable Ghost publication. This document itself is not an importer or an account setup script. The separately delivered private buyer-trial pack contains native import JSON; see the [local candidate guide](private-buyer-trial.md) for its identity and differences from the published v0.2.0 theme. All names, copy and numbers below are fictional demonstration material, not research findings. Keep that label in any screenshots or shared demo.
 
-These steps use ordinary posts, public tags and existing authors. They do not require changing routing, membership signup settings, staff permissions or billing. Use the publication's existing authorized demo author; do not invite staff or modify an account just to follow this recipe. Menu labels can differ between Ghost 5 and 6.
+These steps target supported Ghost 6 and use ordinary posts, public tags and existing authors. They do not require changing routing, membership signup settings, staff permissions or billing. Use the publication's existing authorized demo author; do not invite staff or modify an account just to follow this recipe. Menu labels can differ by Ghost 6 minor version. Ghost 5 is EOL; see the [support policy](support-policy.md).
 
 ## How the content maps to the theme
 

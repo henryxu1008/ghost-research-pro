@@ -1,12 +1,16 @@
 # Ghost Research Pro product requirements
 
-Current product contract, updated 2026-11-01. **v0.2.0 is merged and publicly
+Current product contract; support policy updated 2026-11-02. **v0.2.0 is merged and publicly
 downloadable**, not an unmerged candidate. Use the [official Release and installable
 ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) and
 [operator guide](../user-guide.md). The release's source is merge commit
 `b416f9a042bf2d0fc467636fc7e4915866ee1444`. Its [release notes](../release-notes-0.2.0.md)
 and the older candidate records retain their original, exact-version evidence.
 This document describes the current product; it does not authorize deployment.
+
+The unreleased PR20 candidate follows the [Ghost-6-only support policy](../support-policy.md).
+Ghost 5 is EOL historical evidence; Ghost 7 is unverified. Existing Release
+assets and historical test results are unchanged.
 
 ## Reader and publisher value
 
@@ -75,7 +79,7 @@ passed the actual UI rejection check. No assertion changed. Related existing
 security/package/contrast/publisher checks were **32 PASS / 0 FAIL / 1 existing
 Windows symlink-fixture SKIP**; Linux CI must execute that negative case. Source
 and ZIP GScan had zero errors/warnings for Ghost 5 and 6. This local run did not
-rerun Ghost 5; use the accompanying Draft PR's exact-head CI for the Linux matrix.
+rerun Ghost 5; that follow-up's exact-head CI supplies the historical Linux matrix.
 Publication of an upstream package alone is not a passing acceptance result.
 
 Portal is a development fixture, not bundled theme code. This source follow-up
@@ -87,15 +91,16 @@ old failures are retained unchanged.
 ## Support and limits
 
 - Formal Ghost support remains the exact **6.73.0** target with **Node 24.22.1**;
-  this follow-up tests stock Portal **2.72.12**. Ghost **5.130.6 / Node 22.23.4 /
-  Portal 2.51.5** remains compatibility CI, with its known failures disclosed.
-  Permissive engines.ghost metadata is not an every-minor support warranty.
+  current acceptance tests official Portal **2.72.12**. Ghost 6 is the supported
+  major, not a claim that every6.x minor passed. Candidate engines are
+  `>=6.0.0 <7.0.0`; Ghost 5 is EOL historical evidence, and Ghost 7 is unverified.
 - PR20's [Ghost 5 investigation](../engineering/ghost5-portal-compatibility.md)
   records a failed full experiment with official Portal 2.72.12. The optional
-  diagnostic mode does not replace default CI, weaken the draft-retention
-  contract or establish a supported upgrade. No theme ZIP replaces Portal.
-- Native search tests use unmodified official **Sodo Search 1.9.6** in both
-  profiles. Ghost 5's default CDN line **1.8** is not claimed as tested. Keyboard
+  diagnostic mode is retained at its historical commit, not in current CI. Its
+  failures and draft-retention contract were not relabeled as passing. Current
+  CI excludes Ghost 5 under the approved EOL policy; no theme ZIP replaces Portal.
+- Native search tests use unmodified official **Sodo Search 1.9.6** in
+  the current Ghost 6 profile. Historical Ghost 5's default CDN line **1.8** was not claimed as tested. Keyboard
   open/Escape/focus return, repeated opening, an older Chinese-titled post beyond
   the homepage's 12 cards, a long no-result query and actual public-index safety
   are covered. Search requires Ghost's official resources and APIs to load.

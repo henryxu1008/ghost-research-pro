@@ -18,6 +18,8 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Test security gate fixtures
         run: npm run test:security
+      - name: Verify Ghost 6 support boundaries
+        run: npm run test:support
       - name: Verify WCAG contrast calculation references
         run: npm run test:contrast
       - name: Audit all locked dependencies
@@ -52,9 +54,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - label: ghost5
-            ghost: '5.130.6'
-            node: '22.23.4'
           - label: ghost6
             ghost: '6.73.0'
             node: '24.22.1'

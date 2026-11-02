@@ -9,6 +9,13 @@ alone. The separately delivered private manifest records its original snapshot;
 use the PR's exact head and CI for subsequent source revisions. The private pack
 itself is not stored in this public repository.
 
+Current candidates and the new private buyer pack support **Ghost 6 only**;
+exact acceptance targets 6.73.0 / Node24.22.1 / official Portal2.72.12. Candidate
+engine metadata is `>=6.0.0 <7.0.0`. Ghost 5 is EOL historical evidence and Ghost
+7 is unverified. See [the support policy](support-policy.md). The original v3
+pack, its screenshots and the published Releases retain their historical bytes;
+the policy-aligned pack is a distinct revision with its own manifest/hash.
+
 The currently published installation package is the
 [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0)
 ([theme ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.2.0/ghost-research-pro.zip)):
@@ -87,6 +94,8 @@ actual UI, stock Admin API or source/template checks. Do not read an API import
 success as proof of every graphical importer step. The trial is loopback-only,
 not a public hosted demo. No real checkout, billing lifecycle, customer demand,
 channel submission, pricing or legal agreement has been tested or decided here.
-Ghost5's known compatibility failures and the historical Release evidence remain
+Ghost5's known failures remain unchanged as EOL historical evidence; they are no
+longer current support/release gates. This is a support-policy decision, not a
+repair or a successful Ghost5 rerun. Historical Release evidence remains
 unchanged. Merging, versioning, releasing or deployment requires separate
 authorization; a Draft PR is not permission for those actions or commercial launch.

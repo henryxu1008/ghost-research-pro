@@ -1,10 +1,16 @@
 # Ghost 5: failure investigation and unsuccessful official Portal experiment
 
+**Historical evidence after the 2026-11-02 [support-policy decision](../support-policy.md).**
+Ghost 5 is EOL and no longer a current CI/release gate. The default red results
+and failed experiments below belong to commit `dd82d44bc3799ad2bf615caeaa139feb035d7d14`;
+the current runner supports Ghost 6 only. This policy change does not fix them.
+
 This records investigation on **Ghost 5.130.6 / Node 22.23.4**, outside the formal
 Ghost 6.73.0 support target. Official Portal 2.72.12 was tested as a possible
 compatibility route and did **not** pass the unchanged complete contract.
-It is not an accepted operator upgrade recipe. CI retains default Portal 2.51.5
-and its strict failures. No published asset or existing site is changed.
+It is not an accepted operator upgrade recipe. At that historical commit, CI
+retained default Portal 2.51.5 and its strict failures. No published asset or
+existing site was changed by the experiment.
 
 ## Why the default profile fails
 
@@ -62,7 +68,11 @@ the override restores those keys and uses the normal restart. Returning to
 2.51.5 also returns to its defects. Do not disable Portal, broaden iframe origin
 permissions or apply this failed experiment as a production upgrade recommendation.
 
-## Reproduction and acceptance boundary
+## Historical reproduction and acceptance boundary
+
+Use the exact historical commit above in a separate disposable checkout, not
+the current Ghost-6-only candidate. Its engine metadata and runner profiles are
+the matching diagnostic payload. This is optional investigation, not support.
 
 The runner defaults to `GHOST5_PORTAL_MODE=stock`, retaining official 2.51.5 and
 its strict failing probes for reproduction. The explicit

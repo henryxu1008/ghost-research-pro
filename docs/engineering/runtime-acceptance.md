@@ -16,19 +16,20 @@ This locates the failure in host network-interface enumeration reached during mo
 
 ## Repeatable test environment
 
-Theme CI runs these profiles on separate ephemeral Ubuntu runners:
+Current CI runs this supported profile on an ephemeral Ubuntu runner, under the
+[Ghost 6 support policy](../support-policy.md). Ghost 5 is EOL history, not a
+required job; removing it does not repair its failures. Ghost 7 is unverified.
 
 | Ghost | Node | Database driver | Official Portal fixture |
 | --- | --- | --- | --- |
-| 5.130.6 | 22.23.4 | sqlite3 | 2.51.5 (Ghost 5's configured 2.51 line) |
 | 6.73.0 | 24.22.1 | better-sqlite3 | 2.72.12 (Ghost 6's configured 2.72 line) |
 
-The optional diagnostic `GHOST5_PORTAL_MODE=official-2.72.12` exercises an
-unmodified newer official bundle. It did not pass the unchanged full contract;
-CI and the runner default retain `stock` (2.51.5). See the
-[root causes and failed compatibility experiment](ghost5-portal-compatibility.md).
-No Portal source or acceptance assertion is patched. Both profiles use Search
-1.9.6, not Ghost 5's default 1.8.
+The Ghost 5 diagnostic flags and profiles are retained at historical commit
+`dd82d44bc3799ad2bf615caeaa139feb035d7d14`, alongside the
+[failed newer-Portal experiment](ghost5-portal-compatibility.md). Use that exact
+commit and fresh-runtime instructions only for optional historical investigation.
+The current runner rejects Ghost 5/7 before starting a site. Ghost 6 uses official
+Search1.9.6; no Ghost 5 default Search1.8 acceptance is claimed.
 
 From 2026-11-01, the Ghost 6 development fixture uses official Portal 2.72.12.
 See the [current product contract](../product/prd.md#acceptance-evidence-and-current-portal-follow-up)
@@ -36,7 +37,7 @@ for its actual full-runtime results. The v0.2.0 Release and older execution reco
 below used their stated versions, including 2.72.11; they are historical evidence,
 not a rerun of 2.72.12. No released tag or asset is changed by this fixture update.
 
-The [official compatibility table](https://docs.ghost.org/faq/node-versions/) lists Node 22 support for late Ghost 5. Ghost 5.130.6's published package declares `^18.12.1 || ^20.11.1 || ^22.13.1`; Node 22.23.4 satisfies that range. Ghost 6.73.0 declares `^22.23.1 || ^24.20.0`; its existing Node 24.22.1 profile is retained. The runner checks installed versions, package identity and engines before booting; Ghost 5 keeps its own database driver and default Portal unless the diagnostic override is explicitly selected.
+Ghost 6.73.0 declares Node `^22.23.1 || ^24.20.0`; the existing Node24.22.1 runtime profile is retained. The runner checks installed versions, Portal package identity and Node engines before booting. Historical Ghost5.130.6/Node22.23.4 used its own sqlite3 driver; those old runtime instructions are not a supported installation path.
 
 CI unpacks the official npm tarball before installing dependencies, because the package contains local `components/*.tgz` dependencies. `--legacy-peer-deps` handles Ghost's Bookshelf/Knex peer range conflict. This installation method is test-only, not a production deployment procedure.
 
@@ -62,6 +63,8 @@ The test runner:
 
 The additional public `editor-boundaries` fixture checks long button/file/bookmark/callout text and a three-image gallery at 320px, 800px and 801px, spanning the theme's 800px breakpoint. It records actual card/action bounds and screenshots, downloads the local text file through keyboard activation and follows the CTA to its actual local destination. `editor-boundaries.json` preserves measurements even when the overflow assertion fails. These are existing native card types with edge-case content, not added product features.
 
+## Historical expansion and diagnostic records
+
 The four [Admin UI installation probes](admin-ui-acceptance.md) pass on both profiles at `e53af9a`, workflow 40809348925. A temporary owner session is seeded separately; all tested upload/activation mutations originate in the official browser interface, and the original API baseline still runs afterward. Remote font CSS is handled locally with empty CSS/system fallback to keep the bundled Ghost 6 preloader usable without external network access; remote-font appearance and login UI are not covered. Final full results remain 112 passed / 3 known Portal failures on Ghost 5 and 114 passed / 1 known Portal failure on Ghost 6.
 
 Screenshot review exposed vertically clipped CTA text even though the horizontal bounds passed. The added `scrollHeight <= clientHeight + 1` assertion failed in both profiles at all three widths in [40793582567](https://github.com/qq550723504/ghost-research-pro/actions/runs/40793582567), commit `cdbf0b7cf1bfa87ac47475bc9f645487768288df`: native button height was about 40px while content required 104px at 320px and 54px at 800/801px. The theme lets button-card height grow with content, retains a 2.4em minimum and adds vertical padding. The scoped override outranks Ghost's `.kg-button-card a.kg-btn` height rule, verified in the official Ghost 6.73.0 npm package at `core/frontend/src/cards/css/button.css`. The regression verifies complete text containment as well as keyboard activation, rather than treating successful navigation as proof that the label fits.
@@ -72,7 +75,7 @@ Portal is pinned as a development fixture and excluded from the theme ZIP. The d
 
 ## Evidence and limits
 
-`ghost-runtime-ghost5` and `ghost-runtime-ghost6` workflow artifacts contain `results.json`, `portal-layout.json`, `accessibility.json` and screenshots. Earlier runs used `ghost-runtime-acceptance`. Raw server logs, passwords, member tokens, cookies and databases are not uploaded. The app process is stopped in `finally`, and the CI runner is discarded afterward.
+Current `ghost-runtime-ghost6` workflow artifacts contain `results.json`, `portal-layout.json`, `accessibility.json` and screenshots. Historical two-version runs also produced `ghost-runtime-ghost5`; the earliest runs used `ghost-runtime-acceptance`. Raw server logs, passwords, member tokens, cookies and databases are not uploaded. The app process is stopped in `finally`, and the CI runner is discarded afterward.
 
 `contrast-review.json` supplements axe's incomplete contrast entries on scrollable content. It records actual computed text/ancestor background colors, opacity/filter constraints, font metrics, DOM tag/selector information and unrounded contrast ratios. The calculation follows [WCAG relative luminance](https://www.w3.org/TR/WCAG22/#dfn-relative-luminance); these fixture texts are checked conservatively against [4.5:1](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html). CI captures the table/code region at start, middle and end scroll positions for visual review. The raw axe `incomplete` entries remain in the report; they are not silently converted to passes. `npm run test:contrast` checks the calculation against black/white and near-threshold reference values.
 
@@ -80,7 +83,7 @@ The [recorded contrast review](contrast-review.md) resolves the current two inco
 
 `adapter-boundary.json` records controlled iframe failure/cleanup fixtures without external accounts or requests: an initially opaque sandbox document, iframe removal, an accessible document becoming opaque and a document getter throwing `SecurityError`. The first boundary run reproduced background `inert` leaks in the three inaccessible-document cases; removal already worked. The adapter now waits for an accessible document before locking the background, and restores its own recorded inert states and trigger focus if access fails. A preexisting inert element must stay inert. Failed frames retain their native behavior without further enhancement. These tests verify cleanup boundaries, not full cross-origin Portal support; actual Portal flows still use the pinned same-origin fixture.
 
-`portal-interruption.json` records each form-switch/repeated-trigger cycle with its failing stage if any, iframe identities, close-click delivery, background inert state and animation/adapter state. It stores no form values, URLs or member data. A failure captures the anonymous fixture at that stage. `PORTAL_INTERRUPTION_REPEATS` accepts 1..30 desktop cycles; CI uses 20 for Ghost 6 and 1 for Ghost 5, with one mobile cycle each. These are repetitions inside the existing interrupted-flow assertion, not additional independent acceptance checks. Close/detachment timeouts and all original assertions remain unchanged. This bounded check targets the single Ghost 6 desktop close timeout in workflow 40738721333; a passing sample does not prove intermittent failures impossible.
+`portal-interruption.json` records each form-switch/repeated-trigger cycle with its failing stage if any, iframe identities, close-click delivery, background inert state and animation/adapter state. It stores no form values, URLs or member data. A failure captures the anonymous fixture at that stage. `PORTAL_INTERRUPTION_REPEATS` accepts 1..30 desktop cycles; current CI retains20 for Ghost6 plus one mobile cycle. Historical Ghost5 jobs used one desktop/mobile cycle. These are repetitions inside the existing interrupted-flow assertion, not additional independent acceptance checks. Close/detachment timeouts and all original assertions remain unchanged. This bounded check targets the single Ghost 6 desktop close timeout in workflow 40738721333; a passing sample does not prove intermittent failures impossible.
 
 `account-results.json` records seven fixture account flows without raw member responses or form values. `account-contrast.json` captures computed colors/background chains for account text and the Back/help controls, independently of axe incomplete classifications. `account-http.json` adds four strict [controlled 503/429 cases](account-http-acceptance.md); recovery writes go to real Ghost, not mocked successful responses. `comment-preferences.json` separately records three strict [comment notification probes](comment-preference-acceptance.md), with temporary publication-setting restoration and real member persistence. Profile and preference captures are added to the selected axe documents; this does not replace screen-reader testing.
 
@@ -90,7 +93,7 @@ The theme ZIP source/packaging path is unchanged by serving the test Portal bund
 
 Portal captures wait for font readiness and finite iframe animations, assert the panel is opaque and its visible panel/controls fit the iframe viewport, then disable animations for the capture. Portal deliberately extends its hidden-scrollbar wrapper by 30px, so document `scrollWidth` would falsely flag that wrapper; panel and control bounds are saved in `portal-layout.json`. This avoids saving the opening fade as a blank or pale screenshot. The first passing Portal functional run was [40725520848](https://github.com/qq550723504/ghost-research-pro/actions/runs/40725520848), commit `324d69aaeba5d3db98b4d96e0bd2ff642d65c0cf`: 43 runtime checks passed. Use the latest head's artifact for current visual evidence.
 
-A passing matrix job validates its exact pinned environment only. It does not establish every Ghost 5/6 minor version, browser or custom palette. Current editorial fixtures do not cover audio/video playback, NFT/product/header/signup cards or arbitrary external embeds. axe-core checks are a focused automated subset: screen readers and full WCAG conformance remain untested. Account coverage excludes email-address changes, custom member fields, comment/announcement preference writes and HTTP errors beyond the controlled 503/429 probes. PR #10 remains Draft. Production deployment, merge and real payments are outside this acceptance run.
+A passing job validates its exact pinned environment only. It does not establish every Ghost 6 minor version, browser or custom palette. Current editorial fixtures do not cover audio/video playback, NFT/product/header/signup cards or arbitrary external embeds. axe-core checks are a focused automated subset: screen readers and full WCAG conformance remain untested. Account coverage includes the three strict comment-preference probes, but excludes email-address changes, custom member fields, announcement preference writes and HTTP errors beyond the controlled 503/429 probes. Production deployment, merge and real payments are outside this acceptance run.
 
 ## First passing execution
 
