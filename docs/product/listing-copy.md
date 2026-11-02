@@ -1,6 +1,6 @@
 # Ghost Research Pro 商品页文案草稿
 
-双语文案，更新于 2026-11-01，描述**已发布、可下载的 v0.2.0**。
+双语文案，更新于2026-11-02，描述 **v0.3.0** 功能；正式发布状态和资产以 GitHub Release 为准。
 本页尚未发布到商店；价格、购买入口、退款政策和人工售后条款未设定，不作承诺。
 中英内容等价，面向单一语言的商品页无需同时展示两版。
 
@@ -30,6 +30,8 @@ Ghost 品牌色接入主题按钮、链接和可访问的 Portal，浅色会转�
 服务端分页视图。这些不是组合筛选器，主题不建立私有正文索引。
 资料库仍需按文档配置 Pages、标签、路由与导航，ZIP 不会自动创建内容。
 
+0.3.0 的报告末尾可推荐最多3条同主专题 Research，排除当前文章、Brief及草稿；只用公开元数据/自填摘要。手机端分类区更紧凑，长标题保持完整，普通Page/About切换更稳定。
+
 **3. 沿用 Ghost 的会员与内容权限**
 
 公开、会员与付费会员内容使用原生 Ghost 权限和 Portal，没有另建账户或计费系统。
@@ -37,8 +39,8 @@ Ghost 品牌色接入主题按钮、链接和可访问的 Portal，浅色会转�
 
 ### 下载与交付内容
 
-- [正式 v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0)
-  的 [安装 ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.2.0/ghost-research-pro.zip)、源码及 MIT LICENSE。
+- [v0.3.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0)
+  的 [安装 ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.3.0/ghost-research-pro.zip)、源码及 MIT LICENSE。
 - [安装与配置指南](../user-guide.md)，包含实际可用的首页、品牌色、原生搜索和可选资料库设置。
 - [虚构演示内容手工指南](../demo-content.md)，供测试站自行创建内容；不是 Ghost 导入文件、
   已填充演示站或已交付的五篇草稿素材包。主题安装通过不等于素材导入通过。
@@ -52,9 +54,9 @@ Ghost 5 的[故障调查与新版 Portal 实验](../engineering/ghost5-portal-co
 未通过原有完整验收，不能当作已支持的升级方案。默认 2.51.5 的旧失败仍保留；
 主题 ZIP 不替换 Portal，也不扩大正式支持承诺。
 
-当前候选仅正式支持 **Ghost 6**，精确实测目标为6.73.0 / Node24.22.1。
+v0.3.0 正式支持 **Ghost 6**，精确实测目标为6.73.0 / Node24.22.1。
 Ghost 5 已于2026年1月EOL，仅保留历史资料；建议按官方流程升级。
-候选安装范围为 `>=6.0.0 <7.0.0`，未验证或承诺Ghost 7。参见[支持政策](../support-policy.md)。
+0.3.0 安装范围为 `>=6.0.0 <7.0.0`，未验证或承诺Ghost 7。参见[支持政策](../support-policy.md)。
 
 正式支持精确 **Ghost 6.73.0 / Node 24.22.1**。当前开发测试将官方 Portal 固定为
 **2.72.12**，实际完整复验结果见 [当前产品要求](prd.md#acceptance-evidence-and-current-portal-follow-up)。
@@ -108,6 +110,8 @@ and year views. These are not combined facets; the theme creates no private body
 index. Library Pages, tags, routes and navigation require the documented setup;
 the ZIP does not create them.
 
+Version 0.3.0 can recommend up to 3 Research posts in the same primary topic, excluding current/Brief/draft entries and using public metadata/custom excerpts only. Mobile collections are more compact, long titles remain complete, and ordinary Page/About navigation is more stable.
+
 **3. Use Ghost's existing membership system**
 
 Public, members-only and paid-member content use native Ghost access controls
@@ -117,8 +121,8 @@ services. The complete payment lifecycle has not been verified.
 
 ### Download and included material
 
-- The [official v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0),
-  [installation ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.2.0/ghost-research-pro.zip),
+- The [v0.3.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0),
+  [installation ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.3.0/ghost-research-pro.zip),
   source and MIT LICENSE.
 - The [installation/configuration guide](../user-guide.md) covering the available
   homepage, brand-color, native-search and optional library settings.
@@ -136,9 +140,9 @@ did not pass the unchanged full acceptance contract and is not a supported
 upgrade recipe. The theme ZIP does not replace Portal. Default 2.51.5 defects
 remain disclosed, without expanding the formal support target.
 
-Current candidates support **Ghost 6**, tested exactly on6.73.0 / Node24.22.1.
+Version0.3.0 supports **Ghost 6**, tested exactly on6.73.0 / Node24.22.1.
 Ghost 5 reached EOL in January2026 and is historical evidence only; use the
-official upgrade process. Candidate engines are `>=6.0.0 <7.0.0`; Ghost 7 is
+official upgrade process. Installation engines are `>=6.0.0 <7.0.0`; Ghost 7 is
 unverified and unsupported. See the [support policy](../support-policy.md).
 
 Formal support remains exact **Ghost 6.73.0 / Node 24.22.1**. The current development
@@ -174,11 +178,7 @@ features on your own test publication before deciding whether the theme fits.
 
 ## 内部发布核对（不放商品页）
 
-- 已发布产品以 [0.2.0 发布说明及清单](../release-notes-0.2.0.md) 为准；本分支只更新开发测试
-  Portal 和说明，不创建新版本、tag、Release 或公开附件，不把开发构建冒充正式下载包。
-- 新旧 Portal 的实际结果分开记录在 [PRD](prd.md#acceptance-evidence-and-current-portal-follow-up)
-  和 exact-HEAD CI；严格断言不 skip、不 allow_failure，Ghost 5 已知问题不扩为新功能任务。
-- 安装 ZIP 与手工 demo 指南已提供；样例导入包未提供，当前无公开托管 demo。
-  商店上架、价格、购买／支付入口、支持联系与退款条款尚未确定，不虚构已提供项。
-- 仍无本主题客户结果、付费意向或提升转化的实证，不许诺投资回报或客户成效。
-  开发工具 audit 仍有 0 critical / 3 known high / 3 moderate，不宣称全清。
+- 当前0.3.0的包版本、SHA、清单、精确CI及tag目标以 [发布记录](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0) 和 [发布说明](../release-notes-0.3.0.md) 为准。旧Release保持原样。
+- Ghost6为当前支持范围；Ghost5 EOL失败仍是历史失败，Ghost7未验证。当前CI成功不等于旧版本已修复或全版本通过。
+- 主题ZIP不含私有样稿/截图/账号；私有v3/v4是旧候选快照，搭配当前主题时仍需手动配置路由/导航。
+- 没有公开托管demo、商店上架、价格、退款/支持承诺、真实支付生命周期或已验证购买意愿。开发工具审计不宣称清零。

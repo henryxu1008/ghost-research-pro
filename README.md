@@ -2,9 +2,9 @@
 
 MIT-licensed Ghost theme for research publishers, B2B intelligence and professional newsletters. See [LICENSE](LICENSE) for permissions and notice conditions.
 
-> Version 0.2.0 adds bounded homepage settings, readable Ghost brand colors and a default native Search entry. Use the [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) for the official installation asset and publication record. The [v0.1.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) remains available. Historical Portal failures stay visible in those release records; the [current product contract](docs/product/prd.md#acceptance-evidence-and-current-portal-follow-up) separates the Portal 2.72.12 rerun from the old evidence. Billing and deployment are not verified by a theme test.
+> Version 0.3.0 targets **Ghost 6** and adds compact mobile collections, stable ordinary Page/About layout and safe same-topic research recommendations. Homepage controls, readable brand colors and native Search from 0.2.0 remain. Get the installable [theme ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/download/v0.3.0/ghost-research-pro.zip) from the [v0.3.0 Release record](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0), which is authoritative for publication status and assets. Older [v0.2.0](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) and [v0.1.0](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.1.0) records retain their original evidence. Billing and deployment are not verified by a theme test.
 
-Review the [0.2.0 release notes and delivery checklist](docs/release-notes-0.2.0.md) for the exact ZIP/hash, inventory, tested profiles and known limits. The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included. The owner selected standard MIT; no paid-service pricing is set here.
+Review the [0.3.0 release notes and inventory](docs/release-notes-0.3.0.md), [changelog](CHANGELOG.md) and [support policy](docs/support-policy.md). The [current product contract](docs/product/prd.md), [design specification](docs/product/design-spec.md) and [dated market evidence](docs/product/market-validation.md) are included. The owner selected standard MIT; no paid-service pricing is set here.
 
 The [historical 0.1.0 preparation evidence](docs/release-notes-0.1.0.md) and [candidate handoff](docs/candidate-delivery.md) remain available. The [bilingual listing draft](docs/product/listing-copy.md) remains unpublished. A red check is not relabeled as passing; a new or different failure still needs investigation.
 
@@ -59,10 +59,10 @@ The formal support target remains **Ghost6.73.0 / Node24.22.1**. Current develop
 tests pin stock **Portal2.72.12**; the published 0.2.0 evidence used **2.72.11** and
 is not rewritten. See the [current exact-version results](docs/product/prd.md#acceptance-evidence-and-current-portal-follow-up).
 Ghost 6 is the supported major; this is not a promise that every 6.x minor was
-tested. The candidate declares `engines.ghost >=6.0.0 <7.0.0`. Ghost 5 is EOL and
+tested. Version 0.3.0 declares `engines.ghost >=6.0.0 <7.0.0`. Ghost 5 is EOL and
 historical only; Ghost 7 is unverified and excluded. See the [policy, upgrade
 advice and retained failures](docs/support-policy.md). Published Release assets
-keep their original metadata and are not replaced by this candidate.
+keep their original metadata and are not replaced by this version.
 
 The first delivery does not promise the unexecuted paid-subscription lifecycle
 (creation/checkout, renewal, cancellation/refunds and recovery). Native Ghost

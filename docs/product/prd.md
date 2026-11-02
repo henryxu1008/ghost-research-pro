@@ -1,14 +1,14 @@
 # Ghost Research Pro product requirements
 
-Current product contract; support policy updated 2026-11-02. **v0.2.0 is merged and publicly
-downloadable**, not an unmerged candidate. Use the [official Release and installable
-ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0) and
-[operator guide](../user-guide.md). The release's source is merge commit
-`b416f9a042bf2d0fc467636fc7e4915866ee1444`. Its [release notes](../release-notes-0.2.0.md)
-and the older candidate records retain their original, exact-version evidence.
+Current product contract for **v0.3.0**, updated 2026-11-02. Use the versioned
+[Release and installable ZIP](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.3.0)
+and [operator guide](../user-guide.md). The implementation was merged in PR20 at
+`ed5f01717a093f49865f85ced9f76151775719a0`; the release's tag target and exact CI
+are recorded separately in the Release. The [0.2.0 notes](../release-notes-0.2.0.md)
+and older candidate records retain their original, exact-version evidence.
 This document describes the current product; it does not authorize deployment.
 
-The unreleased PR20 candidate follows the [Ghost-6-only support policy](../support-policy.md).
+Version 0.3.0 follows the [Ghost-6-only support policy](../support-policy.md).
 Ghost 5 is EOL historical evidence; Ghost 7 is unverified. Existing Release
 assets and historical test results are unchanged.
 
@@ -36,15 +36,17 @@ for trying the delivered functionality.
 | Brand and typography | Ghost's brand accent drives theme actions, native button/upgrade cards and an already-accessible Portal iframe. Readable hex colors are retained; light colors are darkened along their RGB hue to at least 4.5:1 against white and the theme panel. Keyboard focus uses the safe tone; invalid/missing colors or unavailable JavaScript retain the safe blue fallback. Ghost heading/body fonts remain supported. Author colors/custom CSS need their own review; no dark mode or new font system. |
 | Native search | A default header Search entry uses Ghost's official data-ghost-search / #/search interface. Ghost already allowed a manually configured Navigation search link before v0.2.0. The theme adds no private body index, search engine, external search service or global shortcut. Public search metadata must be safe to disclose; restricted bodies and draft/private fields stay outside the accepted public payload. |
 | Reports and cards | Actual authors, published/updated timestamps, public-safe excerpts and Public / Members / Paid members / Selected tiers policy labels. Reading time appears with access. Ghost's updated timestamp is not an audited revision history. |
-| Reading | Shared Research/Brief post template, visible-content H2/H3 TOC, native editor cards, constrained tables/code and a single reading column. The TOC uses already-authorized HTML and never fetches protected bodies. No PDF/chart generation or market-data service. |
+| Reading | Shared Research/Brief template, visible-content H2/H3 TOC, native cards, constrained tables/code and a single reading column. Long titles balance without truncation; mobile collection links stay complete while taking less space. Ordinary Page/About layout and scrollbar space stay consistent. The TOC uses already-authorized HTML and never fetches protected bodies. No PDF/chart service. |
+| Related research | Up to3 latest Research posts with the same primary topic; exclude current/Brief/mixed/draft entries. Missing topic/no matches means no section. Explicit public metadata/custom_excerpt only; no generated body excerpt. [Topic-first opt-in setup](../research-publishing-setup.md#more-research-in-this-topic-030) is required. |
 | Collections | Native tag/author archives plus optional Library and dated channels. Full server pagination and separate topic/format/year views; no combined facets. Native keyword search is separate from those collection views. |
 | Publisher setup | Research/Brief are public editorial tags, not enforced content types. Optional Library setup requires metadata Pages, a merged route file and navigation. Fixed example years require a new Page, dated route and menu link annually. The ZIP creates none of these records. |
-| Delivery | Deterministic installable theme ZIP, source and MIT notice, installation/configuration guides and a fictional manual demo recipe. No hosted public demo, populated publication or importable sample-content pack is supplied. Localhost test instances are disposable tests, not production hosting. |
+| Delivery | Deterministic installable theme ZIP, source and MIT notice, installation/configuration guides and a fictional manual demo recipe. The public Release supplies no hosted demo or populated publication. An importable fictional pack was delivered privately and is separate from the theme asset. Localhost test instances are disposable tests, not production hosting. |
 
 The same post may appear in several collections. Public titles, excerpts, tags,
-authors and images must never contain confidential findings. No Library facets,
-related-article system, membership-benefit expansion or payment feature is added
-by the Portal dependency follow-up.
+authors and images must never contain confidential findings. No combined Library
+facets or payment feature is added. Membership benefits/FAQ remain ordinary
+editable Ghost Page content; the fictional private example is separate from the
+theme ZIP, not a new backend or service commitment.
 
 ## Acceptance evidence and current Portal follow-up
 
