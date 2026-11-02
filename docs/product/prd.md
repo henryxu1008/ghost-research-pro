@@ -54,7 +54,7 @@ historical release results, not evidence for a newer Portal bundle.
 
 The current development fixture updates only Ghost 6's official Portal to
 **2.72.12**, following [upstream PR32314](https://github.com/TryGhost/Ghost/pull/32314).
-Ghost and Node stay pinned; Ghost 5 and Portal 2.51.5 remain unchanged. The
+Ghost and Node stayed pinned in that follow-up; Ghost 5 and Portal 2.51.5 were unchanged. The
 existing full runtime suite checks normal pointer/keyboard saves, reload
 persistence, failure without premature success and an explicit real-write retry.
 It uses a fresh SQLite database, disposable example.test accounts, loopback SMTP
@@ -90,6 +90,10 @@ old failures are retained unchanged.
   this follow-up tests stock Portal **2.72.12**. Ghost **5.130.6 / Node 22.23.4 /
   Portal 2.51.5** remains compatibility CI, with its known failures disclosed.
   Permissive engines.ghost metadata is not an every-minor support warranty.
+- PR20's [Ghost 5 investigation](../engineering/ghost5-portal-compatibility.md)
+  records a failed full experiment with official Portal 2.72.12. The optional
+  diagnostic mode does not replace default CI, weaken the draft-retention
+  contract or establish a supported upgrade. No theme ZIP replaces Portal.
 - Native search tests use unmodified official **Sodo Search 1.9.6** in both
   profiles. Ghost 5's default CDN line **1.8** is not claimed as tested. Keyboard
   open/Escape/focus return, repeated opening, an older Chinese-titled post beyond

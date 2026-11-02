@@ -71,15 +71,33 @@ async function checkMembershipSettings({browser, admin, base, out, root, runtime
                 const label = url.origin + url.pathname; if (!list.includes(label)) list.push(label);
                 return route.abort();
             });
-            readers.push({role, page: await context.newPage()});
+            const page = await context.newPage();
+            const pending = new Map();
+            page.on('request', request => pending.set(request, performance.now()));
+            const finished = request => pending.delete(request);
+            page.on('requestfinished', finished);
+            page.on('requestfailed', finished);
+            readers.push({role, page, pending});
         }
         for (const mode of ['all', 'paid', 'invite']) {
             const state = await setMode(mode);
             assert.equal(state.paid_members_enabled, false, 'Runtime fixture must have no Stripe-enabled paid signup');
-            for (const {role, page} of readers) await run(`Membership signup ${mode} / ${role}: correct visible entry points`, async entry => {
+            for (const {role, page, pending} of readers) await run(`Membership signup ${mode} / ${role}: correct visible entry points`, async entry => {
                 entry.setting = state; entry.routes = [];
                 for (const route of ['/membership/', '/', '/public-report/']) {
-                    const response = await page.goto(base + route, {waitUntil: 'networkidle'});
+                    let response;
+                    try {
+                        response = await page.goto(base + route, {waitUntil: 'networkidle'});
+                    } catch (error) {
+                        // Sanitized diagnostics only: keep the original timeout
+                        // and every assertion. Never store query strings/cookies.
+                        entry.pendingRequests = [...pending].map(([request, started]) => ({
+                            method: request.method(), path: new URL(request.url()).pathname,
+                            type: request.resourceType(), ageMs: Math.round(performance.now() - started),
+                        }));
+                        entry.navigation = {route, readyState: await page.evaluate(() => document.readyState).catch(() => null)};
+                        throw error;
+                    }
                     assert.equal(response.status(), 200);
                     assert.equal(await page.locator('.site-header.wrap').count(), 1, 'Route is not rendered by the installed research theme');
                     const links = await page.locator('a[href^="#/portal/"]').evaluateAll(nodes => nodes.map(node => ({href: node.getAttribute('href'), text: node.textContent.trim()})));

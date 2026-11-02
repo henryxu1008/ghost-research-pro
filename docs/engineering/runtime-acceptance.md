@@ -23,13 +23,20 @@ Theme CI runs these profiles on separate ephemeral Ubuntu runners:
 | 5.130.6 | 22.23.4 | sqlite3 | 2.51.5 (Ghost 5's configured 2.51 line) |
 | 6.73.0 | 24.22.1 | better-sqlite3 | 2.72.12 (Ghost 6's configured 2.72 line) |
 
+The optional diagnostic `GHOST5_PORTAL_MODE=official-2.72.12` exercises an
+unmodified newer official bundle. It did not pass the unchanged full contract;
+CI and the runner default retain `stock` (2.51.5). See the
+[root causes and failed compatibility experiment](ghost5-portal-compatibility.md).
+No Portal source or acceptance assertion is patched. Both profiles use Search
+1.9.6, not Ghost 5's default 1.8.
+
 From 2026-11-01, the Ghost 6 development fixture uses official Portal 2.72.12.
 See the [current product contract](../product/prd.md#acceptance-evidence-and-current-portal-follow-up)
 for its actual full-runtime results. The v0.2.0 Release and older execution records
 below used their stated versions, including 2.72.11; they are historical evidence,
 not a rerun of 2.72.12. No released tag or asset is changed by this fixture update.
 
-The [official compatibility table](https://docs.ghost.org/faq/node-versions/) lists Node 22 support for late Ghost 5. Ghost 5.130.6's published package declares `^18.12.1 || ^20.11.1 || ^22.13.1`; Node 22.23.4 satisfies that range. Ghost 6.73.0 declares `^22.23.1 || ^24.20.0`; its existing Node 24.22.1 profile is retained. The runner checks the installed version and engines before booting; it does not force Ghost 6's database driver or Portal line onto Ghost 5.
+The [official compatibility table](https://docs.ghost.org/faq/node-versions/) lists Node 22 support for late Ghost 5. Ghost 5.130.6's published package declares `^18.12.1 || ^20.11.1 || ^22.13.1`; Node 22.23.4 satisfies that range. Ghost 6.73.0 declares `^22.23.1 || ^24.20.0`; its existing Node 24.22.1 profile is retained. The runner checks installed versions, package identity and engines before booting; Ghost 5 keeps its own database driver and default Portal unless the diagnostic override is explicitly selected.
 
 CI unpacks the official npm tarball before installing dependencies, because the package contains local `components/*.tgz` dependencies. `--legacy-peer-deps` handles Ghost's Bookshelf/Knex peer range conflict. This installation method is test-only, not a production deployment procedure.
 

@@ -48,6 +48,10 @@ Ghost 托管、域名、邮件投递和支付服务不包含在主题交付中�
 
 ### 支持范围与已知边界
 
+Ghost 5 的[故障调查与新版 Portal 实验](../engineering/ghost5-portal-compatibility.md)
+未通过原有完整验收，不能当作已支持的升级方案。默认 2.51.5 的旧失败仍保留；
+主题 ZIP 不替换 Portal，也不扩大正式支持承诺。
+
 正式支持精确 **Ghost 6.73.0 / Node 24.22.1**。当前开发测试将官方 Portal 固定为
 **2.72.12**，实际完整复验结果见 [当前产品要求](prd.md#acceptance-evidence-and-current-portal-follow-up)。
 2026-11-01 本地既有完整验收为 **142 PASS／0 FAIL／0 SKIP**，包括正常／键盘保存和
@@ -122,6 +126,11 @@ Hosting, a domain, email delivery and payment services are not included. No
 hosted public demo is supplied; a local test instance is not production hosting.
 
 ### Support and known boundaries
+
+The [Ghost 5 failure investigation and newer-Portal experiment](../engineering/ghost5-portal-compatibility.md)
+did not pass the unchanged full acceptance contract and is not a supported
+upgrade recipe. The theme ZIP does not replace Portal. Default 2.51.5 defects
+remain disclosed, without expanding the formal support target.
 
 Formal support remains exact **Ghost 6.73.0 / Node 24.22.1**. The current development
 fixture pins official **Portal 2.72.12**; see the [current product contract](prd.md#acceptance-evidence-and-current-portal-follow-up)

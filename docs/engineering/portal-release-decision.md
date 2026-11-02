@@ -1,5 +1,9 @@
 # Known Portal limitations and release route
 
+Current follow-up: [explicit Ghost 5 / official Portal compatibility](ghost5-portal-compatibility.md)
+records the default-profile defects and the new configuration experiment. The
+dated decisions and results below remain historical evidence, not current PR20 status.
+
 Updated 2026-10-31 after the owner explicitly chose to keep theme delivery moving despite the known upstream feedback issue. The [candidate handoff](../candidate-delivery.md) is the current delivery/status summary. This changes no engine range, pinned runtime profile or strict assertion. Unified [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) targets main and is ready for review; older PR10–16 remain open/Draft. Standard MIT was already selected. No merge, tag, Release, listing, production deployment or payment connection is performed or authorized by this document.
 
 ## Current delivery decision

@@ -68,6 +68,11 @@ end-to-end commercial-readiness claim. The project license is MIT.
 
 Theme CI exercises stock Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.12 on separate loopback-only runners. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. Both environments use disposable complimentary membership fixtures and an in-memory local SMTP sink. The matching official Portal bundle exercises free signup/signin/signout and fixture name/newsletter saves, reload persistence, cancellation, aborted-request recovery and signed-out data isolation. See [account acceptance](docs/engineering/account-acceptance.md) for the exact coverage and limits. All external browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost5` and `ghost-runtime-ghost6` (14-day retention). Updating this development fixture does not replace a released theme asset or update an existing site's Portal.
 
+The [Ghost 5 failure investigation](docs/engineering/ghost5-portal-compatibility.md)
+also records a full experiment with official Portal 2.72.12. It did **not** meet
+the unchanged acceptance contract and does not replace the default CI profile
+or establish a supported Ghost 5 upgrade recipe.
+
 See [runtime acceptance and host-error diagnosis](docs/engineering/runtime-acceptance.md). To run outside CI, prepare a fresh unpacked installation of one pinned version with its supported Node version and dependencies, install Chromium with `npx playwright install chromium`, build the ZIP, and set `GHOST_RUNTIME_DIR` plus `GHOST_RUNTIME_VERSION` before `npm run test:runtime`. The default version is 6.73.0; the runner verifies the package's Node engines and refuses an existing database. Never point it at a live site.
 
 The theme includes a small accessibility adapter for the native Portal iframe: it restores keyboard focus, contains Tab navigation, enables the legacy close control, and supplies document language/title and zoom-friendly viewport metadata. Portal actions still use Ghost's handlers. Native card/Portal actions follow the theme's accent color; custom palette changes need contrast verification. Automated checks do not replace screen-reader or full accessibility review.

@@ -116,6 +116,11 @@ If installation failed before activation, first inspect the existing active entr
 
 ## Troubleshooting and current limits
 
+Ghost 5 operators: the [failure investigation](engineering/ghost5-portal-compatibility.md)
+records an unsuccessful full experiment with official Portal 2.72.12. It is not
+an accepted upgrade recipe. The theme ZIP does not replace Portal; unchanged
+2.51.5 installations retain the defects below.
+
 - **No Membership template:** activate this theme, reload the editor and check the page's template selector. The package must include `custom-membership.hbs`; installing the theme does not create that page or a navigation item.
 - **A page is missing from the menu:** add its published URL to primary navigation and save. The footer shows copyright and RSS; secondary navigation appears in the research sidebar.
 - **Upload/version confusion:** confirm you selected the inner package, retained its filename and checked the intended active row. Cancelling or receiving a validation error is not a successful update.
