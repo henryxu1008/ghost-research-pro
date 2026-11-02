@@ -1,10 +1,13 @@
 # Private buyer trial: local candidate, not a Release
 
-This local candidate includes the mobile collection/title and ordinary Page /
-scrollbar fixes, plus a bounded **More research in this topic** section. It has
-not been pushed, merged, released or deployed to an existing preview. Package
-version remains 0.2.0; identify the candidate by its full commit and SHA-256 in
-the private delivery manifest, never by version alone.
+This unreleased candidate includes the mobile collection/title and ordinary Page /
+scrollbar fixes, plus a bounded **More research in this topic** section. Source
+review in a Draft PR does not publish the private sample/screenshot pack, change
+the official Release asset or deploy an existing preview. Package version remains
+0.2.0; identify each candidate by its full commit and SHA-256, never by version
+alone. The separately delivered private manifest records its original snapshot;
+use the PR's exact head and CI for subsequent source revisions. The private pack
+itself is not stored in this public repository.
 
 The currently published installation package is the
 [v0.2.0 Release](https://github.com/henryxu1008/ghost-research-pro/releases/tag/v0.2.0)
@@ -85,4 +88,5 @@ success as proof of every graphical importer step. The trial is loopback-only,
 not a public hosted demo. No real checkout, billing lifecycle, customer demand,
 channel submission, pricing or legal agreement has been tested or decided here.
 Ghost5's known compatibility failures and the historical Release evidence remain
-unchanged. Publication/push/PR/merge/versioning would require a later authorization.
+unchanged. Merging, versioning, releasing or deployment requires separate
+authorization; a Draft PR is not permission for those actions or commercial launch.
