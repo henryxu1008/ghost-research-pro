@@ -51,7 +51,10 @@ async function checkAccount({page, ctx, base, out, record, mailCount, screenshot
         }
         const box = popup().locator('[data-test-switch="default-newsletter-toggle"]');
         await box.waitFor();
-        return {row: box, box, input: box.locator('input[type="checkbox"]')};
+        // A single newsletter can also use modern Portal's decorative switch
+        // inside a native keyboard-operable row. Do not focus the hidden box.
+        const nativeRow = box.locator('xpath=ancestor::*[@role="button" and @aria-pressed][1]');
+        return {row: await nativeRow.count() ? nativeRow : box, box, input: box.locator('input[type="checkbox"]')};
     };
     const waitChecked = async (control, checked) => {
         const id = await control.input.getAttribute('id');

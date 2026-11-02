@@ -1,6 +1,6 @@
 # Disposable Portal account acceptance
 
-These checks use the existing pinned Ghost 5/6 profiles and their official Portal bundles. Only the locally created `example.test` member is edited; all successful writes reach the stock loopback Ghost API. No real account, external mail or payment service is used.
+Current required checks use Ghost6.73.0 and official Portal2.72.12 under the [support policy](../support-policy.md). Ghost 5 results below are historical, not a current gate. Only the locally created `example.test` member is edited; all successful writes reach the stock loopback Ghost API. No real account, external mail or payment service is used.
 
 | Flow | Evidence checked |
 | --- | --- |

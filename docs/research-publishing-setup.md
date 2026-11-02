@@ -29,7 +29,9 @@ protected body. Neither cards nor the featured selection prints report HTML.
 ## Configure the library once
 
 1. Use public tags **Research** (`research`) and **Brief** (`brief`) for publication
-   formats. Put the intended format first, then add topic tags such as Logistics.
+   formats. For this unreleased candidate, put the topic first, then the format.
+   The first public tag becomes the visible card/eyebrow label. Older format-first
+   ordering still works for Library/archives, but does not enable recommendations.
    The sidebar lists these two format tags only when they have published posts.
    These names are conventions, not new content types or an enforced schema.
 2. Optionally mark one or more posts **Featured**. The newest featured post is the
@@ -66,6 +68,26 @@ are not required for this Library recipe. No external account or private API key
 is needed. Existing content remains ordinary Ghost content.
 
 ## What the browsing controls mean
+
+### Local candidate: more research in this topic
+
+This addition is not in the published v0.2.0 ZIP. A report must carry **Research**
+(`research`), have a primary public topic other than Research/Brief, and not carry
+Brief. At its end, native Ghost `get` fetches at most three other Research posts
+with that same primary topic, excluding Brief and the current ID, newest first.
+There is no generic latest-post fallback: no matches means no section. Ordinary
+Pages and Briefs have no recommendation section. Only public title, canonical
+URL, custom excerpt, publication date and access label are rendered. No body-derived
+excerpt or reading time is used, even when a protected report lacks an excerpt.
+These are access-policy labels, not proof that the reader can open the body.
+
+Keep type names/slugs above and write public-safe custom excerpts. Topic-first
+ordering is a deliberate visible-label change; review an existing publication's
+tags before opting in. Multiple topics are not combined: the primary one defines
+the recommendation set. The [buyer trial guide](private-buyer-trial.md) separates
+this local build, editable membership example and official downloads.
+
+### Existing collections
 
 The library channel lists **all published posts**, newest first, 12 per page.
 Topic and format links are complete tag archives; year links are complete

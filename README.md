@@ -34,6 +34,7 @@ Use Node.js 22.17+ (22.x) or 24.x and npm. Packaging uses Node's built-in module
 ```sh
 npm ci --ignore-scripts
 npm run test:security
+npm run test:support
 npm run test:contrast
 npm run audit:ci
 npm run test:ci
@@ -46,9 +47,9 @@ Install `dist/ghost-research-pro.zip` in Ghost Admin. Both local development and
 
 For identical payload paths and file bytes, packaging is deterministic: entries sort by UTF-8 path bytes, use the fixed DOS timestamp `1980-01-01 00:00:00`, and record regular Unix `0644` files without extra fields, comments, owner IDs or directory entries. Files use ZIP's uncompressed **stored** method so different Node/zlib compressor versions cannot change the output. The current small theme therefore has a slightly larger archive; file contents and install paths are preserved. The allowlist is root `*.hbs`, `package.json`, existing root `LICENSE`/`NOTICE` files, and files under `assets/` and `partials/`, excluding `*.map`; symlinks and non-regular inputs are rejected. Notice files are preserved only when supplied; the packager generates no license or permission grant. The writer supports ZIP32 only and fails rather than silently overflowing its limits.
 
-The packaging regression checks creation order, file times/modes/timezones, excluded documentation/dependencies, changed/removed payload files, independent ZIP extraction and CLI replacement. CI runs them with both pinned runtime Node versions. Git attributes fix LF checkout bytes for the packaged text files; the packager itself does not rewrite text, normalize binary bytes or derive metadata from checkout time. Different file bytes intentionally produce a different hash. See the [reproducible packaging notes](docs/engineering/reproducible-packaging.md) for the original evidence and verification boundary.
+The packaging regression checks creation order, file times/modes/timezones, excluded documentation/dependencies, changed/removed payload files, independent ZIP extraction and CLI replacement. CI runs them in the validation and supported Ghost 6 runtime jobs. Git attributes fix LF checkout bytes for the packaged text files; the packager itself does not rewrite text, normalize binary bytes or derive metadata from checkout time. Different file bytes intentionally produce a different hash. See the [reproducible packaging notes](docs/engineering/reproducible-packaging.md) for the original evidence and verification boundary.
 
-Validation runs all GScan rules for Ghost 5 and 6 and fails on errors **or warnings**. Static compatibility checks do not prove runtime compatibility with every Ghost minor version. See [QA checklist](docs/engineering/qa-checklist.md) for remaining release gates. The author email in package metadata is the repository owner's GitHub noreply address, not a customer support inbox.
+Validation runs all GScan rules for Ghost 6 and fails on errors **or warnings**. The [current support policy](docs/support-policy.md) excludes EOL Ghost 5 and unverified Ghost 7. Static checks do not prove runtime compatibility with every Ghost 6 minor. See [QA checklist](docs/engineering/qa-checklist.md) for remaining release gates. The author email in package metadata is the repository owner's GitHub noreply address, not a customer support inbox.
 
 GScan's Handlebars compiler is overridden to the security fix 4.7.10. The audit still reports high-severity ZIP extraction dependencies; see [dependency security](docs/engineering/dependency-security.md) for the exact findings and limits.
 
@@ -57,16 +58,23 @@ GScan's Handlebars compiler is overridden to the security fix 4.7.10. The audit 
 The formal support target remains **Ghost6.73.0 / Node24.22.1**. Current development
 tests pin stock **Portal2.72.12**; the published 0.2.0 evidence used **2.72.11** and
 is not rewritten. See the [current exact-version results](docs/product/prd.md#acceptance-evidence-and-current-portal-follow-up).
-This is not a promise for every Ghost6 minor. Ghost5 remains compatibility CI
-evidence, outside the delivery commitment. Its strict tests and failures are retained; the permissive
-`engines.ghost >=5.0.0` installation metadata is unchanged and is not a support warranty.
+Ghost 6 is the supported major; this is not a promise that every 6.x minor was
+tested. The candidate declares `engines.ghost >=6.0.0 <7.0.0`. Ghost 5 is EOL and
+historical only; Ghost 7 is unverified and excluded. See the [policy, upgrade
+advice and retained failures](docs/support-policy.md). Published Release assets
+keep their original metadata and are not replaced by this candidate.
 
 The first delivery does not promise the unexecuted paid-subscription lifecycle
 (creation/checkout, renewal, cancellation/refunds and recovery). Native Ghost
 membership/paid features and access rules are unchanged; this is not an
 end-to-end commercial-readiness claim. The project license is MIT.
 
-Theme CI exercises stock Ghost 5.130.6 / Node 22.23.4 / Portal 2.51.5 and Ghost 6.73.0 / Node 24.22.1 / Portal 2.72.12 on separate loopback-only runners. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. Both environments use disposable complimentary membership fixtures and an in-memory local SMTP sink. The matching official Portal bundle exercises free signup/signin/signout and fixture name/newsletter saves, reload persistence, cancellation, aborted-request recovery and signed-out data isolation. See [account acceptance](docs/engineering/account-acceptance.md) for the exact coverage and limits. All external browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost5` and `ghost-runtime-ghost6` (14-day retention). Updating this development fixture does not replace a released theme asset or update an existing site's Portal.
+Theme CI exercises Ghost 6.73.0 / Node 24.22.1 / official Portal 2.72.12 on a loopback-only runner. It uploads/activates the ZIP and checks page rendering, member permissions, common editor cards, keyboard navigation and selected WCAG A/AA rules. It uses disposable complimentary membership fixtures and an in-memory local SMTP sink. The official Portal bundle exercises free signup/signin/signout and fixture name/newsletter saves, reload persistence, cancellation, aborted-request recovery and signed-out data isolation. See [account acceptance](docs/engineering/account-acceptance.md) for coverage and limits. External browser requests are blocked. No Stripe account or real email delivery is involved. Evidence is uploaded as `ghost-runtime-ghost6` (14-day retention). Removing the EOL Ghost 5 job is the explicitly approved support-policy change, not a fix or conversion of its failures. Updating this development fixture does not replace a released asset or update a site's Portal.
+
+The [Ghost 5 failure investigation](docs/engineering/ghost5-portal-compatibility.md)
+also records a full experiment with official Portal 2.72.12. It did **not** meet
+the unchanged acceptance contract and does not establish a current CI profile
+or establish a supported Ghost 5 upgrade recipe.
 
 See [runtime acceptance and host-error diagnosis](docs/engineering/runtime-acceptance.md). To run outside CI, prepare a fresh unpacked installation of one pinned version with its supported Node version and dependencies, install Chromium with `npx playwright install chromium`, build the ZIP, and set `GHOST_RUNTIME_DIR` plus `GHOST_RUNTIME_VERSION` before `npm run test:runtime`. The default version is 6.73.0; the runner verifies the package's Node engines and refuses an existing database. Never point it at a live site.
 

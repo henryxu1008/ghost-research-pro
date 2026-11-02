@@ -1,5 +1,9 @@
 # Controlled account HTTP failure acceptance
 
+Current required acceptance is Ghost 6 only; see the [support policy](../support-policy.md).
+The dated Ghost 5 results and provenance below remain historical failures, not
+current release gates or repaired behavior. All Ghost 6 assertions remain required.
+
 The [release decision material](portal-release-decision.md) records repair ownership, exact package provenance, support options and the recommended delivery sequence. It changes no required result or support claim.
 
 Four strict cases extend the existing disposable member tests: profile name and newsletter subscription, each under HTTP 503 and HTTP 429. Only browser PUTs to the loopback `/members/api/member/` endpoint receive the injected JSON error and `Retry-After: 1`. No real service is overloaded or rate-limited. The official pinned Portal bundles are unchanged.

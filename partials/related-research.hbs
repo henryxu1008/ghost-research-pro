@@ -1,0 +1,31 @@
+{{! A topic is the primary public tag; Research is an additional format tag.
+    Only explicit public metadata is requested/rendered, never a body excerpt. }}
+{{#has tag="Research"}}
+{{#has tag="Brief"}}{{else}}
+{{#if primary_tag}}
+{{#match primary_tag.slug "research"}}{{else}}
+{{#match primary_tag.slug "brief"}}{{else}}
+{{#get "posts" filter="id:-{{id}}+tag:research+tag:-brief+primary_tag:{{primary_tag.slug}}" fields="id,title,slug,url,published_at,custom_excerpt,visibility" limit="3" order="published_at desc" as |related|}}
+{{#if related}}
+<section class="section related-research" aria-labelledby="related-research-title">
+  <header class="section-heading"><h2 id="related-research-title">More research in this topic</h2></header>
+  <div class="cards">
+    {{! Narrow fields intentionally omit html. Use the serialized canonical URL
+        and explicit visibility instead of helpers that identify posts by html. }}
+    {{#foreach related visibility="all"}}
+    <article class="card">
+      <div class="card-meta">{{> "access-badge"}}</div>
+      <h3><a href="{{this.url}}">{{title}}</a></h3>
+      {{#if custom_excerpt}}<p>{{custom_excerpt}}</p>{{/if}}
+      <div class="card-footer"><time datetime="{{date format="YYYY-MM-DD"}}">{{date format="MMM D, YYYY"}}</time></div>
+    </article>
+    {{/foreach}}
+  </div>
+</section>
+{{/if}}
+{{/get}}
+{{/match}}
+{{/match}}
+{{/if}}
+{{/has}}
+{{/has}}

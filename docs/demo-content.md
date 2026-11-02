@@ -1,8 +1,8 @@
 # Set up a research publication demo
 
-Use this plan after [installing the development preview](user-guide.md) in a disposable Ghost publication. It is a manual content recipe, not an importer or an account setup script. All names, copy and numbers below are fictional demonstration material, not research findings. Keep that label in any screenshots or shared demo.
+Use this manual recipe after [installing the theme](user-guide.md) in a disposable Ghost publication. This document itself is not an importer or an account setup script. The separately delivered private buyer-trial pack contains native import JSON; see the [local candidate guide](private-buyer-trial.md) for its identity and differences from the published v0.2.0 theme. All names, copy and numbers below are fictional demonstration material, not research findings. Keep that label in any screenshots or shared demo.
 
-These steps use ordinary posts, public tags and existing authors. They do not require changing routing, membership signup settings, staff permissions or billing. Use the publication's existing authorized demo author; do not invite staff or modify an account just to follow this recipe. Menu labels can differ between Ghost 5 and 6.
+These steps target supported Ghost 6 and use ordinary posts, public tags and existing authors. They do not require changing routing, membership signup settings, staff permissions or billing. Use the publication's existing authorized demo author; do not invite staff or modify an account just to follow this recipe. Menu labels can differ by Ghost 6 minor version. Ghost 5 is EOL; see the [support policy](support-policy.md).
 
 ## How the content maps to the theme
 
@@ -28,7 +28,7 @@ In Ghost Admin, open **Tags** and create or reuse the following public tags. Che
 | Brief | `brief` | Fictional short updates for this demo. |
 | Demo Logistics | `demo-logistics` | A made-up topic used to demonstrate a shared archive. |
 
-Add these tags in each post's settings, with **Research** or **Brief** first and **Demo Logistics** second. Reorder them there if necessary. The first public tag is the theme's visible label, while both tags contribute archive membership. Do not prefix these public category names with `#`: Ghost treats those as internal tags. See [Ghost's tag guide](https://ghost.org/help/tags/) for the native controls.
+For the unreleased related-research candidate, put **Demo Logistics first**, then **Research** or **Brief**. The first public tag becomes the card label and report eyebrow; both tags still contribute archive membership. Research must retain name `Research` and slug `research`; Brief uses `Brief` / `brief`. Research-tagged posts with the same primary topic can recommend each other. Briefs, mixed Research+Brief posts, posts without a topic, and posts with Research/Brief as primary do not show a recommendation block. Existing v0.2.0 content does not need migration for its existing features; reordering is required only to enable this candidate addition. Do not prefix public category names with `#`. See [Ghost's tag guide](https://ghost.org/help/tags/) for the native controls.
 
 ## 2. Draft the three posts
 
@@ -36,9 +36,9 @@ Open **Posts**, create a draft for each row and use the normal post template. In
 
 | Title / suggested slug | Ordered tags | Access | Custom excerpt |
 | --- | --- | --- | --- |
-| Demo: Harbor capacity scenarios / `demo-harbor-capacity` | Research, Demo Logistics | Public | Fictional demo: compare two made-up capacity scenarios and the assumptions behind them. |
-| Demo brief: Lab notebook / `demo-lab-notebook` | Brief, Demo Logistics | Public | Fictional demo: a short update on the sample dataset and the next review. |
-| Demo member note: Scenario appendix / `demo-scenario-appendix` | Research, Demo Logistics | Members only | Fictional demo: sign in to read the sample scenario appendix. This summary contains no restricted findings. |
+| Demo: Harbor capacity scenarios / `demo-harbor-capacity` | Demo Logistics, Research | Public | Fictional demo: compare two made-up capacity scenarios and the assumptions behind them. |
+| Demo brief: Lab notebook / `demo-lab-notebook` | Demo Logistics, Brief | Public | Fictional demo: a short update on the sample dataset and the next review. |
+| Demo member note: Scenario appendix / `demo-scenario-appendix` | Demo Logistics, Research | Members only | Fictional demo: sign in to read the sample scenario appendix. This summary contains no restricted findings. |
 
 ### Public report body
 

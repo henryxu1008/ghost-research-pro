@@ -5,7 +5,7 @@
   "private": false,
   "license": "MIT",
   "engines": {
-    "ghost": ">=5.0.0"
+    "ghost": ">=6.0.0 <7.0.0"
   },
   "scripts": {
     "test": "node scripts/validate.cjs .",
@@ -15,6 +15,7 @@
     "test:toc": "node --test tests/runtime/toc-unit.test.cjs tests/runtime/toc.test.cjs",
     "test:runtime": "node tests/runtime/acceptance.cjs",
     "test:security": "node --test tests/security/audit.test.cjs",
+    "test:support": "node --test tests/support-policy.test.cjs",
     "test:contrast": "node --test tests/runtime/contrast.test.cjs",
     "test:publisher": "node --test tests/runtime/publisher-settings.test.cjs",
     "audit:ci": "node scripts/audit.cjs"

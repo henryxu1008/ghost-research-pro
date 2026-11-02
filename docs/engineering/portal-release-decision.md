@@ -1,5 +1,10 @@
 # Known Portal limitations and release route
 
+Current [support policy](../support-policy.md): Ghost 6 is supported; EOL Ghost 5
+is historical only. The [Ghost 5 investigation](ghost5-portal-compatibility.md)
+retains its failures and unsuccessful official-bundle experiment. The dated
+decisions and results below are historical, not current PR20 status or gates.
+
 Updated 2026-10-31 after the owner explicitly chose to keep theme delivery moving despite the known upstream feedback issue. The [candidate handoff](../candidate-delivery.md) is the current delivery/status summary. This changes no engine range, pinned runtime profile or strict assertion. Unified [PR17](https://github.com/henryxu1008/ghost-research-pro/pull/17) targets main and is ready for review; older PR10–16 remain open/Draft. Standard MIT was already selected. No merge, tag, Release, listing, production deployment or payment connection is performed or authorized by this document.
 
 ## Current delivery decision

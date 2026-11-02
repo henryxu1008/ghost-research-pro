@@ -5,7 +5,7 @@ const gscan = require('gscan');
 async function main() {
     const target = path.resolve(process.argv[2] || '.');
     if (!fs.existsSync(target)) throw new Error(`Theme not found: ${target}`);
-    for (const version of ['v5', 'v6']) {
+    for (const version of ['v6']) {
         const options = {checkVersion: version};
         const raw = target.endsWith('.zip')
             ? await gscan.checkZip(target, options)
